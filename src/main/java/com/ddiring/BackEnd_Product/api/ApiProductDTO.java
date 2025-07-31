@@ -11,9 +11,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ListInvestmentDto {
+public class ApiProductDTO {
 
     private String title;
     private Integer goalAmount;
     private LocalDate endDate;
+    private String status;
 }

@@ -10,14 +10,16 @@ public class ApiProductService {
 
     private final ApiProductRepository apiProductRepository;
 
-    public ListInvestmentDto getListInvestment(Integer productId) {
+    public ApiProductDTO getListInvestment(Integer productId) {
+
         Product product = apiProductRepository.findByProductId(productId)
                 .orElseThrow(() -> new RuntimeException(""));
 
-        return ListInvestmentDto.builder()
+        return ApiProductDTO.builder()
                 .title(product.getTitle())
                 .goalAmount(product.getGoalAmount())
                 .endDate(product.getEndDate())
+                .status(product.getStatus())
                 .build();
     }
 }

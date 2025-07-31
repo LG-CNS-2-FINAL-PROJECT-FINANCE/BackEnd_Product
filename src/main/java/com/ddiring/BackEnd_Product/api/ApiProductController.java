@@ -15,9 +15,11 @@ public class ApiProductController {
     private final ApiProductService apiProductService;
 
     @GetMapping("/{productId}/market")
-    public ResponseEntity<ListInvestmentDto> getListInvestment(
-            @PathVariable Integer productID) {
-        ListInvestmentDto dto = apiProductService.getListInvestment(productID);
+    public ResponseEntity<ApiProductDTO> getListInvestment(
+            @PathVariable Integer productID
+    ) {
+
+        ApiProductDTO dto = apiProductService.getListInvestment(productID);
         return ResponseEntity.ok(dto);
     }
 }
