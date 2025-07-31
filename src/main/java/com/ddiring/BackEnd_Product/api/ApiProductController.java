@@ -1,6 +1,5 @@
 package com.ddiring.BackEnd_Product.api;
 
-import com.ddiring.BackEnd_Product.dto.ListInvestmentDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

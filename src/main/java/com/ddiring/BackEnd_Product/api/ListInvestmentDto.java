@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto;
+package com.ddiring.BackEnd_Product.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

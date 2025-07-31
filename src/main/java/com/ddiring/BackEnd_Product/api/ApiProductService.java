@@ -1,6 +1,5 @@
 package com.ddiring.BackEnd_Product.api;
 
-import com.ddiring.BackEnd_Product.dto.ListInvestmentDto;
 import com.ddiring.BackEnd_Product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
