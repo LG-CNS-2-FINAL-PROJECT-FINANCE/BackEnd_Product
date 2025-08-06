@@ -2,6 +2,7 @@ package com.ddiring.BackEnd_Product.dto;
 
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,22 +31,10 @@ public class CreatorUpdateDto {
     private BigDecimal goalAmount;
     private BigDecimal minInvestment;
 
+    @NotBlank(message = "파일을 등록하세요")
     private List<String> document;
 
-    public ProductPayload toPayload() {
-            ProductPayload.ProductPayloadBuilder ppb = ProductPayload.builder()
-                    .productId(productId);
-            if(title          != null) ppb.title(title);
-            if(summary        != null) ppb.summary(summary);
-            if(content        != null) ppb.content(content);
-
-            if (startDate     != null) ppb.startDate(startDate);
-            if (endDate       != null) ppb.endDate(endDate);
-
-            if (goalAmount    != null) ppb.goalAmount(goalAmount);
-            if (minInvestment != null) ppb.minInvestment(minInvestment);
-
-            if (document      != null) ppb.document(document);
-            return ppb.build(); // 선택적 수정 가능
-    }
+    @Size(max = 500)
+    @NotBlank(message = "사유를 입력하세요")
+    private String reason;
 }

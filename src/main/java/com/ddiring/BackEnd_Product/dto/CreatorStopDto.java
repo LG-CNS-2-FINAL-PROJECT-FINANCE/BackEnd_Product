@@ -9,23 +9,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CreatorStopDto {
 
-    @NotNull
+    @NotBlank(message="대상 프로젝트 ID 필요")
     private String productId;
 
-    @Size(max = 500)
-    @NotBlank(message = "중단사유를 입력하세요")
-    private String reason;
+    @NotBlank(message = "파일을 등록하세요")
+    private List<String> document;
 
-    public ProductPayload toPayload() {
-        ProductPayload.ProductPayloadBuilder ppb = ProductPayload.builder()
-                .productId(productId);
-        if(reason !=null) ppb.reason(reason);
-        return ppb.build();
-    }
+    @Size(max = 500)
+    @NotBlank(message = "사유를 입력하세요")
+    private String reason;
 }

@@ -21,28 +21,13 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductListDto>> getAllProducts() {
-        List<ProductListDto> productList = ps.getAllProducts();
+        List<ProductListDto> productList = ps.getAllProduct();
         return ResponseEntity.ok(productList);
     }
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String productId) {
-        ProductDetailDto pdd = ps.getProductById(productId);
+        ProductDetailDto pdd = ps.getProductByProductId(productId);
         return ResponseEntity.ok(pdd);
-
-
-//    @GetMapping("/view/{productId}")
-//    public ResponseEntity<ProductDto> view(@PathVariable String productId) {
-//        // 조회수 증가
-//        vs.viewCount(productId);
-//
-//        // 최신 viewCount 조회
-//        ProductEntity product = pr.findById(productId)
-//                .orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다."));
-//
-//        // DTO로 변환하여 응답
-//        ProductDto productDto = ProductDto.from(product);
-//        return ResponseEntity.ok(productDto);
-//    }
     }
 }

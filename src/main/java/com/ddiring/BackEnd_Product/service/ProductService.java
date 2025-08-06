@@ -19,13 +19,13 @@ public class ProductService {
     private final ProductRepository pr;
     private final MongoTemplate mt;
 
-    public List<ProductListDto> getAllProducts() {
+    public List<ProductListDto> getAllProduct() {
         return pr.findAll().stream()
                 .map(ProductListDto::from)
                 .collect(Collectors.toList());
     }
 
-    public ProductDetailDto getProductById(String productId) {
+    public ProductDetailDto getProductByProductId(String productId) {
         viewCount(productId);
         ProductEntity product = pr.findById(productId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
@@ -36,7 +36,7 @@ public class ProductService {
         mt.getCollection("product") // 실제 컬렉션 이름
                 .updateOne(
                         new Document("_id", productId),
-                        new Document("$inc", new Document("viewCount", 1))
+                        new Document("$inc", new Document("viewCount", 1))  
                 );
     }
 }
