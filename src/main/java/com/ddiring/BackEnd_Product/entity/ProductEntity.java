@@ -39,11 +39,12 @@ public class ProductEntity {
 
     private List<String> document;
 
-    private ProductStatus status;
-
     //    private String account;
+    // 모금액 추가
 
-    private int viewCount = 0;
+    private int viewCount;
+
+    private ProductStatus status;
 
     private String reason;
 

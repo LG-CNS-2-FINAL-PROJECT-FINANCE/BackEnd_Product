@@ -93,7 +93,7 @@ private void handleUpdate(ProductRequestEntity pre) {
         ProductEntity pe = pr.findById(pp.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
         pe.setReason(pp.getReason());
-        pe.setStatus(ProductEntity.ProductStatus.END);
+        pe.setStatus(ProductEntity.ProductStatus.HOLD);
         pr.save(pe);
     }
 }
