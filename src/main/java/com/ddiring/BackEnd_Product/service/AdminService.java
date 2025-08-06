@@ -1,0 +1,99 @@
+package com.ddiring.BackEnd_Product.service;
+
+import com.ddiring.BackEnd_Product.dto.AdminApproveDto;
+import com.ddiring.BackEnd_Product.dto.AdminRejectDto;
+import com.ddiring.BackEnd_Product.entity.ProductEntity;
+import com.ddiring.BackEnd_Product.entity.ProductPayload;
+import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
+import com.ddiring.BackEnd_Product.repository.ProductRepository;
+import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class AdminService {
+
+    private final ProductRequestRepository prr;
+    private final ProductRepository pr;
+    private final MongoTemplate mt;
+
+    /* ---------- 승인 ---------- */
+    @Transactional
+    public void approve(AdminApproveDto dto, int adminSeq) {
+        ProductRequestEntity pre = prr.findById(dto.getRequestId())
+                .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
+        if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
+            throw new IllegalStateException("이미 처리된 요청 입니다");
+
+        switch (pre.getType()) {
+            case CREATE -> handleCreate(pre);
+            case UPDATE ->  handleUpdate(pre);
+            case STOP -> handleStop(pre);
+        }
+
+        pre.setStatus(ProductRequestEntity.RequestStatus.APPROVED);
+        pre.setAdminSeq(adminSeq);
+        prr.save(pre);
+    }
+
+    /* ---------- 거절 ---------- */
+    @Transactional
+    public void reject(AdminRejectDto dto, int adminSeq) {
+        ProductRequestEntity pre = prr.findById(dto.getRequestId())
+                .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
+        if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
+            throw new IllegalStateException("이미 처리된 요청 입니다");
+        pre.setStatus(ProductRequestEntity.RequestStatus.REJECTED);
+        pre.setAdminSeq(adminSeq);
+        pre.setRejectReason(dto.getReason());
+        prr.save(pre);
+    }
+
+    /* ---------- 내부로직 ------- */
+    private void handleCreate(ProductRequestEntity pre) {
+        ProductPayload pp = pre.getPayload();
+        ProductEntity pe = ProductEntity.builder()
+                .productId(pre.getProductId())  // 승인 시 사용될 ID 할당
+                .userSeq(pre.getUserSeq())
+                .title(pp.getTitle())
+                .summary(pp.getSummary())
+                .content(pp.getContent())
+                .startDate(pp.getStartDate())
+                .endDate(pp.getEndDate())
+                .goalAmount(pp.getGoalAmount())
+                .minInvestment(pp.getMinInvestment())
+                .document(pp.getDocument())
+                .status(ProductEntity.ProductStatus.OPEN)
+                .version(1L)
+                .build();
+        pr.insert(pe);  // 또는 save(pe)
+        pre.setProductId(pe.getProductId()); // 요청 entity에 productId 연결
+}
+
+private void handleUpdate(ProductRequestEntity pre) {
+        ProductPayload pp = pre.getPayload();
+        ProductEntity pe = pr.findById(pp.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+        pe.setTitle(pp.getTitle());
+        pe.setSummary(pp.getSummary());
+        pe.setContent(pp.getContent());
+        pe.setStartDate(pp.getStartDate());
+        pe.setEndDate(pp.getEndDate());
+        pe.setGoalAmount(pp.getGoalAmount());
+        pe.setMinInvestment(pp.getMinInvestment());
+        pe.setDocument(pp.getDocument());
+        pr.save(pe);
+    }
+
+    private void handleStop(ProductRequestEntity pre) {
+        ProductPayload pp = pre.getPayload();
+        ProductEntity pe = pr.findById(pp.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+        pe.setReason(pp.getReason());
+        pe.setStatus(ProductEntity.ProductStatus.END);
+        pr.save(pe);
+    }
+}
