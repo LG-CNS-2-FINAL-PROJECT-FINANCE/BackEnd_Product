@@ -1,14 +1,12 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.dto.ProductDetailDto;
-import com.ddiring.BackEnd_Product.dto.ProductListDto;
+import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
+import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
+import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +27,11 @@ public class ProductController {
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String productId) {
         ProductDetailDto pdd = ps.getProductByProductId(productId);
         return ResponseEntity.ok(pdd);
+    }
+
+    @PostMapping("/api/balance")
+    public ResponseEntity<Void> onAmountChanged(@RequestBody AmountDto dto) {
+        ps.syncAmount(dto); // 여기서 바로 호출
+        return ResponseEntity.ok().build();
     }
 }

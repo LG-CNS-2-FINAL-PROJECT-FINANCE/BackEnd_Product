@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto;
+package com.ddiring.BackEnd_Product.dto.request;
 
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import lombok.AllArgsConstructor;

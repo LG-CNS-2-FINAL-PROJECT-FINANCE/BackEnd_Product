@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto;
+package com.ddiring.BackEnd_Product.dto.product;
 
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import lombok.AllArgsConstructor;
@@ -25,11 +25,10 @@ public class ProductDetailDto {
     private BigDecimal goalAmount;
     private BigDecimal minInvestment;
     private List<String> document;
-    //    private String account;
-    // 모금액 추가
+    private String account;
+    private BigDecimal Amount;
     private int viewCount;
     private ProductEntity.ProductStatus state;
-
 
     public static ProductDetailDto from(ProductEntity e) {
         return ProductDetailDto.builder()

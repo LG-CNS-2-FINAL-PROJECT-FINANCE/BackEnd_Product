@@ -1,7 +1,7 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.dto.AdminApproveDto;
-import com.ddiring.BackEnd_Product.dto.AdminRejectDto;
+import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
+import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

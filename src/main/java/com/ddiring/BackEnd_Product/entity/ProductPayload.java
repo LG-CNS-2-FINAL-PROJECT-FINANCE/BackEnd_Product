@@ -1,12 +1,11 @@
 package com.ddiring.BackEnd_Product.entity;
 
-import com.ddiring.BackEnd_Product.dto.CreatorStopDto;
-import com.ddiring.BackEnd_Product.dto.CreatorUpdateDto;
+import com.ddiring.BackEnd_Product.dto.creator.CreatorStopDto;
+import com.ddiring.BackEnd_Product.dto.creator.CreatorUpdateDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.query.Update;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

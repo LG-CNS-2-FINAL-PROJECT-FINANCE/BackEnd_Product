@@ -21,8 +21,7 @@ public class ProductEntity {
     @MongoId
     private String productId;
 
-    @Version
-    private Long version; // 자료형에 따라 값 달라짐
+    private Long version;
 
     @Indexed
     private int userSeq;
@@ -39,8 +38,8 @@ public class ProductEntity {
 
     private List<String> document;
 
-    //    private String account;
-    // 모금액 추가
+    private String account;
+    private BigDecimal amount;
 
     private int viewCount;
 

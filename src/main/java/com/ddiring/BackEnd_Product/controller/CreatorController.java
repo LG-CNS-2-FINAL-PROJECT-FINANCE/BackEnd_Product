@@ -1,8 +1,8 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.dto.CreatorUpdateDto;
-import com.ddiring.BackEnd_Product.dto.CreatorCreateDto;
-import com.ddiring.BackEnd_Product.dto.CreatorStopDto;
+import com.ddiring.BackEnd_Product.dto.creator.CreatorUpdateDto;
+import com.ddiring.BackEnd_Product.dto.creator.CreatorCreateDto;
+import com.ddiring.BackEnd_Product.dto.creator.CreatorStopDto;
 import com.ddiring.BackEnd_Product.service.CreatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

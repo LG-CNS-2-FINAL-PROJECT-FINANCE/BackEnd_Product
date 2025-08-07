@@ -1,14 +1,13 @@
 package com.ddiring.BackEnd_Product.service;
 
-import com.ddiring.BackEnd_Product.dto.AdminApproveDto;
-import com.ddiring.BackEnd_Product.dto.AdminRejectDto;
+import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
+import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,7 @@ public class AdminService {
 
     private final ProductRequestRepository prr;
     private final ProductRepository pr;
-    private final MongoTemplate mt;
+    private final ProductService ps;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -71,21 +70,22 @@ public class AdminService {
                 .build();
         pr.insert(pe);  // 또는 save(pe)
         pre.setProductId(pe.getProductId()); // 요청 entity에 productId 연결
-}
+        ps.syncAccount(pe.getProductId());
+    }
 
-private void handleUpdate(ProductRequestEntity pre) {
-        ProductPayload pp = pre.getPayload();
-        ProductEntity pe = pr.findById(pp.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
-        pe.setTitle(pp.getTitle());
-        pe.setSummary(pp.getSummary());
-        pe.setContent(pp.getContent());
-        pe.setStartDate(pp.getStartDate());
-        pe.setEndDate(pp.getEndDate());
-        pe.setGoalAmount(pp.getGoalAmount());
-        pe.setMinInvestment(pp.getMinInvestment());
-        pe.setDocument(pp.getDocument());
-        pr.save(pe);
+    private void handleUpdate(ProductRequestEntity pre) {
+            ProductPayload pp = pre.getPayload();
+            ProductEntity pe = pr.findById(pp.getProductId())
+                    .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+            pe.setTitle(pp.getTitle());
+            pe.setSummary(pp.getSummary());
+            pe.setContent(pp.getContent());
+            pe.setStartDate(pp.getStartDate());
+            pe.setEndDate(pp.getEndDate());
+            pe.setGoalAmount(pp.getGoalAmount());
+            pe.setMinInvestment(pp.getMinInvestment());
+            pe.setDocument(pp.getDocument());
+            pr.save(pe);
     }
 
     private void handleStop(ProductRequestEntity pre) {

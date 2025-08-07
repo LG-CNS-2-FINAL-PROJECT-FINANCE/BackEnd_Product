@@ -1,6 +1,5 @@
-package com.ddiring.BackEnd_Product.dto;
+package com.ddiring.BackEnd_Product.dto.creator;
 
-import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class CreatorUpdateDto {
 
     @NotBlank(message="대상 프로젝트 ID 필요")

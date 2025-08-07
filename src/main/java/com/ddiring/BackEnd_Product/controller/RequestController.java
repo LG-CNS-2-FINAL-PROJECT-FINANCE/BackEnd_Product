@@ -1,8 +1,7 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.dto.ProductDetailDto;
-import com.ddiring.BackEnd_Product.dto.RequestDetailDto;
-import com.ddiring.BackEnd_Product.dto.RequestListDto;
+import com.ddiring.BackEnd_Product.dto.request.RequestDetailDto;
+import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

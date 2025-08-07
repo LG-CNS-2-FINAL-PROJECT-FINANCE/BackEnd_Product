@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto;
+package com.ddiring.BackEnd_Product.dto.admin;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class AdminRejectDto {
 
     @NotBlank

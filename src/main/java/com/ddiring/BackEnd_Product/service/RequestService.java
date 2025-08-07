@@ -1,7 +1,7 @@
 package com.ddiring.BackEnd_Product.service;
 
-import com.ddiring.BackEnd_Product.dto.RequestDetailDto;
-import com.ddiring.BackEnd_Product.dto.RequestListDto;
+import com.ddiring.BackEnd_Product.dto.request.RequestDetailDto;
+import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto;
+package com.ddiring.BackEnd_Product.dto.creator;
 
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import jakarta.validation.constraints.NotBlank;
