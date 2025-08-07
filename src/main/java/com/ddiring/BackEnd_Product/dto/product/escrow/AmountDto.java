@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto.escrow;
+package com.ddiring.BackEnd_Product.dto.product.escrow;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AmountDto {
-    private String productId;
-    private BigDecimal amount;
+    private String projectId;
+    private BigDecimal balance;
 }

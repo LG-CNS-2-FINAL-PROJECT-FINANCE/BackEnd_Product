@@ -19,7 +19,7 @@ import java.util.List;
 public class ProductEntity {
 
     @MongoId
-    private String productId;
+    private String projectId;
 
     private Long version;
 

@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductPayload {
-    private String productId;  // UPDATE/STOP 대상
+    private String projectId;  // UPDATE/STOP 대상
     private String title;
     private String summary;
     private String content;
@@ -29,7 +29,7 @@ public class ProductPayload {
 
     public static ProductPayload from(ProductEntity e) {
         return ProductPayload.builder()
-                .productId(e.getProductId())
+                .projectId(e.getProjectId())
                 .title(e.getTitle())
                 .summary(e.getSummary())
                 .content(e.getContent())

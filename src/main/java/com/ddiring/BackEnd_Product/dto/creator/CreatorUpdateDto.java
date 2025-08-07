@@ -17,7 +17,7 @@ import java.util.List;
 public class CreatorUpdateDto {
 
     @NotBlank(message="대상 프로젝트 ID 필요")
-    private String productId;
+    private String projectId;
 
     private String title;
     private String summary;

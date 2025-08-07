@@ -2,9 +2,12 @@ package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
+import com.ddiring.BackEnd_Product.dto.product.escrow.AccountRequestDto;
+import com.ddiring.BackEnd_Product.dto.product.escrow.AccountResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
+import com.ddiring.BackEnd_Product.external.EscrowClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ public class AdminService {
     private final ProductRequestRepository prr;
     private final ProductRepository pr;
     private final ProductService ps;
+    private final EscrowClient ec;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -55,7 +59,7 @@ public class AdminService {
     private void handleCreate(ProductRequestEntity pre) {
         ProductPayload pp = pre.getPayload();
         ProductEntity pe = ProductEntity.builder()
-                .productId(pre.getProductId())  // 승인 시 사용될 ID 할당
+                .projectId(pre.getProjectId())  // 승인 시 사용될 ID 할당
                 .userSeq(pre.getUserSeq())
                 .title(pp.getTitle())
                 .summary(pp.getSummary())
@@ -68,14 +72,20 @@ public class AdminService {
                 .status(ProductEntity.ProductStatus.OPEN)
                 .version(1L)
                 .build();
-        pr.insert(pe);  // 또는 save(pe)
-        pre.setProductId(pe.getProductId()); // 요청 entity에 productId 연결
-        ps.syncAccount(pe.getProductId());
+        pr.insert(pe);
+        pre.setProjectId(pe.getProjectId()); // 요청 entity에 productId 연결
+
+        AccountRequestDto escrowRequest = AccountRequestDto.builder()
+                .projectId(pe.getProjectId())
+                .build();
+        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+        pe.setAccount(escrowResponse.getAccount());
+        pr.save(pe); // 다시 저장해서 계좌 반영
     }
 
     private void handleUpdate(ProductRequestEntity pre) {
             ProductPayload pp = pre.getPayload();
-            ProductEntity pe = pr.findById(pp.getProductId())
+            ProductEntity pe = pr.findById(pp.getProjectId())
                     .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
             pe.setTitle(pp.getTitle());
             pe.setSummary(pp.getSummary());
@@ -90,7 +100,7 @@ public class AdminService {
 
     private void handleStop(ProductRequestEntity pre) {
         ProductPayload pp = pre.getPayload();
-        ProductEntity pe = pr.findById(pp.getProductId())
+        ProductEntity pe = pr.findById(pp.getProjectId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
         pe.setReason(pp.getReason());
         pe.setStatus(ProductEntity.ProductStatus.HOLD);

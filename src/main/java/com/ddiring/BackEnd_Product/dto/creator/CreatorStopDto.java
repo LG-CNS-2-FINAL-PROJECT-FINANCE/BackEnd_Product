@@ -15,7 +15,7 @@ import java.util.List;
 public class CreatorStopDto {
 
     @NotBlank(message="대상 프로젝트 ID 필요")
-    private String productId;
+    private String projectId;
 
     @NotBlank(message = "파일을 등록하세요")
     private List<String> document;

@@ -14,7 +14,7 @@ public class RequestListDto {
     private String requestId;
     private int userSeq;
 
-    private String productId;  // UPDATE/STOP 대상
+    private String projectId;  // UPDATE/STOP 대상
     private String title;
 
     private ProductRequestEntity.RequestType type;
@@ -25,7 +25,7 @@ public class RequestListDto {
         return RequestListDto.builder()
                 .requestId(e.getRequestId())
                 .userSeq(e.getUserSeq())
-                .productId(e.getPayload().getProductId())
+                .projectId(e.getPayload().getProjectId())
                 .title(e.getPayload().getTitle())
                 .type(e.getType())
                 .status(e.getStatus())

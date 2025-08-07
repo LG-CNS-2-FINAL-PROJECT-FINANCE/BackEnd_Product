@@ -1,11 +1,8 @@
 package com.ddiring.BackEnd_Product.external;
 
-import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
-import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
-import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
+import com.ddiring.BackEnd_Product.dto.product.escrow.AccountRequestDto;
+import com.ddiring.BackEnd_Product.dto.product.escrow.AccountResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -15,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 )
 public interface EscrowClient {
 
-    @PostMapping("/escrow")
+    @PostMapping("/escrow/create")
     AccountResponseDto createAccount(@RequestBody AccountRequestDto request);
 
 }

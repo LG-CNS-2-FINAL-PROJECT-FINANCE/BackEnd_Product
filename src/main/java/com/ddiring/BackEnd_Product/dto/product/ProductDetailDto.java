@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProductDetailDto {
-    private String productId;
+    private String projectId;
     private int userSeq;
     private String title;
     private String summary;
@@ -26,13 +26,13 @@ public class ProductDetailDto {
     private BigDecimal minInvestment;
     private List<String> document;
     private String account;
-    private BigDecimal Amount;
+    private BigDecimal amount;
     private int viewCount;
     private ProductEntity.ProductStatus state;
 
     public static ProductDetailDto from(ProductEntity e) {
         return ProductDetailDto.builder()
-                .productId(e.getProductId())
+                .projectId(e.getProjectId())
                 .userSeq(e.getUserSeq())
                 .title(e.getTitle())
                 .summary(e.getSummary())
@@ -42,8 +42,8 @@ public class ProductDetailDto {
                 .goalAmount(e.getGoalAmount())
                 .minInvestment(e.getMinInvestment())
                 .document(e.getDocument())
-                // 계좌 추가?
-                // 모금액 추가
+                .account(e.getAccount())
+                .amount(e.getAmount())
                 .viewCount(e.getViewCount())
                 .state(e.getStatus())
                 .build();

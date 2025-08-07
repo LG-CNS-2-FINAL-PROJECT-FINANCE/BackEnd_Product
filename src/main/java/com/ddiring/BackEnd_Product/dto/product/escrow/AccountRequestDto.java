@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto.escrow;
+package com.ddiring.BackEnd_Product.dto.product.escrow;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AccountRequestDto {
 
-    private String productId;
+    private String projectId;
 }

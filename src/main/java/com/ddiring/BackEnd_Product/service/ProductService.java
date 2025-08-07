@@ -1,8 +1,6 @@
 package com.ddiring.BackEnd_Product.service;
 
-import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
-import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
-import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
+import com.ddiring.BackEnd_Product.dto.product.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
@@ -45,28 +43,10 @@ public class ProductService {
                 );
     }
 
-    public void syncAccount(String productId) {
-
-        AccountRequestDto request = AccountRequestDto.builder()
-                .productId(productId)
-                .build();
-
-        AccountResponseDto response = ec.createAccount(request);
-
-        ProductEntity product = pr.findById(productId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
-
-        product.setAccount(response.getAccount());
-        pr.save(product);
-    }
-
     public void syncAmount(AmountDto dto) {
-        ProductEntity p = pr.findById(dto.getProductId())
+        ProductEntity pe = pr.findById(dto.getProjectId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
-
-        if (dto.getAmount().compareTo(p.getAmount()) != 0) {
-            p.setAmount(dto.getAmount());
-            pr.save(p);
-        }
+        pe.setAmount(dto.getBalance());
+        pr.save(pe);
     }
 }

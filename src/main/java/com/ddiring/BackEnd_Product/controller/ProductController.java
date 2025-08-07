@@ -1,6 +1,6 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
+import com.ddiring.BackEnd_Product.dto.product.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.service.ProductService;
@@ -27,11 +27,5 @@ public class ProductController {
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String productId) {
         ProductDetailDto pdd = ps.getProductByProductId(productId);
         return ResponseEntity.ok(pdd);
-    }
-
-    @PostMapping("/api/balance")
-    public ResponseEntity<Void> onAmountChanged(@RequestBody AmountDto dto) {
-        ps.syncAmount(dto); // 여기서 바로 호출
-        return ResponseEntity.ok().build();
     }
 }

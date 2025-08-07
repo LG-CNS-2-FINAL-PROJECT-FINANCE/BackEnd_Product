@@ -18,7 +18,7 @@ public class RequestDetailDto {
     private String requestId;
     private int userSeq;
 
-    private String productId;
+    private String projectId;
     private String title;
     private String summary;
     private String content;
@@ -38,7 +38,7 @@ public class RequestDetailDto {
         return RequestDetailDto.builder()
                 .requestId(e.getRequestId())
                 .userSeq(e.getUserSeq())
-                .productId(e.getPayload().getProductId())
+                .projectId(e.getPayload().getProjectId())
                 .title(e.getPayload().getTitle())
                 .summary(e.getPayload().getSummary())
                 .content(e.getPayload().getContent())

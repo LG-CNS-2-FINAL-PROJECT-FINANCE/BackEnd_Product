@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ProductListDto {
-    private String productId;
+    private String projectId;
     private int userSeq;
     private String title;
     private LocalDateTime startDate;
@@ -25,7 +25,7 @@ public class ProductListDto {
 
     public static ProductListDto from(ProductEntity e) {
         return ProductListDto.builder()
-                .productId(e.getProductId())
+                .projectId(e.getProjectId())
                 .userSeq(e.getUserSeq())
                 .title(e.getTitle())
                 .startDate(e.getStartDate())

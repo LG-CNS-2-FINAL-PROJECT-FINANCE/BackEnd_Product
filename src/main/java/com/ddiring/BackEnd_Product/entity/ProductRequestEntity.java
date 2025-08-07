@@ -16,7 +16,7 @@ public class ProductRequestEntity {
     @MongoId
     private String requestId;
 
-    private String productId; //승인시 채워지도록 로직 구성
+    private String projectId; //승인시 채워지도록 로직 구성
     private int userSeq;
     private ProductPayload payload;
 
