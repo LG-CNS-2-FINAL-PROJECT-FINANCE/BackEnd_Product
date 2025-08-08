@@ -1,10 +1,9 @@
 package com.ddiring.BackEnd_Product.service;
 
-import com.ddiring.BackEnd_Product.dto.product.escrow.AmountDto;
+import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
-import com.ddiring.BackEnd_Product.external.EscrowClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
@@ -20,7 +19,6 @@ public class ProductService {
 
     private final ProductRepository pr;
     private final MongoTemplate mt;
-    private final EscrowClient ec;
 
     public List<ProductListDto> getAllProduct() {
         return pr.findAll().stream()

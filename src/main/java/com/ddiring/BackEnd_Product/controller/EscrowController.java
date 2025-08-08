@@ -1,6 +1,6 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.dto.product.escrow.AmountDto;
+import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -27,9 +27,9 @@ public class CreatorCreateDto {
     private String content;
 
     @NotNull(message = "투자 시작 날짜를 입력하세요")
-    private LocalDateTime startDate;
-    @NotNull(message = "투자 종료 날짜르 입력하세요")
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    @NotNull(message = "투자 종료 날짜를 입력하세요")
+    private LocalDate endDate;
 
     @Positive
     @NotNull(message = "목표금액을 설정하세요")

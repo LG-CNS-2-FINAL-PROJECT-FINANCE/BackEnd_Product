@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto.product.escrow;
+package com.ddiring.BackEnd_Product.dto.smartcontract;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AccountRequestDto {
+public class SmartContractRequestDto {
 
     private String projectId;
 }

@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto.product.escrow;
+package com.ddiring.BackEnd_Product.dto.escrow;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

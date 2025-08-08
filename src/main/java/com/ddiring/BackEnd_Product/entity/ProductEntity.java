@@ -1,13 +1,14 @@
 package com.ddiring.BackEnd_Product.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -30,8 +31,9 @@ public class ProductEntity {
     private String summary;
     private String content;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int deadline;
 
     private BigDecimal goalAmount;
     private BigDecimal minInvestment;
@@ -40,6 +42,8 @@ public class ProductEntity {
 
     private String account;
     private BigDecimal amount;
+
+    private String smartContract;
 
     private int viewCount;
 
@@ -57,4 +61,11 @@ public class ProductEntity {
 //    private LocalDateTime updatedAt;
 
     public enum ProductStatus {OPEN, HOLD, END}
+
+    public int dDay() {
+//        LocalDateTime now = LocalDateTime.now();
+//        long daysBetween = ChronoUnit.DAYS.between(now, endDate);
+//        return (int) daysBetween;
+        return (int) ChronoUnit.DAYS.between(LocalDate.now(), endDate);
+    }
 }

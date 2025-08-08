@@ -21,6 +21,7 @@ public class CreatorService {
     private final ProductRequestRepository prr;
     private final ProductRepository pr;
 
+    /* ---------- 등록요청 ---------- */
     public String create(CreatorCreateDto dto, int userSeq) {
         ProductRequestEntity pre = ProductRequestEntity.builder()
                 .type(ProductRequestEntity.RequestType.CREATE)

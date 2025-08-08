@@ -3,12 +3,11 @@ package com.ddiring.BackEnd_Product.dto.creator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -23,8 +22,8 @@ public class CreatorUpdateDto {
     private String summary;
     private String content;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private BigDecimal goalAmount;
     private BigDecimal minInvestment;

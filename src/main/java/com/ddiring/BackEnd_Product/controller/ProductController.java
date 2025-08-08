@@ -1,6 +1,5 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.dto.product.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.service.ProductService;

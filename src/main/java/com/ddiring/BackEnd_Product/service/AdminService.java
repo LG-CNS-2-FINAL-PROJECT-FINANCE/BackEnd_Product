@@ -2,12 +2,15 @@ package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
-import com.ddiring.BackEnd_Product.dto.product.escrow.AccountRequestDto;
-import com.ddiring.BackEnd_Product.dto.product.escrow.AccountResponseDto;
+import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
+import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
+import com.ddiring.BackEnd_Product.dto.smartcontract.SmartContractRequestDto;
+import com.ddiring.BackEnd_Product.dto.smartcontract.SmartContractResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.external.EscrowClient;
+import com.ddiring.BackEnd_Product.external.SmartContractClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +23,8 @@ public class AdminService {
 
     private final ProductRequestRepository prr;
     private final ProductRepository pr;
-    private final ProductService ps;
     private final EscrowClient ec;
+    private final SmartContractClient scc;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -75,11 +78,23 @@ public class AdminService {
         pr.insert(pe);
         pre.setProjectId(pe.getProjectId()); // 요청 entity에 productId 연결
 
-        AccountRequestDto escrowRequest = AccountRequestDto.builder()
-                .projectId(pe.getProjectId())
-                .build();
-        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
-        pe.setAccount(escrowResponse.getAccount());
+        //마감기일
+        pe.setDeadline(pe.dDay());
+
+//        //Escrow 계좌
+//        AccountRequestDto escrowRequest = AccountRequestDto.builder()
+//                .projectId(pe.getProjectId())
+//                .build();
+//        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+//        pe.setAccount(escrowResponse.getAccount());
+//
+//        //SmartContract 주소
+//        SmartContractRequestDto smartContractRequest = SmartContractRequestDto.builder()
+//                .projectId(pe.getProjectId())
+//                .build();
+//        SmartContractResponseDto smartContractResponse = scc.createSmartContract(smartContractRequest);
+//        pe.setSmartContract(smartContractResponse.getSmartContract());
+
         pr.save(pe); // 다시 저장해서 계좌 반영
     }
 
@@ -92,6 +107,7 @@ public class AdminService {
             pe.setContent(pp.getContent());
             pe.setStartDate(pp.getStartDate());
             pe.setEndDate(pp.getEndDate());
+            pe.setDeadline(pe.dDay());
             pe.setGoalAmount(pp.getGoalAmount());
             pe.setMinInvestment(pp.getMinInvestment());
             pe.setDocument(pp.getDocument());

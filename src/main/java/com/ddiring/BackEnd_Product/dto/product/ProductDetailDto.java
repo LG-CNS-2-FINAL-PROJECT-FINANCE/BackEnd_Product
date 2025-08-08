@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -20,8 +20,9 @@ public class ProductDetailDto {
     private String title;
     private String summary;
     private String content;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int deadline;
     private BigDecimal goalAmount;
     private BigDecimal minInvestment;
     private List<String> document;
@@ -39,6 +40,7 @@ public class ProductDetailDto {
                 .content(e.getContent())
                 .startDate(e.getStartDate())
                 .endDate(e.getEndDate())
+                .deadline(e.getDeadline())
                 .goalAmount(e.getGoalAmount())
                 .minInvestment(e.getMinInvestment())
                 .document(e.getDocument())

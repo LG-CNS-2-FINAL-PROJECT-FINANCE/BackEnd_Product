@@ -7,9 +7,16 @@ spring:
       host: localhost
       port: 27017
       database: product-db
+#      socket-timeout: 10000
+#      connect-timeout: 10000
+
   cloud:
     compatibility-verifier:
       enabled: false
 
 escrow:
   base-url: http://localhost:8084
+
+smartContract:
+  base-url: http://localhost:8085
+

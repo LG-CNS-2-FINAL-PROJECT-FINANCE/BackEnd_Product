@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -17,8 +17,9 @@ public class ProductListDto {
     private String projectId;
     private int userSeq;
     private String title;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int deadline;
     private BigDecimal amount;
     private int viewCount;
     private ProductEntity.ProductStatus state;
@@ -30,6 +31,7 @@ public class ProductListDto {
                 .title(e.getTitle())
                 .startDate(e.getStartDate())
                 .endDate(e.getEndDate())
+                .deadline(e.getDeadline())
                 .amount(e.getAmount())
                 .viewCount(e.getViewCount())
                 .state(e.getStatus())
