@@ -17,5 +17,4 @@ public interface ProductRepository
 
     // (Pageable 기반이 필요하면)
     Page<ProductEntity> findByStatus(ProductEntity.ProductStatus status, Pageable pageable);
-
 }
