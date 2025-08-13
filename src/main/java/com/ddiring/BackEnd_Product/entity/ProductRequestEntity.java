@@ -18,12 +18,12 @@ public class ProductRequestEntity {
 
     private String projectId; //승인시 채워지도록 로직 구성
     private int userSeq;
-    private ProductPayload payload;
 
     @Indexed
     private RequestType type;      // CREATE, UPDATE, STOP
     @Indexed
     private RequestStatus status;    // PENDING, APPROVED, REJECTED
+    private ProductPayload payload;
 
     private int adminSeq;
     private String rejectReason;

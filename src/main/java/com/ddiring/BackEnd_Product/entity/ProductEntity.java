@@ -3,6 +3,8 @@ package com.ddiring.BackEnd_Product.entity;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.math.BigDecimal;
@@ -20,25 +22,29 @@ import java.util.List;
 public class ProductEntity {
 
     @MongoId
-    private String projectId; //
+    private String projectId;
 
     private Long version;
 
     @Indexed
     private int userSeq;
 
-    private String title; //
-    private String summary; //
-    private String content; //
+    private String title;
+    private String summary;
+    private String content;
 
-    private LocalDate startDate; //
-    private LocalDate endDate; //
-    private int deadline; //
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int deadline;
 
     private String account;
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal goalAmount;
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal minInvestment;
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal amount;
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal percent;
 
     private List<String> document;
@@ -63,9 +69,6 @@ public class ProductEntity {
     public enum ProductStatus {OPEN, HOLD, END}
 
     public int dDay() {
-//        LocalDateTime now = LocalDateTime.now();
-//        long daysBetween = ChronoUnit.DAYS.between(now, endDate);
-//        return (int) daysBetween;
         return (int) ChronoUnit.DAYS.between(LocalDate.now(), endDate);
     }
 }

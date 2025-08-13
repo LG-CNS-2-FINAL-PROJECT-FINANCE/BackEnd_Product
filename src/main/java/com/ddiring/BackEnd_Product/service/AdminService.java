@@ -46,11 +46,11 @@ public class AdminService {
         pre.setAdminSeq(adminSeq);
         prr.save(pre);
 
-        ps.sendAsset(
-                AssetRequestDto.builder()
-                        .projectId(pre.getPayload().getProjectId())
-                        .build()
-        );
+//        ps.sendAsset(
+//                AssetRequestDto.builder()
+//                        .projectId(pre.getPayload().getProjectId())
+//                        .build()
+//        );
     }
 
     /* ---------- 거절 ---------- */
@@ -115,7 +115,7 @@ public class AdminService {
             pe.setContent(pp.getContent());
             pe.setStartDate(pp.getStartDate());
             pe.setEndDate(pp.getEndDate());
-            pe.setDeadline(pe.dDay());
+            pe.setDeadline(Math.max(pe.dDay(), 0));
             pe.setGoalAmount(pp.getGoalAmount());
             pe.setMinInvestment(pp.getMinInvestment());
             pe.setDocument(pp.getDocument());

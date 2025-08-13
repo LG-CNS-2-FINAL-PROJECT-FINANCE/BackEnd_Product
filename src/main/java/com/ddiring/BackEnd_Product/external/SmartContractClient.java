@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 )
 public interface SmartContractClient {
 
-    @PostMapping("/smartContract/create")
+    @PostMapping("/api/smartContract/create")
     SmartContractResponseDto createSmartContract(@RequestBody SmartContractRequestDto request);
 }

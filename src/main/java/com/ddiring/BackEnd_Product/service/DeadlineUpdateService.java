@@ -14,18 +14,18 @@ import java.util.List;
 @Slf4j
 public class DeadlineUpdateService {
 
-    private final ProductRepository productRepository;
+    private final ProductRepository pr;
 
     // 매일 자정마다 실행 >> postman 기준 자정 맞출라면 utc 기준시에 추가한 시간으로 계산
     @Scheduled(cron = "0 0 9 * * *", zone = "Asia/Seoul")
     public void updateDeadlines() {
         log.info("[테스트] D-Day 스케줄러 실행됨");
 
-        List<ProductEntity> products = productRepository.findAll();
+        List<ProductEntity> products = pr.findAll();
 
         for (ProductEntity product : products) {
             int dDay = product.dDay();
-            product.setDeadline(dDay);
+            product.setDeadline(Math.max(dDay, 0));
 
             // 마감된 경우 상태 변경
             if (dDay <= 0 && product.getStatus() != ProductEntity.ProductStatus.END) {
@@ -34,7 +34,7 @@ public class DeadlineUpdateService {
             }
         }
 
-        productRepository.saveAll(products);
+        pr.saveAll(products);
         log.info("모든 상품의 D-Day(deadline) 갱신 완료");
     }
 }

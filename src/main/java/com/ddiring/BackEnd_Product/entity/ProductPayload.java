@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,7 +26,9 @@ public class ProductPayload {
     private LocalDate startDate;
     private LocalDate endDate;
     private int deadline;
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal goalAmount;
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal minInvestment;
     private List<String> document;
     private String reason;     // UPDATE/STOP 대상

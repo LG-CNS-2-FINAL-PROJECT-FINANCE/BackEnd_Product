@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${asset.base-url}"
 )
 public interface AssetClient {
-    @PostMapping("/asset")
+    @PostMapping("/api/asset")
     void asset(@RequestBody AssetRequestDto request);
 }

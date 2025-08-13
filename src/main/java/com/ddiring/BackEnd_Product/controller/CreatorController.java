@@ -5,16 +5,20 @@ import com.ddiring.BackEnd_Product.dto.creator.CreatorCreateDto;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorStopDto;
 import com.ddiring.BackEnd_Product.service.CreatorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/creator/requests")
+@RequestMapping("/api/creator/requests")
 @RequiredArgsConstructor
 //@PreAuthorize("hasRole('CREATOR')")
 public class CreatorController {
-    private final CreatorService creatorService;
+    private final CreatorService cs;
 
     /** 프로젝트 신규 등록 */
     @PostMapping("/create")
@@ -22,7 +26,7 @@ public class CreatorController {
             @RequestBody CreatorCreateDto dto,
             @RequestHeader(value = "X-User-Id", defaultValue = "1") int userSeq) {
 
-        String requestId = creatorService.create(dto, userSeq);
+        String requestId = cs.create(dto, userSeq);
         return ResponseEntity.ok(Map.of("requestId", requestId));
     }
 
@@ -32,7 +36,7 @@ public class CreatorController {
             @RequestBody CreatorUpdateDto dto,
             @RequestHeader(value = "X-User-Id", defaultValue = "1") int userSeq) {
 
-        String requestId = creatorService.update(dto, userSeq);
+        String requestId = cs.update(dto, userSeq);
         return ResponseEntity.ok(Map.of("requestId", requestId));
     }
 
@@ -42,7 +46,7 @@ public class CreatorController {
             @RequestBody CreatorStopDto dto,
             @RequestHeader(value = "X-User-Id", defaultValue = "1") int userSeq) {
 
-        String requestId = creatorService.stop(dto, userSeq);
+        String requestId = cs.stop(dto, userSeq);
         return ResponseEntity.ok(Map.of("requestId", requestId));
     }
 }

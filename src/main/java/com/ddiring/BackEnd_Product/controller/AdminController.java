@@ -8,12 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/admin/requests")
+@RequestMapping("/api/admin/requests")
 @RequiredArgsConstructor
 //@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminService as;
 
     /** 요청 승인 */
     @PostMapping("/approve")
@@ -21,7 +21,7 @@ public class AdminController {
             @RequestBody AdminApproveDto dto,
             @RequestHeader(value = "X-User-Id", defaultValue = "100") int adminSeq) {
 
-        adminService.approve(dto, adminSeq);
+        as.approve(dto, adminSeq);
         return ResponseEntity.ok().build();
     }
 
@@ -31,7 +31,7 @@ public class AdminController {
             @RequestBody AdminRejectDto dto,
             @RequestHeader(value = "X-User-Id", defaultValue = "100") int adminSeq) {
 
-        adminService.reject(dto, adminSeq);
+        as.reject(dto, adminSeq);
         return ResponseEntity.ok().build();
     }
 }
