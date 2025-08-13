@@ -23,11 +23,12 @@ public class ProductDetailDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private int deadline;
+    private String account;
     private BigDecimal goalAmount;
     private BigDecimal minInvestment;
-    private List<String> document;
-    private String account;
     private BigDecimal amount;
+    private BigDecimal percent;
+    private List<String> document;
     private int viewCount;
     private ProductEntity.ProductStatus state;
 
@@ -41,11 +42,12 @@ public class ProductDetailDto {
                 .startDate(e.getStartDate())
                 .endDate(e.getEndDate())
                 .deadline(e.getDeadline())
+                .account(e.getAccount())
                 .goalAmount(e.getGoalAmount())
                 .minInvestment(e.getMinInvestment())
-                .document(e.getDocument())
-                .account(e.getAccount())
                 .amount(e.getAmount())
+                .percent(e.getPercent())
+                .document(e.getDocument())
                 .viewCount(e.getViewCount())
                 .state(e.getStatus())
                 .build();

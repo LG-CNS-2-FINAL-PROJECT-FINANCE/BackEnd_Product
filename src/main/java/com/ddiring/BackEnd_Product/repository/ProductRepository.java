@@ -7,14 +7,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface ProductRepository
         extends MongoRepository<ProductEntity, String> {
-    // ‣ 열려 있는 상품만 정렬 조회
-    List<ProductEntity> findByStatus(ProductEntity.ProductStatus status, Sort sort);
+    // 1. 전체 조회수 높은순
+    List<ProductEntity> findTop10ByOrderByViewCountDesc();
 
-    // (Pageable 기반이 필요하면)
-    Page<ProductEntity> findByStatus(ProductEntity.ProductStatus status, Pageable pageable);
+    // 2. 마감기일이 남은것 중 조회수 높은순
+    List<ProductEntity> findTop10ByEndDateAfterOrderByViewCountDesc(LocalDateTime now);
+
+    // 3. 모금액 높은순
+    List<ProductEntity> findTop10ByOrderByAmountDesc();
 }

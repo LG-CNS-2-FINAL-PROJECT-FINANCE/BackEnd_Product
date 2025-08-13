@@ -21,6 +21,7 @@ public class ProductListDto {
     private LocalDate endDate;
     private int deadline;
     private BigDecimal amount;
+    private BigDecimal percent;
     private int viewCount;
     private ProductEntity.ProductStatus state;
 
@@ -33,6 +34,7 @@ public class ProductListDto {
                 .endDate(e.getEndDate())
                 .deadline(e.getDeadline())
                 .amount(e.getAmount())
+                .percent(e.getPercent())
                 .viewCount(e.getViewCount())
                 .state(e.getStatus())
                 .build();

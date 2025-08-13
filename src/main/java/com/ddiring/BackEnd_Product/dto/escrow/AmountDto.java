@@ -11,5 +11,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class AmountDto {
     private String projectId;
-    private BigDecimal balance;
+    private BigDecimal balance; //모금액
+    private BigDecimal percent; //달성률(소수점 첫째 자리)
 }

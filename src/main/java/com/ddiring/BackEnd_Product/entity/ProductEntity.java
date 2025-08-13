@@ -20,28 +20,28 @@ import java.util.List;
 public class ProductEntity {
 
     @MongoId
-    private String projectId;
+    private String projectId; //
 
     private Long version;
 
     @Indexed
     private int userSeq;
 
-    private String title;
-    private String summary;
-    private String content;
+    private String title; //
+    private String summary; //
+    private String content; //
 
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private int deadline;
-
-    private BigDecimal goalAmount;
-    private BigDecimal minInvestment;
-
-    private List<String> document;
+    private LocalDate startDate; //
+    private LocalDate endDate; //
+    private int deadline; //
 
     private String account;
+    private BigDecimal goalAmount;
+    private BigDecimal minInvestment;
     private BigDecimal amount;
+    private BigDecimal percent;
+
+    private List<String> document;
 
     private String smartContract;
 

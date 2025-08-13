@@ -10,6 +10,5 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountResponseDto {
-
     private String account;
 }

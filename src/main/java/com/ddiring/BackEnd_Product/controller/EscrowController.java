@@ -16,7 +16,7 @@ public class EscrowController {
 
     @PostMapping("/api/balance")
     public ResponseEntity<Void> onAmountChanged(@RequestBody AmountDto dto) {
-        ps.syncAmount(dto); // 여기서 바로 호출
+        ps.receiveAmount(dto); // 여기서 바로 호출
         return ResponseEntity.ok().build();
     }
 }

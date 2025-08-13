@@ -2,6 +2,7 @@ package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
+import com.ddiring.BackEnd_Product.dto.asset.AssetRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
 import com.ddiring.BackEnd_Product.dto.smartcontract.SmartContractRequestDto;
@@ -25,6 +26,7 @@ public class AdminService {
     private final ProductRepository pr;
     private final EscrowClient ec;
     private final SmartContractClient scc;
+    private final ProductService ps;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -43,6 +45,12 @@ public class AdminService {
         pre.setStatus(ProductRequestEntity.RequestStatus.APPROVED);
         pre.setAdminSeq(adminSeq);
         prr.save(pre);
+
+        ps.sendAsset(
+                AssetRequestDto.builder()
+                        .projectId(pre.getPayload().getProjectId())
+                        .build()
+        );
     }
 
     /* ---------- 거절 ---------- */

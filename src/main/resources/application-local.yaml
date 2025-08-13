@@ -14,9 +14,14 @@ spring:
     compatibility-verifier:
       enabled: false
 
+asset:
+  base-url: http://localhost:8082
+
 escrow:
   base-url: http://localhost:8084
 
 smartContract:
   base-url: http://localhost:8085
 
+market:
+  base-url: http://localhost:8086
