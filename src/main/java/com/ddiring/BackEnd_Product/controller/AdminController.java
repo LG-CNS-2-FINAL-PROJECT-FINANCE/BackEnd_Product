@@ -39,16 +39,4 @@ public class AdminController {
         as.reject(dto, adminSeq);
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping
-    public ResponseEntity<List<RequestListDto>> getAllRequest() {
-        List<RequestListDto> requestList = rs.getAllRequest();
-        return ResponseEntity.ok(requestList);
-    }
-
-    @GetMapping("/{requestId}")
-    public ResponseEntity<RequestDetailDto> getRequest(@PathVariable String requestId) {
-        RequestDetailDto rdd = rs.getRequestByRequestId(requestId);
-        return ResponseEntity.ok(rdd);
-    }
 }
