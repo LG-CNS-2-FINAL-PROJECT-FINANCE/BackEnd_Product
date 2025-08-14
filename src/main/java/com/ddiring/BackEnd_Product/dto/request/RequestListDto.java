@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,6 +15,9 @@ import lombok.NoArgsConstructor;
 public class RequestListDto {
     private String requestId;
     private int userSeq;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private String projectId;  // UPDATE/STOP 대상
     private String title;
@@ -25,6 +30,8 @@ public class RequestListDto {
         return RequestListDto.builder()
                 .requestId(e.getRequestId())
                 .userSeq(e.getUserSeq())
+                .startDate(e.getPayload().getStartDate())
+                .endDate(e.getPayload().getEndDate())
                 .projectId(e.getPayload().getProjectId())
                 .title(e.getPayload().getTitle())
                 .type(e.getType())
