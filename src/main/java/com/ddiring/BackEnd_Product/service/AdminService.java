@@ -89,13 +89,13 @@ public class AdminService {
         //마감기일
         pe.setDeadline(pe.dDay());
 
-//        //Escrow 계좌
-//        AccountRequestDto escrowRequest = AccountRequestDto.builder()
-//                .projectId(pe.getProjectId())
-//                .build();
-//        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
-//        pe.setAccount(escrowResponse.getAccount());
-//
+        //Escrow 계좌
+        AccountRequestDto escrowRequest = AccountRequestDto.builder()
+                .projectId(pe.getProjectId())
+                .build();
+        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+        pe.setAccount(escrowResponse.getAccount());
+
 //        //SmartContract 주소
 //        SmartContractRequestDto smartContractRequest = SmartContractRequestDto.builder()
 //                .projectId(pe.getProjectId())
