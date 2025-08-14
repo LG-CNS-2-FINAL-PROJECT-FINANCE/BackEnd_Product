@@ -5,18 +5,14 @@ import com.ddiring.BackEnd_Product.dto.creator.CreatorCreateDto;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorStopDto;
 import com.ddiring.BackEnd_Product.service.CreatorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/creator/requests")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('CREATOR')")
 public class CreatorController {
     private final CreatorService cs;
 

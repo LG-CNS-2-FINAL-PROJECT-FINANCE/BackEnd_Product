@@ -2,18 +2,23 @@ package com.ddiring.BackEnd_Product.controller;
 
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
+import com.ddiring.BackEnd_Product.dto.request.RequestDetailDto;
+import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.service.AdminService;
+import com.ddiring.BackEnd_Product.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/requests")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final AdminService as;
+    private final RequestService rs;
 
     /** 요청 승인 */
     @PostMapping("/approve")
@@ -33,5 +38,17 @@ public class AdminController {
 
         as.reject(dto, adminSeq);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RequestListDto>> getAllRequest() {
+        List<RequestListDto> requestList = rs.getAllRequest();
+        return ResponseEntity.ok(requestList);
+    }
+
+    @GetMapping("/{requestId}")
+    public ResponseEntity<RequestDetailDto> getRequest(@PathVariable String requestId) {
+        RequestDetailDto rdd = rs.getRequestByRequestId(requestId);
+        return ResponseEntity.ok(rdd);
     }
 }
