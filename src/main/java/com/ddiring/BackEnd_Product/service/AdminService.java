@@ -46,11 +46,11 @@ public class AdminService {
         pre.setAdminSeq(adminSeq);
         prr.save(pre);
 
-//        ps.sendAsset(
-//                AssetRequestDto.builder()
-//                        .projectId(pre.getPayload().getProjectId())
-//                        .build()
-//        );
+        ps.sendAsset(
+                AssetRequestDto.builder()
+                        .projectId(pre.getPayload().getProjectId())
+                        .build()
+        );
     }
 
     /* ---------- 거절 ---------- */

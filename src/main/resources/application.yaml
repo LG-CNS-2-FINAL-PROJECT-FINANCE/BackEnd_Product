@@ -1,6 +1,3 @@
 spring:
   application:
     name: BackEnd_Product
-
-  profiles:
-    active: local

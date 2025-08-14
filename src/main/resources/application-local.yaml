@@ -10,15 +10,6 @@ spring:
 #      socket-timeout: 10000
 #      connect-timeout: 10000
 
-#  servlet:
-#    multipart:
-#      max-file-size: 100MB      # 파일 1개 최대
-#      max-request-size: 120MB   # 요청 전체 최대(여러 파트 포함)
-#
-#  cloud:
-#    compatibility-verifier:
-#      enabled: false
-
 asset:
   base-url: http://localhost:8082
 
