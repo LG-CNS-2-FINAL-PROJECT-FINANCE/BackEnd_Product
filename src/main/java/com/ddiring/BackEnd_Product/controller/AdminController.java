@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/requests")
+@RequestMapping("/api/product/request")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService as;
-    private final RequestService rs;
 
     /** 요청 승인 */
     @PostMapping("/approve")

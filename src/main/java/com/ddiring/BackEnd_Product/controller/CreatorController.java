@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/creator/requests")
+@RequestMapping("/api/product/request")
 @RequiredArgsConstructor
 public class CreatorController {
     private final CreatorService cs;

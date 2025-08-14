@@ -1,6 +1,6 @@
 package com.ddiring.BackEnd_Product.common.web.context;
 
-import com.welab.k8s_backend_post.common.exception.NotFound;
+import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
