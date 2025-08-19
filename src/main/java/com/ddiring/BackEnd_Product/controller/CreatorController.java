@@ -18,36 +18,6 @@ import java.util.Map;
 public class CreatorController {
     private final CreatorService cs;
 
-//    /** 프로젝트 신규 등록 */
-//    @PostMapping("/create")
-//    public ResponseEntity<Map<String, String>> create(
-//            @RequestBody CreatorCreateDto dto,
-//            @RequestHeader(value = "X-User-Id", defaultValue = "1") String userSeq) {
-//
-//        String requestId = cs.create(dto, userSeq);
-//        return ResponseEntity.ok(Map.of("requestId", requestId));
-//    }
-//
-//    /** 프로젝트 정보 수정 */
-//    @PostMapping("/update")
-//    public ResponseEntity<Map<String, String>> update(
-//            @RequestBody CreatorUpdateDto dto,
-//            @RequestHeader(value = "X-User-Id", defaultValue = "1") String userSeq) {
-//
-//        String requestId = cs.update(dto, userSeq);
-//        return ResponseEntity.ok(Map.of("requestId", requestId));
-//    }
-//
-//    /** 프로젝트 중단 요청 */
-//    @PostMapping("/stop")
-//    public ResponseEntity<Map<String, String>> stop(
-//            @RequestBody CreatorStopDto dto,
-//            @RequestHeader(value = "X-User-Id", defaultValue = "1") String userSeq) {
-//
-//        String requestId = cs.stop(dto, userSeq);
-//        return ResponseEntity.ok(Map.of("requestId", requestId));
-//    }x
-
     /** 공통: roles 헤더에 특정 역할이 있는지 확인 */
     private void requireRole(String rolesCsv, String... required) {
         if (rolesCsv == null) throw new ForbiddenException("권한 없음");
