@@ -30,7 +30,7 @@ public class AdminService {
 
     /* ---------- 승인 ---------- */
     @Transactional
-    public void approve(AdminApproveDto dto, String adminId) {
+    public void approve(AdminApproveDto dto, String userSeq) {
         ProductRequestEntity pre = prr.findById(dto.getRequestId())
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
         if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
@@ -43,7 +43,7 @@ public class AdminService {
         }
 
         pre.setStatus(ProductRequestEntity.RequestStatus.APPROVED);
-        pre.setAdminId(adminId);
+        pre.setAdminId(userSeq);
         prr.save(pre);
 
 //        ps.sendAsset(
@@ -55,13 +55,13 @@ public class AdminService {
 
     /* ---------- 거절 ---------- */
     @Transactional
-    public void reject(AdminRejectDto dto, String adminId) {
+    public void reject(AdminRejectDto dto, String userSeq) {
         ProductRequestEntity pre = prr.findById(dto.getRequestId())
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
         if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
             throw new IllegalStateException("이미 처리된 요청 입니다");
         pre.setStatus(ProductRequestEntity.RequestStatus.REJECTED);
-        pre.setAdminId(adminId);
+        pre.setAdminId(userSeq);
         pre.setRejectReason(dto.getRejectReason());
         prr.save(pre);
     }
