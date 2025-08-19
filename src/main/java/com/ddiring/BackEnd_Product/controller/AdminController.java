@@ -72,7 +72,7 @@ public class AdminController {
 //    }
 
     private String extractBearer(String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new ForbiddenException("권한 없음 (토큰 누락)");
         }
         return authorizationHeader.substring(7).trim();
