@@ -4,21 +4,11 @@ import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
 import com.ddiring.BackEnd_Product.common.security.JwtUtil;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
-import com.ddiring.BackEnd_Product.dto.request.RequestDetailDto;
-import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.service.AdminService;
-import com.ddiring.BackEnd_Product.service.RequestService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/product/request")
