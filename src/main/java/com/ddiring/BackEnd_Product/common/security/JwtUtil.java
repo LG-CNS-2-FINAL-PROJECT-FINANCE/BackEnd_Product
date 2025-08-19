@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret-key}")
     private String secret;
 
     public Claims parseClaims(String token) {
