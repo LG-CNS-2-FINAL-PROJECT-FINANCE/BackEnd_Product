@@ -71,63 +71,123 @@ public class AdminController {
 //        return ResponseEntity.ok().build();
 //    }
 
-    private String extractBearer(String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new ForbiddenException("권한 없음 (토큰 누락)");
+//    private String extractBearer(String authorizationHeader) {
+//        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+//            throw new ForbiddenException("권한 없음 (토큰 누락)");
+//        }
+//        return authorizationHeader.substring(7).trim();
+//    }
+//
+//    private String stripRolePrefix(String role) {
+//        if (role == null) return null;
+//        return role.startsWith("ROLE_") ? role.substring(5) : role;
+//    }
+//
+//    /** 요청 승인 (ADMIN 전용) */
+//    @PostMapping("/approve")
+//    public ResponseEntity<Void> approve(
+//            @RequestBody AdminApproveDto dto,
+//            @RequestHeader("Authorization") String authorizationHeader) {
+//
+//        String token = extractBearer(authorizationHeader);
+//        Claims claims = jwtUtil.parseClaims(token);
+//
+//        String role = stripRolePrefix(String.valueOf(claims.get("role")));
+//        if (!"ADMIN".equalsIgnoreCase(role)) {
+//            throw new ForbiddenException("권한 없음 (required=ADMIN, have=" + role + ")");
+//        }
+//
+//        Object userSeqObj = claims.get("userSeq");
+//        String userSeq = userSeqObj != null ? String.valueOf(userSeqObj).trim() : null;
+//        if (userSeq == null || userSeq.isBlank()) {
+//            throw new ForbiddenException("권한 없음 (userSeq claim 누락)");
+//        }
+//
+//        as.approve(dto, userSeq); // ← String 그대로 전달
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    /** 요청 거절 (ADMIN 전용) */
+//    @PostMapping("/reject")
+//    public ResponseEntity<Void> reject(
+//            @RequestBody AdminRejectDto dto,
+//            @RequestHeader("Authorization") String authorizationHeader) {
+//
+//        String token = extractBearer(authorizationHeader);
+//        Claims claims = jwtUtil.parseClaims(token);
+//
+//        String role = stripRolePrefix(String.valueOf(claims.get("role")));
+//        if (!"ADMIN".equalsIgnoreCase(role)) {
+//            throw new ForbiddenException("권한 없음 (required=ADMIN, have=" + role + ")");
+//        }
+//
+//        Object userSeqObj = claims.get("userSeq");
+//        String userSeq = userSeqObj != null ? String.valueOf(userSeqObj).trim() : null;
+//        if (userSeq == null || userSeq.isBlank()) {
+//            throw new ForbiddenException("권한 없음 (userSeq claim 누락)");
+//        }
+//
+//        as.reject(dto, userSeq); // ← String 그대로 전달
+//        return ResponseEntity.ok().build();
+//    }
+
+    private String extractBearer(String header) {
+        if (header == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "Authorization 헤더 없음");
         }
-        return authorizationHeader.substring(7).trim();
+        String[] parts = header.trim().split("\\s+", 2);
+        if (parts.length != 2 || !parts[0].equalsIgnoreCase("Bearer")) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "Authorization 형식 오류");
+        }
+        return parts[1].trim();
     }
 
     private String stripRolePrefix(String role) {
         if (role == null) return null;
+        role = role.trim().toUpperCase();
         return role.startsWith("ROLE_") ? role.substring(5) : role;
     }
 
-    /** 요청 승인 (ADMIN 전용) */
+    private String extractRole(io.jsonwebtoken.Claims claims) {
+        Object r = claims.get("role");
+        if (r != null) return stripRolePrefix(String.valueOf(r));
+        Object rolesObj = claims.get("roles");
+        if (rolesObj instanceof java.util.List<?> list && !list.isEmpty()) {
+            return stripRolePrefix(String.valueOf(list.get(0)));
+        }
+        return null;
+    }
+
     @PostMapping("/approve")
     public ResponseEntity<Void> approve(
             @RequestBody AdminApproveDto dto,
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        String token = extractBearer(authorizationHeader);
-        Claims claims = jwtUtil.parseClaims(token);
+        final io.jsonwebtoken.Claims claims;
+        try {
+            String token = extractBearer(authorizationHeader);
+            claims = jwtUtil.parseClaims(token);
+        } catch (io.jsonwebtoken.JwtException e) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, "유효하지 않은/만료된 토큰");
+        }
 
-        String role = stripRolePrefix(String.valueOf(claims.get("role")));
+        String role = extractRole(claims);
         if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN, have=" + role + ")");
+            throw new com.ddiring.BackEnd_Product.common.exception.ForbiddenException(
+                    "권한 없음 (required=ADMIN, have=" + role + ")");
         }
 
         Object userSeqObj = claims.get("userSeq");
-        String userSeq = userSeqObj != null ? String.valueOf(userSeqObj).trim() : null;
+        String userSeq = (userSeqObj == null) ? null : String.valueOf(userSeqObj).trim();
         if (userSeq == null || userSeq.isBlank()) {
-            throw new ForbiddenException("권한 없음 (userSeq claim 누락)");
+            throw new com.ddiring.BackEnd_Product.common.exception.ForbiddenException("권한 없음 (userSeq claim 누락)");
         }
 
-        as.approve(dto, userSeq); // ← String 그대로 전달
+        as.approve(dto, userSeq); // String 그대로 전달
         return ResponseEntity.ok().build();
     }
 
-    /** 요청 거절 (ADMIN 전용) */
-    @PostMapping("/reject")
-    public ResponseEntity<Void> reject(
-            @RequestBody AdminRejectDto dto,
-            @RequestHeader("Authorization") String authorizationHeader) {
-
-        String token = extractBearer(authorizationHeader);
-        Claims claims = jwtUtil.parseClaims(token);
-
-        String role = stripRolePrefix(String.valueOf(claims.get("role")));
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN, have=" + role + ")");
-        }
-
-        Object userSeqObj = claims.get("userSeq");
-        String userSeq = userSeqObj != null ? String.valueOf(userSeqObj).trim() : null;
-        if (userSeq == null || userSeq.isBlank()) {
-            throw new ForbiddenException("권한 없음 (userSeq claim 누락)");
-        }
-
-        as.reject(dto, userSeq); // ← String 그대로 전달
-        return ResponseEntity.ok().build();
-    }
 }
