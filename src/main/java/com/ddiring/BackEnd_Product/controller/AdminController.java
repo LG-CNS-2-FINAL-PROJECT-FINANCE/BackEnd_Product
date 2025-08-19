@@ -9,9 +9,12 @@ import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.service.AdminService;
 import com.ddiring.BackEnd_Product.service.RequestService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/product/request")
@@ -165,29 +168,31 @@ public class AdminController {
             @RequestBody AdminApproveDto dto,
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        final io.jsonwebtoken.Claims claims;
+        final Claims claims;
         try {
             String token = extractBearer(authorizationHeader);
             claims = jwtUtil.parseClaims(token);
-        } catch (io.jsonwebtoken.JwtException e) {
-            throw new org.springframework.web.server.ResponseStatusException(
-                    org.springframework.http.HttpStatus.UNAUTHORIZED, "유효하지 않은/만료된 토큰");
+        } catch (JwtException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "유효하지 않은/만료된 토큰");
         }
 
+        // 권한 체크
         String role = extractRole(claims);
         if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new com.ddiring.BackEnd_Product.common.exception.ForbiddenException(
-                    "권한 없음 (required=ADMIN, have=" + role + ")");
+            throw new ForbiddenException("권한 없음 (required=ADMIN, have=" + role + ")");
         }
 
+        // adminSeq 확인
         Object userSeqObj = claims.get("userSeq");
-        String userSeq = (userSeqObj == null) ? null : String.valueOf(userSeqObj).trim();
-        if (userSeq == null || userSeq.isBlank()) {
-            throw new com.ddiring.BackEnd_Product.common.exception.ForbiddenException("권한 없음 (userSeq claim 누락)");
+        if (userSeqObj == null || String.valueOf(userSeqObj).isBlank()) {
+            throw new ForbiddenException("권한 없음 (userSeq claim 누락)");
         }
+        String userSeq = String.valueOf(userSeqObj).trim();
 
-        as.approve(dto, userSeq); // String 그대로 전달
+        // 승인 처리
+        as.approve(dto, userSeq);
+
         return ResponseEntity.ok().build();
     }
-
 }
