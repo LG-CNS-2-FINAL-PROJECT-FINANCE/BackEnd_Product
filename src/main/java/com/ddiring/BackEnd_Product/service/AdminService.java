@@ -30,7 +30,7 @@ public class AdminService {
 
     /* ---------- 승인 ---------- */
     @Transactional
-    public void approve(AdminApproveDto dto, int adminSeq) {
+    public void approve(AdminApproveDto dto, String adminId) {
         ProductRequestEntity pre = prr.findById(dto.getRequestId())
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
         if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
@@ -43,7 +43,7 @@ public class AdminService {
         }
 
         pre.setStatus(ProductRequestEntity.RequestStatus.APPROVED);
-        pre.setAdminSeq(adminSeq);
+        pre.setAdminId(adminId);
         prr.save(pre);
 
 //        ps.sendAsset(
@@ -55,13 +55,13 @@ public class AdminService {
 
     /* ---------- 거절 ---------- */
     @Transactional
-    public void reject(AdminRejectDto dto, int adminSeq) {
+    public void reject(AdminRejectDto dto, String adminId) {
         ProductRequestEntity pre = prr.findById(dto.getRequestId())
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
         if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
             throw new IllegalStateException("이미 처리된 요청 입니다");
         pre.setStatus(ProductRequestEntity.RequestStatus.REJECTED);
-        pre.setAdminSeq(adminSeq);
+        pre.setAdminId(adminId);
         pre.setRejectReason(dto.getReason());
         prr.save(pre);
     }
@@ -89,12 +89,12 @@ public class AdminService {
         //마감기일
         pe.setDeadline(pe.dDay());
 
-        //Escrow 계좌
-        AccountRequestDto escrowRequest = AccountRequestDto.builder()
-                .projectId(pe.getProjectId())
-                .build();
-        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
-        pe.setAccount(escrowResponse.getAccount());
+//        //Escrow 계좌
+//        AccountRequestDto escrowRequest = AccountRequestDto.builder()
+//                .projectId(pe.getProjectId())
+//                .build();
+//        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+//        pe.setAccount(escrowResponse.getAccount());
 
 //        //SmartContract 주소
 //        SmartContractRequestDto smartContractRequest = SmartContractRequestDto.builder()

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class RequestListDto {
     private String requestId;
-    private int userSeq;
+    private String userSeq;
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -24,7 +24,7 @@ public class RequestListDto {
 
     private ProductRequestEntity.RequestType type;
     private ProductRequestEntity.RequestStatus status;
-    private int admin;
+    private String adminId;
 
     public static RequestListDto from(ProductRequestEntity e) {
         return RequestListDto.builder()
@@ -36,7 +36,7 @@ public class RequestListDto {
                 .title(e.getPayload().getTitle())
                 .type(e.getType())
                 .status(e.getStatus())
-                .admin(e.getAdminSeq())
+                .adminId(e.getAdminId())
                 .build();
     }
 }

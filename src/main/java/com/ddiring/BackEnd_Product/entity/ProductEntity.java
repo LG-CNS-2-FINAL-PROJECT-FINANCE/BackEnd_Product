@@ -11,7 +11,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,7 +29,7 @@ public class ProductEntity {
     private Long version;
 
     @Indexed
-    private int userSeq;
+    private String userSeq;
 
     private String title;
     private String summary;
@@ -53,6 +55,9 @@ public class ProductEntity {
 
     private int viewCount;
 
+    @Builder.Default
+    private Set<String> favorites = new HashSet<>();
+
     private ProductStatus status;
 
     private String reason;
@@ -70,5 +75,13 @@ public class ProductEntity {
 
     public int dDay() {
         return (int) ChronoUnit.DAYS.between(LocalDate.now(), endDate);
+    }
+
+    public int getFavoritesCount() {
+        return favorites == null ? 0 : favorites.size();
+    }
+
+    public boolean isFavoritedBy(String userSeq) {
+        return favorites != null && favorites.contains(userSeq);
     }
 }

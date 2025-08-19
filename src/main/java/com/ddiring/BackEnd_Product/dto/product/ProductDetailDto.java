@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 public class ProductDetailDto {
     private String projectId;
-    private int userSeq;
+    private String userSeq;
     private String title;
     private String summary;
     private String content;

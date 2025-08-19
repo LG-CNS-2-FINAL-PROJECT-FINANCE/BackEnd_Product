@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Builder
 public class ProductListDto {
     private String projectId;
-    private int userSeq;
+    private String userSeq;
     private String title;
     private LocalDate startDate;
     private LocalDate endDate;

@@ -1,0 +1,71 @@
+package com.ddiring.BackEnd_Product.service;
+
+import com.ddiring.BackEnd_Product.entity.ProductEntity;
+import com.ddiring.BackEnd_Product.repository.ProductRepository;
+import com.mongodb.client.result.UpdateResult;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class FavoriteService {
+
+    private final MongoTemplate mt;
+    private final ProductRepository pr;
+
+    /** 즐겨찾기 추가 (idempotent) */
+    public void add(String productId, String userSeq) {
+        Query q = Query.query(Criteria.where("_id").is(productId));
+        Update u = new Update().addToSet("favorites", userSeq);
+        UpdateResult r = mt.updateFirst(q, u, ProductEntity.class);
+        if (r.getMatchedCount() == 0) {
+            throw new IllegalArgumentException("상품이 없습니다: " + productId);
+        }
+    }
+
+    /** 즐겨찾기 해제 (idempotent) */
+    public void remove(String productId, String userSeq) {
+        Query q = Query.query(Criteria.where("_id").is(productId));
+        Update u = new Update().pull("favorites", userSeq);
+        UpdateResult r = mt.updateFirst(q, u, ProductEntity.class);
+        if (r.getMatchedCount() == 0) {
+            throw new IllegalArgumentException("상품이 없습니다: " + productId);
+        }
+    }
+
+    /** 토글: 추가 시 true, 제거 시 false 반환 */
+    public boolean toggle(String productId, String userSeq) {
+        // 1) addToSet 시도
+        Query q = Query.query(Criteria.where("_id").is(productId));
+        Update add = new Update().addToSet("favorites", userSeq);
+        UpdateResult added = mt.updateFirst(q, add, ProductEntity.class);
+
+        if (added.getMatchedCount() == 0) {
+            throw new IllegalArgumentException("상품이 없습니다: " + productId);
+        }
+        // modifiedCount==1 이면 방금 추가됨 → true
+        if (added.getModifiedCount() == 1) return true;
+
+        // 2) 이미 있었던 경우 → pull로 제거 → false
+        Update pull = new Update().pull("favorites", userSeq);
+        mt.updateFirst(q, pull, ProductEntity.class);
+        return false;
+    }
+
+    /** 유저가 즐겨찾기한 상품 목록 */
+    public List<ProductEntity> listByUser(String userSeq) {
+        return pr.findByFavoritedUser(userSeq);
+    }
+
+    /** 특정 상품에 대해 유저가 즐겨찾기 했는지 */
+    public boolean isFavorited(String productId, String userSeq) {
+        return pr.existsByIdAndFavoritedUser(productId, userSeq);
+    }
+}
+

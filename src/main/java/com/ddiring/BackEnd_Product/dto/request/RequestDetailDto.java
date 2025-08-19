@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 public class RequestDetailDto {
     private String requestId;
-    private int userSeq;
+    private String userSeq;
 
     private String projectId;
     private String title;
@@ -31,7 +31,7 @@ public class RequestDetailDto {
 
     private ProductRequestEntity.RequestType type;
     private ProductRequestEntity.RequestStatus status;
-    private int admin;
+    private String admin;
     private String rejectReason;
 
     public static RequestDetailDto from(ProductRequestEntity e) {
@@ -50,7 +50,7 @@ public class RequestDetailDto {
                 .reason(e.getPayload().getReason())
                 .type(e.getType())
                 .status(e.getStatus())
-                .admin(e.getAdminSeq())
+                .admin(e.getAdminId())
                 .rejectReason(e.getRejectReason())
                 .build();
     }

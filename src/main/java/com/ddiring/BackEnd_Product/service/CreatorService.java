@@ -25,7 +25,7 @@ public class CreatorService {
     private final ProductRepository pr;
 
     /* ---------- 등록요청 ---------- */
-    public String create(CreatorCreateDto dto, int userSeq) {
+    public String create(CreatorCreateDto dto, String userSeq) {
         if (dto == null) {
             throw new IllegalArgumentException("요청 데이터가 없습니다.");
         }
@@ -50,7 +50,7 @@ public class CreatorService {
     }
 
     /* ---------- 부분수정 ---------- */
-    public String update(CreatorUpdateDto dto, int userSeq) {
+    public String update(CreatorUpdateDto dto, String userSeq) {
         // ① 동시에 진행 중인 요청 확인 (기존 로직)
         if (prr.existsByProjectIdAndStatus(dto.getProjectId(),
                 ProductRequestEntity.RequestStatus.PENDING))
@@ -74,7 +74,7 @@ public class CreatorService {
     }
 
     /* ---------- 정지 ---------- */
-    public String stop(CreatorStopDto dto, int userSeq) {
+    public String stop(CreatorStopDto dto, String userSeq) {
         if (prr.existsByProjectIdAndStatus(dto.getProjectId(),
                 ProductRequestEntity.RequestStatus.PENDING))
             throw new IllegalStateException("이미 대기 중인 요청이 있습니다");
