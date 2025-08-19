@@ -62,7 +62,7 @@ public class AdminService {
             throw new IllegalStateException("이미 처리된 요청 입니다");
         pre.setStatus(ProductRequestEntity.RequestStatus.REJECTED);
         pre.setAdminId(adminId);
-        pre.setRejectReason(dto.getReason());
+        pre.setRejectReason(dto.getRejectReason());
         prr.save(pre);
     }
 

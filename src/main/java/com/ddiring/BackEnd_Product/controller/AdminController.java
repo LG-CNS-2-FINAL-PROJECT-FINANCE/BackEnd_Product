@@ -69,24 +69,15 @@ public class AdminController {
         }
     }
 
-//    /** "userSeq" → int 파싱 (AdminService가 int를 받는 현재 시그니처 유지) */
-//    private int parseAdminId(String adminId) {
-//        try {
-//            return String.parseInt(adminId.trim());
-//        } catch (NumberFormatException e) {
-//            throw new IllegalStateException("잘못된 관리자 ID 형식");
-//        }
-//    }
-
     /** 요청 승인 (ADMIN 전용) */
     @PostMapping("/approve")
     public ResponseEntity<Void> approve(
             @RequestBody AdminApproveDto dto,
-            @RequestHeader("adminId") String adminId,
+            @RequestHeader("userSeq") String userSeq,
             @RequestHeader(value = "role") String roles) {
 
         requireAdmin(roles);
-        as.approve(dto, adminId.trim());
+        as.approve(dto, userSeq.trim());
         return ResponseEntity.ok().build();
     }
 
@@ -94,11 +85,14 @@ public class AdminController {
     @PostMapping("/reject")
     public ResponseEntity<Void> reject(
             @RequestBody AdminRejectDto dto,
-            @RequestHeader("adminId") String adminId,
+            @RequestHeader("userSeq") String userSeq,
             @RequestHeader(value = "role") String roles) {
 
         requireAdmin(roles);
-        as.reject(dto, adminId.trim());
+        as.reject(dto, userSeq.trim());
         return ResponseEntity.ok().build();
     }
+
+    /** 숨김처리 (ADMIN 전용) */
+
 }
