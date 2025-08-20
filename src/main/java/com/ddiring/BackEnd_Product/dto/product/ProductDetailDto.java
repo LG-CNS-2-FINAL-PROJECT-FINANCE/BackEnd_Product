@@ -31,6 +31,7 @@ public class ProductDetailDto {
     private List<String> document;
     private int viewCount;
     private ProductEntity.ProductStatus state;
+    private String holdReason;
 
     public static ProductDetailDto from(ProductEntity e) {
         return ProductDetailDto.builder()
@@ -50,6 +51,7 @@ public class ProductDetailDto {
                 .document(e.getDocument())
                 .viewCount(e.getViewCount())
                 .state(e.getStatus())
+                .holdReason(e.getHoldReason())
                 .build();
     }
 }

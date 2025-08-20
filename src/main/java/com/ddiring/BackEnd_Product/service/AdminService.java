@@ -1,5 +1,6 @@
 package com.ddiring.BackEnd_Product.service;
 
+import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetRequestDto;
@@ -17,6 +18,9 @@ import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +68,40 @@ public class AdminService {
         pre.setAdminId(userSeq);
         pre.setRejectReason(dto.getRejectReason());
         prr.save(pre);
+    }
+
+    /* ---------- 숨김 ---------- */
+    @Transactional
+    public ProductEntity.ProductStatus toggleHold(String productId, String reason, String adminSeq) {
+        ProductEntity pe = pr.findById(productId)
+                .orElseThrow(() -> new NotFound("상품이 없습니다: " + productId));
+
+        if (pe.getStatus() == ProductEntity.ProductStatus.END) {
+            throw new IllegalStateException("이미 마감된 상품은 HOLD 토글할 수 없습니다");
+        }
+
+        boolean goingToHold = (pe.getStatus() != ProductEntity.ProductStatus.HOLD);
+
+        if (goingToHold) { // OPEN/STOPPED 등 -> HOLD
+            if (reason == null || reason.isBlank()) {
+                throw new IllegalArgumentException("HOLD 사유는 필수입니다");
+            }
+            pe.setStatus(ProductEntity.ProductStatus.HOLD);
+            // 기존 reason 필드는 '현재 상태의 사유'로 사용
+            pe.setReason(reason.trim());
+        } else { // HOLD -> OPEN or END (UNHOLD)
+            LocalDate today = LocalDate.now();
+            if (pe.getEndDate() != null && pe.getEndDate().isBefore(today)) {
+                pe.setStatus(ProductEntity.ProductStatus.END);
+            } else {
+                pe.setStatus(ProductEntity.ProductStatus.OPEN);
+                pe.setDeadline(pe.dDay());
+            }
+            // 해제 사유도 남기고 싶다면 '현재 상태 사유'를 비우되, 메타에는 저장
+            pe.setReason(null);
+        }
+        pr.save(pe);
+        return pe.getStatus();
     }
 
     /* ---------- 내부로직 ------- */

@@ -61,6 +61,7 @@ public class ProductEntity {
     private ProductStatus status;
 
     private String reason;
+    private String holdReason;
 
 //    @CreatedBy
 //    private int createdId;

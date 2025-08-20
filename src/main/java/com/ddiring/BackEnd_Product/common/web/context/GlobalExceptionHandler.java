@@ -1,5 +1,6 @@
-package com.ddiring.BackEnd_Product.common.exception;
+package com.ddiring.BackEnd_Product.common.web.context;
 
+import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

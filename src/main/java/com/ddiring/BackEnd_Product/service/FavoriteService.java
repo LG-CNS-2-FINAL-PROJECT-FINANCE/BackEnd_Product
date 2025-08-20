@@ -19,26 +19,6 @@ public class FavoriteService {
     private final MongoTemplate mt;
     private final ProductRepository pr;
 
-    /** 즐겨찾기 추가 (idempotent) */
-    public void add(String productId, String userSeq) {
-        Query q = Query.query(Criteria.where("_id").is(productId));
-        Update u = new Update().addToSet("favorites", userSeq);
-        UpdateResult r = mt.updateFirst(q, u, ProductEntity.class);
-        if (r.getMatchedCount() == 0) {
-            throw new IllegalArgumentException("상품이 없습니다: " + productId);
-        }
-    }
-
-    /** 즐겨찾기 해제 (idempotent) */
-    public void remove(String productId, String userSeq) {
-        Query q = Query.query(Criteria.where("_id").is(productId));
-        Update u = new Update().pull("favorites", userSeq);
-        UpdateResult r = mt.updateFirst(q, u, ProductEntity.class);
-        if (r.getMatchedCount() == 0) {
-            throw new IllegalArgumentException("상품이 없습니다: " + productId);
-        }
-    }
-
     /** 토글: 추가 시 true, 제거 시 false 반환 */
     public boolean toggle(String productId, String userSeq) {
         // 1) addToSet 시도
