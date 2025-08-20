@@ -1,9 +1,11 @@
 package com.ddiring.BackEnd_Product.controller;
 
+import com.ddiring.BackEnd_Product.common.security.JwtAuthGuard;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.service.FavoriteService;
-import jakarta.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,40 +17,51 @@ import java.util.Map;
 public class FavoriteController {
 
     private final FavoriteService fs;
+    private final JwtAuthGuard guard; // JWT 인증/권한 가드
 
-    private String currentUser(HttpServletRequest req) {
-        String v = req.getHeader("userSeq");
-        if (v == null || v.isBlank()) {
-            throw new IllegalStateException("인증 정보가 없습니다"); // 추후 401 매핑 권장
-        }
-        return v.trim();
+    /** Authorization 헤더에서 USER 권한/유저 식별 */
+    private String currentUser(String authHeader) {
+        Claims c = guard.requireClaims(authHeader);      // 토큰 검증
+        guard.requireAnyRole(c, "USER");                 // USER 권한만 허용
+        return guard.requireUserSeq(c);                  // userSeq 추출
     }
 
     @PostMapping("/{id}/favorite/toggle")
-    public Map<String, Object> toggle(@PathVariable("id") String productId, HttpServletRequest req) {
-        String userId = currentUser(req);
-        boolean nowFavorited = fs.toggle(productId, userId); // Service도 String 시그니처
-        return Map.of("productId", productId, "favorited", nowFavorited);
+    public ResponseEntity<Map<String, Object>> toggle(
+            @PathVariable("id") String productId,
+            @RequestHeader("Authorization") String auth) {
+
+        String userSeq = currentUser(auth);
+        boolean nowFavorited = fs.toggle(productId, userSeq);
+        return ResponseEntity.ok(Map.of("productId", productId, "favorited", nowFavorited));
     }
 
     @PostMapping("/{id}/favorite")
-    public void add(@PathVariable("id") String productId, HttpServletRequest req) {
-        fs.add(productId, currentUser(req));
+    public ResponseEntity<Void> add(
+            @PathVariable("id") String productId,
+            @RequestHeader("Authorization") String auth) {
+
+        fs.add(productId, currentUser(auth));
+        return ResponseEntity.noContent().build(); // 204
     }
 
     @DeleteMapping("/{id}/favorite")
-    public void remove(@PathVariable("id") String productId, HttpServletRequest req) {
-        fs.remove(productId, currentUser(req));
+    public ResponseEntity<Void> remove(
+            @PathVariable("id") String productId,
+            @RequestHeader("Authorization") String auth) {
+
+        fs.remove(productId, currentUser(auth));
+        return ResponseEntity.noContent().build(); // 204
     }
 
     @GetMapping("/favorite/me")
-    public List<ProductListDto> myFavorites(HttpServletRequest req) {
-        String userId = currentUser(req);
-        return fs.listByUser(userId).stream()
-                // 즐겨찾기 여부/개수까지 DTO에 넣고 싶으면 오버로드 사용 권장:
-                // .map(e -> ProductListDto.from(e, userId))
+    public ResponseEntity<List<ProductListDto>> myFavorites(
+            @RequestHeader("Authorization") String auth) {
+
+        String userSeq = currentUser(auth);
+        List<ProductListDto> list = fs.listByUser(userSeq).stream()
                 .map(ProductListDto::from)
                 .toList();
+        return ResponseEntity.ok(list);
     }
 }
-
