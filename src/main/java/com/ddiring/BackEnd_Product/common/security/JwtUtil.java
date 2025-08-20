@@ -2,11 +2,12 @@ package com.ddiring.BackEnd_Product.common.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
@@ -14,9 +15,15 @@ public class JwtUtil {
     @Value("${jwt.secret-key}")
     private String secret;
 
-    public Claims parseClaims(String token) {
+    private SecretKey key() {
+        // User 서비스가 Decoders.BASE64.decode(secretKey)로 발급하므로 동일하게 디코딩
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret.trim()));
+    }
+
+    public Claims parseClaims(String tokenOrBearer) {
+        String token = tokenOrBearer == null ? "" : tokenOrBearer.replaceFirst("^Bearer\\s+", "").trim();
         return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+                .setSigningKey(key())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
