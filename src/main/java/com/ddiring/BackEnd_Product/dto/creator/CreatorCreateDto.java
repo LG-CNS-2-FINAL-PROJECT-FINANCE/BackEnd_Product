@@ -40,11 +40,9 @@ public class CreatorCreateDto {
     private BigDecimal minInvestment;
 
     @NotNull(message = "파일을 등록하세요")
-    @Builder.Default
-    private List<String> document = new ArrayList<>();
+    private List<String> document;
     @NotNull(message = "사진을 등록하세요")
-    @Builder.Default
-    private List<String> image = new ArrayList<>();
+    private List<String> image;
 
     public ProductPayload toPayload() {
         return ProductPayload.builder()

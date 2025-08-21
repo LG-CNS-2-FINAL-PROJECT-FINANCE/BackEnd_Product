@@ -31,10 +31,8 @@ public class CreatorUpdateDto {
     private BigDecimal minInvestment;
 
     @NotNull(message = "파일을 등록하세요")
-    @Builder.Default
-    private List<String> document = new ArrayList<>();
-    @Builder.Default
-    private List<String> image = new ArrayList<>();
+    private List<String> document;
+    private List<String> image;
 
     @Size(max = 500)
     @NotBlank(message = "사유를 입력하세요")

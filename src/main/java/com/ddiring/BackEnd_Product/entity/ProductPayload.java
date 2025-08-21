@@ -66,7 +66,7 @@ public class ProductPayload {
         if (dto.getGoalAmount()   != null) this.goalAmount   = dto.getGoalAmount();
         if (dto.getMinInvestment()!= null) this.minInvestment= dto.getMinInvestment();
         if (dto.getDocument()     != null) this.document     = dto.getDocument();
-        if (dto.getDocument()     != null) this.image        = dto.getImage();
+        if (dto.getImage()        != null) this.image        = dto.getImage();
         if (dto.getReason()       != null) this.reason       = dto.getReason();
     }
 
@@ -74,6 +74,6 @@ public class ProductPayload {
     public void stop(CreatorStopDto dto) {
         if (dto.getReason()       != null) this.reason   = dto.getReason();
         if (dto.getDocument()     != null) this.document = dto.getDocument();
-        if (dto.getDocument()     != null) this.image    = dto.getImage();
+        if (dto.getImage()     != null) this.image    = dto.getImage();
     }
 }
