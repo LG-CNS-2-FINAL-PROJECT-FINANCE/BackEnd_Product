@@ -39,7 +39,7 @@ public class S3StorageService {
 
         s3.putObject(req, RequestBody.fromBytes(bytes));
 
-        String url = "https://" + bucket + ".s3." + props.getRegion().getStatic() + ".amazonaws.com/"
+        String url = "https://" + bucket + ".s3." + props.getRegion() + ".amazonaws.com/"
                 + URLEncoder.encode(key, StandardCharsets.UTF_8).replace("+", "%20");
 
         return new UploadResult(key, url, contentType, bytes.length);
