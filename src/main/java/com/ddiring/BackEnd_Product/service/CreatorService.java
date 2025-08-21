@@ -8,7 +8,6 @@ import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
-import com.ddiring.BackEnd_Product.s3.upload.UploadEntryRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.dao.DataAccessException;
@@ -24,7 +23,6 @@ public class CreatorService {
 
     private final ProductRequestRepository prr;
     private final ProductRepository pr;
-    private final UploadEntryRepository ur;
 
     /* ---------- 등록요청 ---------- */
     public String create(CreatorCreateDto dto, String userSeq) {
