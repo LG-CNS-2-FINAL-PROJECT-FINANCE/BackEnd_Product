@@ -14,10 +14,10 @@ public class AwsS3Config {
 
     @Bean
     public S3Client s3Client(AwsProps props) {
-        // 1) 환경변수로 넣어준 경우(권장): DefaultCredentialsProvider
+        // 1) 환경변수/EC2 IAM Role/EKS IRSA 등에서 가져오기 (권장)
         AwsCredentialsProvider provider = DefaultCredentialsProvider.create();
 
-        // 2) 혹시 YAML로 강제로 지정하고 싶다면 (비추)
+        // 2) application.yml 로 직접 지정했을 경우 fallback
         if (props.getCredentials().getAccessKey() != null &&
                 !props.getCredentials().getAccessKey().isBlank()) {
             provider = StaticCredentialsProvider.create(
@@ -29,8 +29,8 @@ public class AwsS3Config {
         }
 
         return S3Client.builder()
-                .region(Region.of(props.getRegion().getStatic()))
-                .credentialsProvider(provider)
+                .region(Region.of(props.getRegion()))   // ✅ region 단일 값
+                .credentialsProvider(provider)          // ✅ provider 지정
                 .build();
     }
 }
