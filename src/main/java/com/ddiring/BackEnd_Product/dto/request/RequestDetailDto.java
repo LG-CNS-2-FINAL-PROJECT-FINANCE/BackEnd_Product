@@ -42,7 +42,7 @@ public class RequestDetailDto {
                 .projectId(e.getPayload().getProjectId())
                 .title(e.getPayload().getTitle())
                 .summary(e.getPayload().getSummary())
-                .con    tent(e.getPayload().getContent())
+                .content(e.getPayload().getContent())
                 .startDate(e.getPayload().getStartDate())
                 .endDate(e.getPayload().getEndDate())
                 .goalAmount(e.getPayload().getGoalAmount())

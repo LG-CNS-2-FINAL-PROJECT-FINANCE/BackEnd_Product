@@ -3,11 +3,8 @@ package com.ddiring.BackEnd_Product.service;
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
-import com.ddiring.BackEnd_Product.dto.asset.AssetRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
-import com.ddiring.BackEnd_Product.dto.smartcontract.SmartContractRequestDto;
-import com.ddiring.BackEnd_Product.dto.smartcontract.SmartContractResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Service
@@ -145,11 +141,12 @@ public class AdminService {
 
         pr.save(pe); // 다시 저장해서 계좌 반영
     }
-
+    
     private void handleUpdate(ProductRequestEntity pre) {
             ProductPayload pp = pre.getPayload();
             ProductEntity pe = pr.findById(pp.getProjectId())
                     .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+
             pe.setTitle(pp.getTitle());
             pe.setSummary(pp.getSummary());
             pe.setContent(pp.getContent());
