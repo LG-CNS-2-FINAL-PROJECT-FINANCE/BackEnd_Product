@@ -43,6 +43,7 @@ public class ProductController {
 //        ProductDetailDto pdd = ps.getProductByProductId(productId);
 //        return ResponseEntity.ok(pdd);
 //    }
+
     @GetMapping
     public ResponseEntity<List<ProductListDto>> getAllProducts() {
         List<ProductListDto> productList = ps.getAllProduct();
@@ -52,6 +53,6 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String productId) {
         ProductDetailDto pdd = ps.getProductByProductId(productId);
-        return ResponseEntity.ok(pdd); 
+        return ResponseEntity.ok(pdd);
     }
 }

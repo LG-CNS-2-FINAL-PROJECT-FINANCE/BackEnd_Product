@@ -11,5 +11,10 @@ import lombok.NoArgsConstructor;
 public class AdminHoldDto {
 
     @NotBlank
+    private String requestId;
+
+    private String adminId;
+
+    @NotBlank
     private String holdReason;
 }

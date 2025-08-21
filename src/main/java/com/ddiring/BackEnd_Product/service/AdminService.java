@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -117,7 +118,8 @@ public class AdminService {
                 .endDate(pp.getEndDate())
                 .goalAmount(pp.getGoalAmount())
                 .minInvestment(pp.getMinInvestment())
-                .document(pp.getDocument())
+                .document(new ArrayList<>(pp.getDocument()))
+                .image(new ArrayList<>(pp.getImage()))
                 .status(ProductEntity.ProductStatus.OPEN)
                 .version(1L)
                 .build();
@@ -156,7 +158,9 @@ public class AdminService {
             pe.setDeadline(Math.max(pe.dDay(), 0));
             pe.setGoalAmount(pp.getGoalAmount());
             pe.setMinInvestment(pp.getMinInvestment());
-            pe.setDocument(pp.getDocument());
+            pe.setDocument(new ArrayList<>(pp.getDocument()));
+            pe.setImage(new ArrayList<>(pp.getImage()));
+            pe.setReason(pp.getReason());
             pe.setStatus(ProductEntity.ProductStatus.OPEN);
         pr.save(pe);
     }
@@ -164,7 +168,8 @@ public class AdminService {
     private void handleStop(ProductRequestEntity pre) {
         ProductPayload pp = pre.getPayload();
         ProductEntity pe = pr.findById(pp.getProjectId())
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));pe.setDocument(new ArrayList<>(pp.getDocument()));
+        pe.setImage(new ArrayList<>(pp.getImage()));
         pe.setReason(pp.getReason());
         pe.setStatus(ProductEntity.ProductStatus.HOLD);
         pr.save(pe);

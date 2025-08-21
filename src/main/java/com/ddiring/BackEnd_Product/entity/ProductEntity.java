@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +50,10 @@ public class ProductEntity {
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal percent;
 
-    private List<String> document;
+    @Builder.Default
+    private List<String> document = new ArrayList<>();
+    @Builder.Default
+    private List<String> image = new ArrayList<>();
 
     private String smartContract;
 
@@ -76,13 +80,5 @@ public class ProductEntity {
 
     public int dDay() {
         return (int) ChronoUnit.DAYS.between(LocalDate.now(), endDate);
-    }
-
-    public int getFavoritesCount() {
-        return favorites == null ? 0 : favorites.size();
-    }
-
-    public boolean isFavoritedBy(String userSeq) {
-        return favorites != null && favorites.contains(userSeq);
     }
 }

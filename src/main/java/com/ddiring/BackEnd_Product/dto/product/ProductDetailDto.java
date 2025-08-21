@@ -29,6 +29,7 @@ public class ProductDetailDto {
     private BigDecimal amount;
     private BigDecimal percent;
     private List<String> document;
+    private List<String> image;
     private int viewCount;
     private ProductEntity.ProductStatus state;
     private String holdReason;
@@ -49,6 +50,7 @@ public class ProductDetailDto {
                 .amount(e.getAmount())
                 .percent(e.getPercent())
                 .document(e.getDocument())
+                .image(e.getImage())
                 .viewCount(e.getViewCount())
                 .state(e.getStatus())
                 .holdReason(e.getHoldReason())

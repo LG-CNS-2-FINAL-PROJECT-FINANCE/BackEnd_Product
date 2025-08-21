@@ -3,19 +3,18 @@ package com.ddiring.BackEnd_Product.dto.creator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CreatorUpdateDto {
 
     @NotBlank(message="대상 프로젝트 ID 필요")
@@ -32,7 +31,10 @@ public class CreatorUpdateDto {
     private BigDecimal minInvestment;
 
     @NotNull(message = "파일을 등록하세요")
-    private List<String> document;
+    @Builder.Default
+    private List<String> document = new ArrayList<>();
+    @Builder.Default
+    private List<String> image = new ArrayList<>();
 
     @Size(max = 500)
     @NotBlank(message = "사유를 입력하세요")

@@ -27,6 +27,7 @@ public class RequestDetailDto {
     private BigDecimal goalAmount;
     private BigDecimal minInvestment;
     private List<String> document;
+    private List<String> image ;
     private String reason;
 
     private ProductRequestEntity.RequestType type;
@@ -41,12 +42,13 @@ public class RequestDetailDto {
                 .projectId(e.getPayload().getProjectId())
                 .title(e.getPayload().getTitle())
                 .summary(e.getPayload().getSummary())
-                .content(e.getPayload().getContent())
+                .con    tent(e.getPayload().getContent())
                 .startDate(e.getPayload().getStartDate())
                 .endDate(e.getPayload().getEndDate())
                 .goalAmount(e.getPayload().getGoalAmount())
                 .minInvestment(e.getPayload().getMinInvestment())
                 .document(e.getPayload().getDocument())
+                .image(e.getPayload().getImage())
                 .reason(e.getPayload().getReason())
                 .type(e.getType())
                 .status(e.getStatus())

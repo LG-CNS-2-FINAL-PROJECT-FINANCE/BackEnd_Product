@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -39,7 +40,11 @@ public class CreatorCreateDto {
     private BigDecimal minInvestment;
 
     @NotNull(message = "파일을 등록하세요")
-    private List<String> document;
+    @Builder.Default
+    private List<String> document = new ArrayList<>();
+    @NotNull(message = "사진을 등록하세요")
+    @Builder.Default
+    private List<String> image = new ArrayList<>();
 
     public ProductPayload toPayload() {
         return ProductPayload.builder()
@@ -51,6 +56,7 @@ public class CreatorCreateDto {
                 .goalAmount(goalAmount)
                 .minInvestment(minInvestment)
                 .document(document)
+                .image(image)
                 .build(); // 초기값 지정
     }
 }

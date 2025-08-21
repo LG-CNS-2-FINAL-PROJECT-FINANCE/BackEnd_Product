@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,7 +31,12 @@ public class ProductPayload {
     private BigDecimal goalAmount;
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal minInvestment;
-    private List<String> document;
+
+    @Builder.Default
+    private List<String> document = new ArrayList<>();
+    @Builder.Default
+    private List<String> image = new ArrayList<>();
+
     private String reason;     // UPDATE/STOP 대상
 
     public static ProductPayload from(ProductEntity e) {
@@ -45,6 +51,7 @@ public class ProductPayload {
                 .goalAmount(e.getGoalAmount())
                 .minInvestment(e.getMinInvestment())
                 .document(e.getDocument())
+                .image(e.getImage())
                 .reason(e.getReason())
                 .build();
     }
@@ -59,12 +66,14 @@ public class ProductPayload {
         if (dto.getGoalAmount()   != null) this.goalAmount   = dto.getGoalAmount();
         if (dto.getMinInvestment()!= null) this.minInvestment= dto.getMinInvestment();
         if (dto.getDocument()     != null) this.document     = dto.getDocument();
+        if (dto.getDocument()     != null) this.image        = dto.getImage();
         if (dto.getReason()       != null) this.reason       = dto.getReason();
     }
 
     /* ---------- 정지 ---------- */
     public void stop(CreatorStopDto dto) {
         if (dto.getReason()       != null) this.reason   = dto.getReason();
-        if (dto.getDocument()     !=null) this.document = dto.getDocument();
+        if (dto.getDocument()     != null) this.document = dto.getDocument();
+        if (dto.getDocument()     != null) this.image    = dto.getImage();
     }
 }

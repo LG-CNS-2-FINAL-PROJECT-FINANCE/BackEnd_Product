@@ -8,18 +8,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CreatorStopDto {
 
     @NotBlank(message="대상 프로젝트 ID 필요")
     private String projectId;
 
     @NotNull(message = "파일을 등록하세요")
-    private List<String> document;
+    @Builder.Default
+    private List<String> document = new ArrayList<>();
+    @Builder.Default
+    private List<String> image = new ArrayList<>();
 
     @Size(max = 500)
     @NotBlank(message = "사유를 입력하세요")
