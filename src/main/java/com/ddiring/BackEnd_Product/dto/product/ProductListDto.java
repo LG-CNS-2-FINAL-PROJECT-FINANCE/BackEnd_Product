@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +23,7 @@ public class ProductListDto {
     private int deadline;
     private BigDecimal amount;
     private BigDecimal percent;
+    private List<String> image;
     private int viewCount;
     private ProductEntity.ProductStatus state;
 

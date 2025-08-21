@@ -74,6 +74,6 @@ public class ProductPayload {
     public void stop(CreatorStopDto dto) {
         if (dto.getReason()       != null) this.reason   = dto.getReason();
         if (dto.getDocument()     != null) this.document = dto.getDocument();
-        if (dto.getImage()     != null) this.image    = dto.getImage();
+        if (dto.getImage()        != null) this.image    = dto.getImage();
     }
 }
