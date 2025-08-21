@@ -1,4 +1,3 @@
-// package com.ddiring.BackEnd_Product.storage;
 package com.ddiring.BackEnd_Product.s3.storage;
 
 import lombok.RequiredArgsConstructor;
