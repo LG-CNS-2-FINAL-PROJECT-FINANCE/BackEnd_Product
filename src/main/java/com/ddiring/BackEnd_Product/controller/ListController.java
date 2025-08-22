@@ -11,22 +11,37 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/product/ranking")
-public class RankingController {
+@RequestMapping("/api/product/list")
+public class ListController {
     private final RankingService rs;
 
-    @GetMapping("/view")
+    @GetMapping("/ranking/view")
     public List<ProductEntity> getTopByViewCount() {
         return rs.getTopByViewCount();
     }
 
-    @GetMapping("/view/deadline")
+    @GetMapping("/ranking/view/deadline")
     public List<ProductEntity> getTopByViewCountWithDeadline() {
         return rs.getTopByViewCountWithDeadline();
     }
 
-    @GetMapping("/amount")
+    @GetMapping("/ranking/amount")
     public List<ProductEntity> getTopByAmount() {
         return rs.getTopByAmount();
     }
+
+//    @GetMapping("/ranking/view")
+//    public List<ProductEntity> getTopByViewCount() {
+//        return rs.getTopByViewCount();
+//    }
+//
+//    @GetMapping("/ranking/view")
+//    public List<ProductEntity> getTopByViewCount() {
+//        return rs.getTopByViewCount();
+//    }
+//
+//    @GetMapping("/ranking/view")
+//    public List<ProductEntity> getTopByViewCount() {
+//        return rs.getTopByViewCount();
+//    }
 }

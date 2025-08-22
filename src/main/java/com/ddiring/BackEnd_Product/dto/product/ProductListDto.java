@@ -37,6 +37,7 @@ public class ProductListDto {
                 .deadline(e.getDeadline())
                 .amount(e.getAmount())
                 .percent(e.getPercent())
+                .image(e.getImage())
                 .viewCount(e.getViewCount())
                 .state(e.getStatus())
                 .build();
