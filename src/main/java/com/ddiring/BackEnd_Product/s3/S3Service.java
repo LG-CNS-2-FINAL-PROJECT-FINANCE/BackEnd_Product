@@ -26,26 +26,23 @@ public class S3Service {
     // 업로드 (등록/수정 단계에서 사용)
     public String uploadFile(MultipartFile file) throws IOException {
         String fileUrl = "files/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
-
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+        PutObjectRequest por = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(fileUrl)
                 .contentType(file.getContentType())
-                // .acl("public-read")  // 공개하려면 주석 해제
+                // .acl("public-read")
                 .build();
-
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
-
+        s3Client.putObject(por, RequestBody.fromBytes(file.getBytes()));
         return "https://" + bucket + ".s3.amazonaws.com/" + fileUrl;
     }
 
     // 단일 파일 삭제 (승인/거절 단계에서 사용)
     public void deleteFile(String fileUrl) {
         String key = fileUrl.replace("https://" + bucket + ".s3.amazonaws.com/", "");
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+        DeleteObjectRequest dor = DeleteObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
                 .build();
-        s3Client.deleteObject(deleteObjectRequest);
+        s3Client.deleteObject(dor);
     }
 }

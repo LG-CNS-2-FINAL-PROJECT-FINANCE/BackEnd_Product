@@ -50,7 +50,7 @@ public class ProductController {
         return ResponseEntity.ok(productList);
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/{projectId}")
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String productId) {
         ProductDetailDto pdd = ps.getProductByProductId(productId);
         return ResponseEntity.ok(pdd);

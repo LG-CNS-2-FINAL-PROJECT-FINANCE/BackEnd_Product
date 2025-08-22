@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+//필요 없을 수도
 @RestController
 @RequiredArgsConstructor
 public class EscrowController {

@@ -14,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @Service
@@ -27,15 +28,12 @@ public class CreatorService {
     /* ---------- 등록요청 ---------- */
     public String create(CreatorCreateDto dto, String userSeq) {
 
-        if (dto == null) {
+        if (dto == null)
             throw new IllegalArgumentException("요청 데이터가 없습니다.");
-        }
-        if (dto.getStartDate().isAfter(dto.getEndDate())) {
+        if (dto.getStartDate().isAfter(dto.getEndDate()))
             throw new IllegalArgumentException("시작일이 종료일보다 늦을 수 없습니다.");
-        }
-        if (dto.getGoalAmount().compareTo(BigDecimal.ZERO) <= 0) {
+        if (dto.getGoalAmount().compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException("목표 금액은 0보다 커야 합니다.");
-        }
 
         try {
             ProductRequestEntity pre = ProductRequestEntity.builder()
@@ -52,7 +50,8 @@ public class CreatorService {
 
     /* ---------- 부분수정 ---------- */
     public String update(CreatorUpdateDto dto, String userSeq) {
-        // ① 동시에 진행 중인 요청 확인 (기존 로직)
+
+        // ① 동시에 진행 중인 요청 확인
         if (prr.existsByProjectIdAndStatus(dto.getProjectId(),
                 ProductRequestEntity.RequestStatus.PENDING))
             throw new IllegalStateException("이미 대기 중인 요청이 있습니다");
@@ -60,10 +59,11 @@ public class CreatorService {
         // ② 원본 상품 스냅샷
         ProductEntity product = pr.findById(dto.getProjectId())
                 .orElseThrow(() -> new RuntimeException("상품이 없습니다"));
-        ProductPayload payload = ProductPayload.from(product);
-        payload.update(dto);   // 변경치만 덮어쓰기
 
-        // ③ 요청 엔티티 저장
+        ProductPayload payload = ProductPayload.from(product);
+        payload.update(dto);   // 텍스트 정보 덮어쓰기
+
+        // ④ 요청 엔티티 저장 (승인 대기)
         ProductRequestEntity pre = ProductRequestEntity.builder()
                 .projectId(dto.getProjectId())
                 .type(ProductRequestEntity.RequestType.UPDATE)
@@ -71,6 +71,7 @@ public class CreatorService {
                 .payload(payload)
                 .userSeq(userSeq)
                 .build();
+
         return prr.save(pre).getRequestId();
     }
 

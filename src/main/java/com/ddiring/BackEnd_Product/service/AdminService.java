@@ -12,12 +12,14 @@ import com.ddiring.BackEnd_Product.external.EscrowClient;
 import com.ddiring.BackEnd_Product.external.SmartContractClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
+import com.ddiring.BackEnd_Product.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class AdminService {
     private final EscrowClient ec;
     private final SmartContractClient scc;
     private final ProductService ps;
+    private final S3Service s3;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -36,6 +39,23 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
         if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
             throw new IllegalStateException("이미 처리된 요청 입니다");
+
+        // DB에 기존 product 조회 (UPDATE, STOP일 때만 존재)
+        ProductEntity product = null;
+        if (pre.getPayload().getProjectId() != null) {
+            product = pr.findById(pre.getPayload().getProjectId())
+                    .orElse(null);
+        }
+
+        List<String> oldDocs = (product != null) ? product.getDocument() : new ArrayList<>();
+        List<String> oldImages = (product != null) ? product.getImage() : new ArrayList<>();
+
+        List<String> newDocs = pre.getPayload().getDocument() != null ? pre.getPayload().getDocument() : new ArrayList<>();
+        List<String> newImages = pre.getPayload().getImage() != null ? pre.getPayload().getImage() : new ArrayList<>();
+
+        // 차집합 -> S3 삭제
+        oldDocs.stream().filter(old -> !newDocs.contains(old)).forEach(s3::deleteFile);
+        oldImages.stream().filter(old -> !newImages.contains(old)).forEach(s3::deleteFile);
 
         switch (pre.getType()) {
             case CREATE -> handleCreate(pre);
@@ -61,6 +81,29 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
         if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
             throw new IllegalStateException("이미 처리된 요청 입니다");
+
+        ProductEntity product = null;
+        if (pre.getPayload().getProjectId() != null) {
+            product = pr.findById(pre.getPayload().getProjectId())
+                    .orElse(null);
+        }
+
+        List<String> oldDocs = (product != null) ? product.getDocument() : new ArrayList<>();
+        List<String> oldImages = (product != null) ? product.getImage() : new ArrayList<>();
+
+        // 요청에서 넘어온 신규 파일들
+        List<String> newDocs = pre.getPayload().getDocument() != null ? pre.getPayload().getDocument() : new ArrayList<>();
+        List<String> newImages = pre.getPayload().getImage() != null ? pre.getPayload().getImage() : new ArrayList<>();
+
+        // DB에 없는 신규 업로드만 삭제
+        newDocs.stream()
+                .filter(url -> !oldDocs.contains(url))
+                .forEach(s3::deleteFile);
+
+        newImages.stream()
+                .filter(url -> !oldImages.contains(url))
+                .forEach(s3::deleteFile);
+
         pre.setStatus(ProductRequestEntity.RequestStatus.REJECTED);
         pre.setAdminId(userSeq);
         pre.setRejectReason(dto.getRejectReason());
@@ -165,7 +208,8 @@ public class AdminService {
     private void handleStop(ProductRequestEntity pre) {
         ProductPayload pp = pre.getPayload();
         ProductEntity pe = pr.findById(pp.getProjectId())
-                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));pe.setDocument(new ArrayList<>(pp.getDocument()));
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+        pe.setDocument(new ArrayList<>(pp.getDocument()));
         pe.setImage(new ArrayList<>(pp.getImage()));
         pe.setReason(pp.getReason());
         pe.setStatus(ProductEntity.ProductStatus.HOLD);
