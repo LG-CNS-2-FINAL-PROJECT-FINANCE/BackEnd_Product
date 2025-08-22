@@ -49,16 +49,16 @@ public class FavoriteController {
 
     /** 즐겨찾기 토글 (USER 권한 필요) */
     @PostMapping("/toggle/{id}")
-    public ResponseEntity<Map<String, Object>> toggle(@PathVariable("id") String productId,
+    public ResponseEntity<Map<String, Object>> toggle(@PathVariable("id") String projectId,
                                                       @RequestHeader("Authorization") String auth) {
 
         Claims c = guard.requireClaims(auth);
         guard.requireAnyRole(c, "USER");
         String userSeq = guard.requireUserSeq(c);
 
-        boolean nowFavorited = fs.toggle(productId, userSeq);
+        boolean nowFavorited = fs.toggle(projectId, userSeq);
         return ResponseEntity.ok(Map.of(
-                "productId", productId,
+                "projectId", projectId,
                 "favorited", nowFavorited
         ));
     }

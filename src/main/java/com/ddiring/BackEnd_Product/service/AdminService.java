@@ -112,9 +112,9 @@ public class AdminService {
 
     /* ---------- 숨김 ---------- */
     @Transactional
-    public ProductEntity.ProductStatus toggleHold(String productId, String reason, String adminSeq) {
-        ProductEntity pe = pr.findById(productId)
-                .orElseThrow(() -> new NotFound("상품이 없습니다: " + productId));
+    public ProductEntity.ProductStatus toggleHold(String projectId, String reason, String adminSeq) {
+        ProductEntity pe = pr.findById(projectId)
+                .orElseThrow(() -> new NotFound("상품이 없습니다: " + projectId));
 
         if (pe.getStatus() == ProductEntity.ProductStatus.END) {
             throw new IllegalStateException("이미 마감된 상품은 HOLD 토글할 수 없습니다");
@@ -163,7 +163,7 @@ public class AdminService {
                 .version(1L)
                 .build();
         pr.insert(pe);
-        pre.setProjectId(pe.getProjectId()); // 요청 entity에 productId 연결
+        pre.setProjectId(pe.getProjectId()); // 요청 entity에 projectId 연결
 
         //마감기일
         pe.setDeadline(pe.dDay());

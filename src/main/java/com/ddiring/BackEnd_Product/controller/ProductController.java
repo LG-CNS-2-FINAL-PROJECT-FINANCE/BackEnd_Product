@@ -46,13 +46,13 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductListDto>> getAllProducts() {
-        List<ProductListDto> productList = ps.getAllProduct();
+        List<ProductListDto> productList = ps.getAllProject();
         return ResponseEntity.ok(productList);
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String productId) {
-        ProductDetailDto pdd = ps.getProductByProductId(productId);
+    public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String projectId) {
+        ProductDetailDto pdd = ps.getProductByProjectId(projectId);
         return ResponseEntity.ok(pdd);
     }
 }

@@ -20,14 +20,14 @@ public class FavoriteService {
     private final ProductRepository pr;
 
     /** 토글: 추가 시 true, 제거 시 false 반환 */
-    public boolean toggle(String productId, String userSeq) {
+    public boolean toggle(String projectId, String userSeq) {
         // 1) addToSet 시도
-        Query q = Query.query(Criteria.where("_id").is(productId));
+        Query q = Query.query(Criteria.where("_id").is(projectId));
         Update add = new Update().addToSet("favorites", userSeq);
         UpdateResult added = mt.updateFirst(q, add, ProductEntity.class);
 
         if (added.getMatchedCount() == 0) {
-            throw new IllegalArgumentException("상품이 없습니다: " + productId);
+            throw new IllegalArgumentException("상품이 없습니다: " + projectId);
         }
         // modifiedCount==1 이면 방금 추가됨 → true
         if (added.getModifiedCount() == 1) return true;
@@ -44,8 +44,8 @@ public class FavoriteService {
     }
 
     /** 특정 상품에 대해 유저가 즐겨찾기 했는지 */
-    public boolean isFavorited(String productId, String userSeq) {
-        return pr.existsByIdAndFavoritedUser(productId, userSeq);
+    public boolean isFavorited(String projectId, String userSeq) {
+        return pr.existsByIdAndFavoritedUser(projectId, userSeq);
     }
 }
 

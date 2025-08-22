@@ -26,23 +26,23 @@ public class ProductService {
     private final MongoTemplate mt;
     private final AssetClient ac;
 
-    public List<ProductListDto> getAllProduct() {
+    public List<ProductListDto> getAllProject() {
         return pr.findAll().stream()
                 .map(ProductListDto::from)
                 .collect(Collectors.toList());
     }
 
-    public ProductDetailDto getProductByProductId(String productId) {
-        viewCount(productId);
-        ProductEntity product = pr.findById(productId)
+    public ProductDetailDto getProductByProjectId(String projectId) {
+        viewCount(projectId);
+        ProductEntity product = pr.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
         return ProductDetailDto.from(product);
     }
 
-    public void viewCount(String productId) {
+    public void viewCount(String projectId) {
         mt.getCollection("product") // 실제 컬렉션 이름
                 .updateOne(
-                        new Document("_id", productId),
+                        new Document("_id", projectId),
                         new Document("$inc", new Document("viewCount", 1))  
                 );
     }

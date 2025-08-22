@@ -43,7 +43,7 @@ public class AdminController {
 
     /** 게시물 HOLD 토글 (ADMIN 권한 필요) */
     @PostMapping("/hold/toggle/{id}")
-    public ResponseEntity<Map<String, Object>> toggleHold(@PathVariable("id") String productId,
+    public ResponseEntity<Map<String, Object>> toggleHold(@PathVariable("id") String projectId,
                                                           @RequestHeader("Authorization") String auth,
                                                           @RequestBody @Valid AdminHoldDto dto) {
 
@@ -52,11 +52,11 @@ public class AdminController {
 
         String adminSeq = guard.requireUserSeq(c); // 클라이언트가 보내는 adminId는 신뢰 X
 
-        ProductEntity.ProductStatus newStatus = as.toggleHold(productId, dto.getHoldReason(), adminSeq);
+        ProductEntity.ProductStatus newStatus = as.toggleHold(projectId, dto.getHoldReason(), adminSeq);
         boolean nowHold = (newStatus == ProductEntity.ProductStatus.HOLD);
 
         return ResponseEntity.ok(Map.of(
-                "productId", productId,
+                "product", projectId,
                 "status", newStatus.name(),
                 "hold", nowHold
         ));

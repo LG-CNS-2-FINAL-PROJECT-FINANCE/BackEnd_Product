@@ -26,5 +26,5 @@ public interface ProductRepository
 
     // 특정 상품을 유저가 즐겨찾기했는지 존재 여부
     @Query(value = "{ '_id': ?0, 'favorites': ?1 }", exists = true)
-    boolean existsByIdAndFavoritedUser(String productId, String userSeq);
+    boolean existsByIdAndFavoritedUser(String projectId, String userSeq);
 }
