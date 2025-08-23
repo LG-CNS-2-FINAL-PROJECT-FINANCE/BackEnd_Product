@@ -20,8 +20,6 @@ public class RequestSearch {
     private ProductRequestEntity.RequestType type;
     private ProductRequestEntity.RequestStatus status;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate endDate;
 }
