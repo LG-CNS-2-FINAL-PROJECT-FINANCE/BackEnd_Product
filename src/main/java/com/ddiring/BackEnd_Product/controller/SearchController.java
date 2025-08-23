@@ -29,34 +29,6 @@ public class SearchController {
             throw new ForbiddenException("권한 없음 (required=ADMIN)");
         }
     }
-//
-//    @GetMapping
-//    public Page<RequestListDto> search(
-//            @RequestParam(value = "searchBy", required = false) RequestSearch.SearchBy searchBy,
-//            @RequestParam(value = "keyword", required = false) String keyword,
-//            @RequestParam(value = "type", required = false) ProductRequestEntity.RequestType type,
-//            @RequestParam(value = "status", required = false) ProductRequestEntity.RequestStatus status,
-//            @RequestParam(value = "startDate", required = false) LocalDate startDate,
-//            @RequestParam(value = "endDate", required = false) LocalDate endDate,
-//            Pageable pageable) {
-//
-//        searchAdmin();
-//
-//        RequestSearch cond = RequestSearch.builder()
-//                .searchBy(searchBy)
-//                .keyword(blankToNull(keyword))
-//                .type(type)
-//                .status(status)
-//                .startDate(startDate)
-//                .endDate(endDate)
-//                .build();
-//
-//        return ss.search(cond, pageable);
-//    }
-//
-//    private String blankToNull(String s) {
-//        return (s == null || s.isBlank()) ? null : s.trim();
-//    }
 
     @GetMapping("/admin")
     public Page<RequestListDto> search(
@@ -68,7 +40,8 @@ public class SearchController {
             @RequestParam(value = "endDate", required = false) LocalDate endDate,
             Pageable pageable) {
 
-        // 권한 검증 생략
+        searchAdmin();
+
         RequestSearch cond = RequestSearch.builder()
                 .searchBy(searchBy)
                 .keyword(blankToNull(keyword))
@@ -84,4 +57,31 @@ public class SearchController {
     private String blankToNull(String s) {
         return (s == null || s.isBlank()) ? null : s.trim();
     }
+
+//    @GetMapping("/admin")
+//    public Page<RequestListDto> search(
+//            @RequestParam(value = "searchBy", required = false) RequestSearch.SearchBy searchBy,
+//            @RequestParam(value = "keyword", required = false) String keyword,
+//            @RequestParam(value = "type", required = false) ProductRequestEntity.RequestType type,
+//            @RequestParam(value = "status", required = false) ProductRequestEntity.RequestStatus status,
+//            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+//            @RequestParam(value = "endDate", required = false) LocalDate endDate,
+//            Pageable pageable) {
+//
+//        // 권한 검증 생략
+//        RequestSearch cond = RequestSearch.builder()
+//                .searchBy(searchBy)
+//                .keyword(blankToNull(keyword))
+//                .type(type)
+//                .status(status)
+//                .startDate(startDate)
+//                .endDate(endDate)
+//                .build();
+//
+//        return ss.search(cond, pageable);
+//    }
+//
+//    private String blankToNull(String s) {
+//        return (s == null || s.isBlank()) ? null : s.trim();
+//    }
 }
