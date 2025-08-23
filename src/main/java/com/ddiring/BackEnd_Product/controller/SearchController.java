@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/api/admin/search")
+@RequestMapping("/api/product/search")
 @RequiredArgsConstructor
 public class SearchController {
 
@@ -58,7 +58,7 @@ public class SearchController {
 //        return (s == null || s.isBlank()) ? null : s.trim();
 //    }
 
-    @GetMapping
+    @GetMapping("/admin")
     public Page<RequestListDto> search(
             @RequestParam(value = "searchBy", required = false) RequestSearch.SearchBy searchBy,
             @RequestParam(value = "keyword", required = false) String keyword,

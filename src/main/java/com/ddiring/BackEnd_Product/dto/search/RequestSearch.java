@@ -2,7 +2,6 @@ package com.ddiring.BackEnd_Product.dto.search;
 
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -12,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class RequestSearch {
-    public enum SearchBy { USER, TITLE}
+    public enum SearchBy { USER, TITLE }
 
     private SearchBy searchBy;
     private String keyword;
