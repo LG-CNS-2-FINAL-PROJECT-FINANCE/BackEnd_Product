@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.common.web.context;
+package com.ddiring.BackEnd_Product.common.util;
 
 import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
 import com.ddiring.BackEnd_Product.common.exception.NotFound;

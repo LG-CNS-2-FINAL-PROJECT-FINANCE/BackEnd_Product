@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.common.dto;
+package com.ddiring.BackEnd_Product.common.response.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

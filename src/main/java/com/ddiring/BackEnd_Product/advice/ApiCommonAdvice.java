@@ -2,7 +2,7 @@ package com.ddiring.BackEnd_Product.advice;
 
 
 import com.ddiring.BackEnd_Product.advice.parameter.ParameterErrorDto;
-import com.ddiring.BackEnd_Product.common.dto.ApiResponseDto;
+import com.ddiring.BackEnd_Product.common.response.dto.ApiResponseDto;
 import com.ddiring.BackEnd_Product.common.exception.BadParameter;
 import com.ddiring.BackEnd_Product.common.exception.ClientError;
 import com.ddiring.BackEnd_Product.common.exception.NotFound;

@@ -28,7 +28,7 @@ public class ProductController {
 //        guard.requireAnyRole(c, "ADMIN", "CREATOR", "USER"); // 비로그인/무권한 차단
 //
 //        List<ProductListDto> productList = ps.getAllProduct();
-//        return ResponseEntity.ok(productList);
+//        return ResponseEntity.ok(productList);x
 //    }
 //
 //    /** 상세 조회: 로그인 필수 (ADMIN/CREATOR/USER 중 하나) */

@@ -1,6 +1,8 @@
 package com.ddiring.BackEnd_Product.controller;
 
+import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
 import com.ddiring.BackEnd_Product.common.security.JwtAuthGuard;
+import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
 import com.ddiring.BackEnd_Product.dto.request.RequestDetailDto;
 import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.service.RequestService;
@@ -19,24 +21,48 @@ public class RequestController {
     private final RequestService rs;
     private final JwtAuthGuard guard;
 
-    @GetMapping
-    public ResponseEntity<List<RequestListDto>> getAllRequest(
-            @RequestHeader("Authorization") String auth) {
+//    @GetMapping
+//    public ResponseEntity<List<RequestListDto>> getAllRequest(
+//            @RequestHeader("Authorization") String auth) {
+//
+//        Claims c = guard.requireClaims(auth);
+//        guard.requireAnyRole(c, "ADMIN");
+//
+//        List<RequestListDto> requestList = rs.getAllRequest();
+//        return ResponseEntity.ok(requestList);
+//    }
+//
+//    @GetMapping("/{requestId}")
+//    public ResponseEntity<RequestDetailDto> getRequest(
+//            @PathVariable String requestId,
+//            @RequestHeader("Authorizat.ion") String auth) {
+//
+//        Claims c = guard.requireClaims(auth);
+//        guard.requireAnyRole(c, "ADMIN");
+//
+//        RequestDetailDto rdd = rs.getRequestByRequestId(requestId);
+//        return ResponseEntity.ok(rdd);
+//    }
 
-        Claims c = guard.requireClaims(auth);
-        guard.requireAnyRole(c, "ADMIN");
+    @GetMapping
+    public ResponseEntity<List<RequestListDto>> getAllRequest() {
+        String role = GatewayRequestHeaderUtils.getRole();
+
+        if (!"ADMIN".equalsIgnoreCase(role)) {
+            throw new ForbiddenException("권한 없음 (required=ADMIN)");
+        }
 
         List<RequestListDto> requestList = rs.getAllRequest();
         return ResponseEntity.ok(requestList);
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<RequestDetailDto> getRequest(
-            @PathVariable String requestId,
-            @RequestHeader("Authorization") String auth) {
+    public ResponseEntity<RequestDetailDto> getRequest(@PathVariable String requestId) {
+        String role = GatewayRequestHeaderUtils.getRole();
 
-        Claims c = guard.requireClaims(auth);
-        guard.requireAnyRole(c, "ADMIN");
+        if (!"ADMIN".equalsIgnoreCase(role)) {
+            throw new ForbiddenException("권한 없음 (required=ADMIN)");
+        }
 
         RequestDetailDto rdd = rs.getRequestByRequestId(requestId);
         return ResponseEntity.ok(rdd);
