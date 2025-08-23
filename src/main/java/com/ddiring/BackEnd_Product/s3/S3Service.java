@@ -10,8 +10,6 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,7 +28,7 @@ public class S3Service {
                 .bucket(bucket)
                 .key(fileUrl)
                 .contentType(file.getContentType())
-                // .acl("public-read")
+                // .acl("public-read") 공개처리 코드
                 .build();
         s3Client.putObject(por, RequestBody.fromBytes(file.getBytes()));
         return "https://" + bucket + ".s3.amazonaws.com/" + fileUrl;
