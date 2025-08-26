@@ -19,30 +19,6 @@ import java.util.List;
 public class RequestController {
 
     private final RequestService rs;
-    private final JwtAuthGuard guard;
-// 헤더 추출
-//    @GetMapping
-//    public ResponseEntity<List<RequestListDto>> getAllRequest(
-//            @RequestHeader("Authorization") String auth) {
-//
-//        Claims c = guard.requireClaims(auth);
-//        guard.requireAnyRole(c, "ADMIN");
-//
-//        List<RequestListDto> requestList = rs.getAllRequest();
-//        return ResponseEntity.ok(requestList);
-//    }
-//
-//    @GetMapping("/{requestId}")
-//    public ResponseEntity<RequestDetailDto> getRequest(
-//            @PathVariable String requestId,
-//            @RequestHeader("Authorizat.ion") String auth) {
-//
-//        Claims c = guard.requireClaims(auth);
-//        guard.requireAnyRole(c, "ADMIN");
-//
-//        RequestDetailDto rdd = rs.getRequestByRequestId(requestId);
-//        return ResponseEntity.ok(rdd);
-//    }
 
     @GetMapping
     public ResponseEntity<List<RequestListDto>> getAllRequest() {

@@ -33,18 +33,7 @@ public class SearchService {
                     String keyword = Pattern.quote(RS.getKeyword());
                     conditions.add(Criteria.where("payload.title").regex(keyword, "i"));
                 }
-                case USER_SEQ -> {
-                    if (isNumeric(RS.getKeyword())) {
-                        conditions.add(Criteria.where("userSeq").is(Integer.parseInt(RS.getKeyword())));
-                    } else {
-                        // (선택) 사용자 이름/이메일 → userSeq 목록으로 해석
-                        // List<Integer> seqs = userClient.findUserSeqs(c.getKeyword());
-                        // if (seqs.isEmpty()) return Page.empty(pageable);
-                        // conditions.add(Criteria.where("userSeq").in(seqs));
-                        // 간단 옵션: 일단 매칭 불가 처리
-                        return Page.empty(P);
-                    }
-                }
+                case USER_SEQ -> conditions.add(Criteria.where("userSeq").is(RS.getKeyword()));
             }
         }
         // 타입/상태

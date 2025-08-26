@@ -13,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/product/ranking")
 public class ListController {
+
     private final RankingService rs;
 
     @GetMapping("/view")
