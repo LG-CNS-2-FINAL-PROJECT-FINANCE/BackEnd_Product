@@ -22,6 +22,7 @@ public class CreatorController {
     private final CreatorService cs;
     private final JwtAuthGuard guard;
 
+// 헤더 추출
 //    @PostMapping("/create")
 //    public ResponseEntity<Map<String,String>> create(@RequestHeader("Authorization") String auth,
 //                                                     @RequestBody @Valid CreatorCreateDto dto) {

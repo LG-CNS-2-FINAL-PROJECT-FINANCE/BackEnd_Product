@@ -19,6 +19,7 @@ public class ProductController {
     private final ProductService ps;
 //    private final JwtAuthGuard guard; // JWT 인증/권한 가드
 
+// 헤더 추출
 //    /** 목록 조회: 로그인 필수 (ADMIN/CREATOR/USER 중 하나) */
 //    @GetMapping
 //    public ResponseEntity<List<ProductListDto>> getAllProducts(

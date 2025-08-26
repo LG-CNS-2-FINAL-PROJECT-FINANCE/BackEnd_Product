@@ -11,9 +11,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class RequestSearch {
-    public enum SearchBy { USER, TITLE }
 
     private SearchBy searchBy;
+    public enum SearchBy { USERSEQ, TITLE }
     private String keyword;
 
     private ProductRequestEntity.RequestType type;

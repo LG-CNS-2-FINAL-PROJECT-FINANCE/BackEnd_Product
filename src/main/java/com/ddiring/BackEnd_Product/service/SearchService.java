@@ -24,7 +24,7 @@ public class SearchService {
 
     private final MongoTemplate mt;
 
-    public Page<RequestListDto> search(RequestSearch RS, Pageable P) {
+    public Page<RequestListDto> requestSearch(RequestSearch RS, Pageable P) {
         List<Criteria> conditions = new ArrayList<>();
 
         if(RS.getSearchBy() !=null && RS.getKeyword() != null) {
@@ -33,7 +33,7 @@ public class SearchService {
                     String keyword = Pattern.quote(RS.getKeyword());
                     conditions.add(Criteria.where("payload.title").regex(keyword, "i"));
                 }
-                case USER -> {
+                case USERSEQ -> {
                     if (isNumeric(RS.getKeyword())) {
                         conditions.add(Criteria.where("userSeq").is(Integer.parseInt(RS.getKeyword())));
                     } else {

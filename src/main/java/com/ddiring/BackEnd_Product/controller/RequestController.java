@@ -20,7 +20,7 @@ public class RequestController {
 
     private final RequestService rs;
     private final JwtAuthGuard guard;
-
+// 헤더 추출
 //    @GetMapping
 //    public ResponseEntity<List<RequestListDto>> getAllRequest(
 //            @RequestHeader("Authorization") String auth) {

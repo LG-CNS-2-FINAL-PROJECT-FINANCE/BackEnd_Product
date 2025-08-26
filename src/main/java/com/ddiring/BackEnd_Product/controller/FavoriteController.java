@@ -21,6 +21,7 @@ public class FavoriteController {
     private final FavoriteService fs;
     private final JwtAuthGuard guard; // JWT 인증/권한 가드
 
+// 헤더 추출
 //    /** 즐겨찾기 토글 (USER 권한 필요) */
 //    @PostMapping("/toggle/{id}")
 //    public ResponseEntity<Map<String, Object>> toggle(@PathVariable("id") String projectId,

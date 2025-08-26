@@ -38,11 +38,11 @@ public class SearchController {
             @RequestParam(value = "status", required = false) ProductRequestEntity.RequestStatus status,
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
             @RequestParam(value = "endDate", required = false) LocalDate endDate,
-            Pageable pageable) {
+            Pageable p) {
 
         searchAdmin();
 
-        RequestSearch cond = RequestSearch.builder()
+        RequestSearch sear = RequestSearch.builder()
                 .searchBy(searchBy)
                 .keyword(blankToNull(keyword))
                 .type(type)
@@ -51,7 +51,7 @@ public class SearchController {
                 .endDate(endDate)
                 .build();
 
-        return ss.search(cond, pageable);
+        return ss.requestSearch(sear, p);
     }
 
     private String blankToNull(String s) {

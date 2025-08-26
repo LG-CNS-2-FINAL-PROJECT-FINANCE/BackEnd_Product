@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class AdminHoldDto {
 
     @NotBlank
-    private String requestId;
+    private String projectId;
 
     private String adminId;
 
