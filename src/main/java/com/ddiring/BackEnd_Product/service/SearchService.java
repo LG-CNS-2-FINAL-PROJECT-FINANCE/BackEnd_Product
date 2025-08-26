@@ -29,11 +29,11 @@ public class SearchService {
 
         if(RS.getSearchBy() !=null && RS.getKeyword() != null) {
             switch (RS.getSearchBy()) {
-                case TITLE -> {
+                case title -> {
                     String keyword = Pattern.quote(RS.getKeyword());
                     conditions.add(Criteria.where("payload.title").regex(keyword, "i"));
                 }
-                case USERSEQ -> {
+                case userSeq -> {
                     if (isNumeric(RS.getKeyword())) {
                         conditions.add(Criteria.where("userSeq").is(Integer.parseInt(RS.getKeyword())));
                     } else {
