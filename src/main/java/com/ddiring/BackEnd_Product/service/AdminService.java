@@ -60,7 +60,21 @@ public class AdminService {
         oldImages.stream().filter(old -> !newImages.contains(old)).forEach(s3::deleteFile);
 
         switch (pre.getType()) {
-            case CREATE -> handleCreate(pre);
+//            case CREATE -> handleCreate(pre);
+            case CREATE -> {
+                handleCreate(pre);
+
+                // CREATE일 때만 Asset 서비스 호출
+                ProductEntity pe = pr.findById(pre.getProjectId())
+                        .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
+
+                ps.sendAsset(
+                        AssetRequestDto.builder()
+                                .projectId(pre.getProjectId())
+                                .account(pe.getAccount())
+                                .build()
+                );
+            }
             case UPDATE ->  handleUpdate(pre);
             case STOP -> handleStop(pre);
         }
@@ -69,15 +83,15 @@ public class AdminService {
         pre.setAdminId(userSeq);
         prr.save(pre);
 
-        ProductEntity pe = pr.findById(pre.getProjectId())
-                .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
-
-        ps.sendAsset(
-                AssetRequestDto.builder()
-                        .projectId(pre.getProjectId())
-                        .account(pe.getAccount())
-                        .build()
-        );
+//        ProductEntity pe = pr.findById(pre.getProjectId())
+//                .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
+//
+//        ps.sendAsset(
+//                AssetRequestDto.builder()
+//                        .projectId(pre.getProjectId())
+//                        .account(pe.getAccount())
+//                        .build()
+//        );
     }
 
     /* ---------- 거절 ---------- */
