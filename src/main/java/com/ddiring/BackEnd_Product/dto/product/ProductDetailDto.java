@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -31,6 +32,7 @@ public class ProductDetailDto {
     private List<String> document;
     private List<String> image;
     private int viewCount;
+    private Set<String> favorites;
     private ProductEntity.ProductStatus state;
     private String holdReason;
 
@@ -52,6 +54,7 @@ public class ProductDetailDto {
                 .document(e.getDocument())
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
+                .favorites(e.getFavorites())
                 .state(e.getStatus())
                 .holdReason(e.getHoldReason())
                 .build();

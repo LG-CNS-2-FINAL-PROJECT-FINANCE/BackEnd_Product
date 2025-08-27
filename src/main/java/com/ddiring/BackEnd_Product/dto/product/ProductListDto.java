@@ -26,7 +26,6 @@ public class ProductListDto {
     private BigDecimal percent;
     private List<String> image;
     private int viewCount;
-    private Set<String> favorites;
     private ProductEntity.ProductStatus state;
 
     private Integer tradePrice;
@@ -43,7 +42,6 @@ public class ProductListDto {
                 .percent(e.getPercent())
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
-                .favorites(e.getFavorites())
                 .state(e.getStatus())
                 .build();
     }
