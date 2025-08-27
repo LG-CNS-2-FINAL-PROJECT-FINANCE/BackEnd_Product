@@ -74,7 +74,7 @@ public class AdminService {
 
         ps.sendAsset(
                 AssetRequestDto.builder()
-                        .projectId(pre.getPayload().getProjectId())
+                        .projectId(pre.getProjectId())
                         .account(pe.getAccount())
                         .build()
         );
