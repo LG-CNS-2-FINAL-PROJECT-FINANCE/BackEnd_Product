@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
         url  = "${smartContract.base-url}"     // application-local.yml 값 그대로 사용
 )
 public interface SmartContractClient {
-
     @PostMapping("/api/smartContract/create")
     SmartContractResponseDto createSmartContract(@RequestBody SmartContractRequestDto request);
 }

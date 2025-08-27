@@ -44,9 +44,4 @@ public class ProductListDto {
                 .state(e.getStatus())
                 .build();
     }
-
-    public ProductListDto withLatestTrade(Integer tradePrice) {
-        this.tradePrice = tradePrice;
-        return this;
-        }
 }

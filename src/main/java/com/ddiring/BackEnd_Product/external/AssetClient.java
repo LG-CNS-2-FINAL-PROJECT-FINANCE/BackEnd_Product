@@ -1,5 +1,6 @@
 package com.ddiring.BackEnd_Product.external;
 
+import com.ddiring.BackEnd_Product.common.response.dto.ApiResponseDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
         url = "${asset.base-url}"
 )
 public interface AssetClient {
-    @PostMapping("/api/asset")
-    void asset(@RequestBody AssetRequestDto request);
+    @PostMapping("/api/escrow/account")
+    ApiResponseDto<String> asset(@RequestBody AssetRequestDto request);
 }

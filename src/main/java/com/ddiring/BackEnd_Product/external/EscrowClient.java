@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
         url  = "${escrow.base-url}"     // application-local.yml 값 그대로 사용
 )
 public interface EscrowClient {
-
     @PostMapping("/api/escrow/create")
     AccountResponseDto createAccount(@RequestBody AccountRequestDto request);
 }
