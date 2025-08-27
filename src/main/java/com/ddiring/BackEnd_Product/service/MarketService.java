@@ -1,6 +1,6 @@
 package com.ddiring.BackEnd_Product.service;
 
-import com.ddiring.BackEnd_Product.dto.market.TradeHistoryDto;
+import com.ddiring.BackEnd_Product.dto.market.MarketDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.external.MarketClient;
@@ -30,10 +30,10 @@ public class MarketService {
                     ProductListDto dto = ProductListDto.from(e);
 
                     // trade-service 호출해서 최근 거래 가져오기
-                    List<TradeHistoryDto> history = tc.getTradeHistory(e.getProjectId());
+                    List<MarketDto> history = tc.getTradeHistory(e.getProjectId());
 
                     if (history != null && !history.isEmpty()) {
-                        TradeHistoryDto latest = history.get(0); // 제일 최근 건만 사용
+                        MarketDto latest = history.get(0); // 제일 최근 건만 사용
                         dto.setTradePrice(latest.getTradePrice());
                     } else {
                         dto.setTradePrice(null);

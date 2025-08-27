@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class TradeHistoryDto {
+public class MarketDto {
     private Integer tradePrice;
     private Integer tokenQuantity;
     private LocalDateTime tradedAt;

@@ -18,7 +18,7 @@ public class MyPageController {
     private final MyPageService mps;
     private final RequestService rs;
 
-    @GetMapping("/mypage")
+    @GetMapping("/myPage")
     public Page<RequestListDto> getMyRequest(Pageable p) {
         // Gateway 또는 JWT에서 userSeq 추출
         String userSeq = GatewayRequestHeaderUtils.getUserSeq();

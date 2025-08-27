@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/product/ranking")
-public class ListController {
+public class RankingController {
 
     private final RankingService rs;
 

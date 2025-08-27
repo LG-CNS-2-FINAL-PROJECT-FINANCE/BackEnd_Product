@@ -48,8 +48,8 @@ public class AdminController {
     }
 
     /** 게시물 HOLD 토글 (ADMIN 권한 필요) */
-    @PostMapping("/hold/toggle/{id}")
-    public ResponseEntity<Map<String, Object>> toggleHold(@PathVariable("id") String projectId,
+    @PostMapping("/hold/toggle/{projectId}")
+    public ResponseEntity<Map<String, Object>> toggleHold(@PathVariable("projectId") String projectId,
                                                           @RequestBody @Valid AdminHoldDto dto) {
         String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
         String role = GatewayRequestHeaderUtils.getRole();

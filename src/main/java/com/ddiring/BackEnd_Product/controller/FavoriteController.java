@@ -19,8 +19,8 @@ public class FavoriteController {
     private final FavoriteService fs;
 
     /** 즐겨찾기 토글 (USER 권한 필요) */
-    @PostMapping("/toggle/{id}")
-    public ResponseEntity<Map<String, Object>> toggle(@PathVariable("id") String projectId) {
+    @PostMapping("/toggle/{projectId}")
+    public ResponseEntity<Map<String, Object>> toggle(@PathVariable("projectId") String projectId) {
         String userSeq = GatewayRequestHeaderUtils.getUserSeq();
         String role = GatewayRequestHeaderUtils.getRole();
 
@@ -36,7 +36,7 @@ public class FavoriteController {
     }
 
     /** 내 즐겨찾기 목록 조회 (USER 권한 필요) */
-    @GetMapping("/favorite/me")
+    @GetMapping("/me")
     public ResponseEntity<List<ProductListDto>> myFavorites() {
         String userSeq = GatewayRequestHeaderUtils.getUserSeq();
         String role = GatewayRequestHeaderUtils.getRole();
