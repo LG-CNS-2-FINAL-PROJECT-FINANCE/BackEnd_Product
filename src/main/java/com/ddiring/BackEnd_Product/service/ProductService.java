@@ -32,11 +32,11 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductDetailDto getProductByProjectId(String projectId) {
+    public ProductDetailDto getProductByProjectId(String projectId, String userSeq) {
         viewCount(projectId);
         ProductEntity product = pr.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
-        return ProductDetailDto.from(product);
+        return ProductDetailDto.from(product, userSeq);
     }
 
     public void viewCount(String projectId) {

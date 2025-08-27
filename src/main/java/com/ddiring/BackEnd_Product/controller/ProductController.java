@@ -1,6 +1,7 @@
 package com.ddiring.BackEnd_Product.controller;
 
 import com.ddiring.BackEnd_Product.common.security.JwtAuthGuard;
+import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.service.ProductService;
@@ -26,7 +27,8 @@ public class ProductController {
 
     @GetMapping("/{projectId}")
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String projectId) {
-        ProductDetailDto pdd = ps.getProductByProjectId(projectId);
+        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
+        ProductDetailDto pdd = ps.getProductByProjectId(projectId, userSeq);
         return ResponseEntity.ok(pdd);
     }
 }

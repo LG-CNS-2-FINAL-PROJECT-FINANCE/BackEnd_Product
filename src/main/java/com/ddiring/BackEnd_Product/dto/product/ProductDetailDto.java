@@ -32,11 +32,11 @@ public class ProductDetailDto {
     private List<String> document;
     private List<String> image;
     private int viewCount;
-    private Set<String> favorites;
+    private boolean favorite;
     private ProductEntity.ProductStatus state;
     private String holdReason;
 
-    public static ProductDetailDto from(ProductEntity e) {
+    public static ProductDetailDto from(ProductEntity e, String userSeq) {
         return ProductDetailDto.builder()
                 .projectId(e.getProjectId())
                 .userSeq(e.getUserSeq())
@@ -54,7 +54,7 @@ public class ProductDetailDto {
                 .document(e.getDocument())
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
-                .favorites(e.getFavorites())
+                .favorite(e.getFavorites().contains(userSeq))
                 .state(e.getStatus())
                 .holdReason(e.getHoldReason())
                 .build();
