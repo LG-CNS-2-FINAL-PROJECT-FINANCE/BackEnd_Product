@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @FeignClient(
-        name = "trade-service",
-        url = "${trade.service.url}"
+        name = "market",
+        url = "${market.base-url}"
 )
 public interface TradeClient {
 
