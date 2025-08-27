@@ -33,7 +33,7 @@ public class MarketService {
                     List<MarketDto> history = tc.getTradeHistory(e.getProjectId());
 
                     if (history != null && !history.isEmpty()) {
-                        MarketDto latest = history.get(0); // 제일 최근 건만 사용
+                        MarketDto latest = history.get(history.size()-1); // 제일 최근 건만 사용
                         dto.setTradePrice(latest.getTradePrice());
                     } else {
                         dto.setTradePrice(null);

@@ -1,12 +1,14 @@
 package com.ddiring.BackEnd_Product.dto.market;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MarketDto {
     private Integer tradePrice;
     private Integer tokenQuantity;
