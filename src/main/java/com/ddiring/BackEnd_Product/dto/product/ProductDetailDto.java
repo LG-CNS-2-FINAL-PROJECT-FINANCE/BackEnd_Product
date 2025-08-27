@@ -36,6 +36,8 @@ public class ProductDetailDto {
     private ProductEntity.ProductStatus state;
     private String holdReason;
 
+    private Integer tradePrice;
+
     public static ProductDetailDto from(ProductEntity e, String userSeq) {
         return ProductDetailDto.builder()
                 .projectId(e.getProjectId())

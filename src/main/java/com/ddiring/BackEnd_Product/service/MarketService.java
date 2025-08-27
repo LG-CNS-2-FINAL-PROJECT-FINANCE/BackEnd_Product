@@ -1,6 +1,7 @@
 package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.dto.market.MarketDto;
+import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.external.MarketClient;
@@ -42,5 +43,25 @@ public class MarketService {
                     return dto;
                 })
                 .toList();
+    }
+
+    public ProductDetailDto getEndedProductDetail(String projectId, String userSeq) {
+        // 1) DB에서 상품 조회
+        ProductEntity e = mt.findById(projectId, ProductEntity.class);
+        if (e == null || e.getStatus() != ProductEntity.ProductStatus.END) {
+            throw new IllegalArgumentException("존재하지 않거나 마감되지 않은 상품입니다: " + projectId);
+        }
+
+        // 2) 기본 변환 (favorite 포함)
+        ProductDetailDto dto = ProductDetailDto.from(e, userSeq);
+
+        // 3) trade-service 호출해서 최근 거래 붙이기
+        List<MarketDto> history = tc.getTradeHistory(projectId);
+        if (history != null && !history.isEmpty()) {
+            MarketDto latest = history.get(history.size() - 1); // 최근 거래
+            dto.setTradePrice(latest.getTradePrice());
+        }
+
+        return dto;
     }
 }
