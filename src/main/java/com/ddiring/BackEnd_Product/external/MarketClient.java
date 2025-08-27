@@ -13,6 +13,6 @@ import java.util.List;
 )
 public interface MarketClient {
 
-    @GetMapping("/market/trade/{projectId}/history")
+    @GetMapping("/api/market/trade/{projectId}/history")
     List<MarketDto> getTradeHistory(@PathVariable("projectId") String projectId);
 }
