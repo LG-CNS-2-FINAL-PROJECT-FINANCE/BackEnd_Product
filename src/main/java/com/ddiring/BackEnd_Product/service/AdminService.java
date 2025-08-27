@@ -43,7 +43,8 @@ public class AdminService {
 
         // DB에 기존 product 조회 (UPDATE, STOP일 때만 존재)
         ProductEntity product = null;
-        if (pre.getPayload().getProjectId() != null) {
+        if (pre.getType() != ProductRequestEntity.RequestType.CREATE &&
+                pre.getPayload().getProjectId() != null) {
             product = pr.findById(pre.getPayload().getProjectId())
                     .orElse(null);
         }
