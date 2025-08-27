@@ -8,7 +8,6 @@ import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,7 @@ public class SearchController {
 
     private final SearchService ss;
 
-    private void searchAdmin() {
+    private void  searchAdmin() {
         String role = GatewayRequestHeaderUtils.getRole();
         if (!"ADMIN".equalsIgnoreCase(role)) {
             throw new ForbiddenException("권한 없음 (required=ADMIN)");
@@ -39,13 +38,9 @@ public class SearchController {
             @RequestParam(value = "status", required = false) ProductRequestEntity.RequestStatus status,
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
             @RequestParam(value = "endDate", required = false) LocalDate endDate,
-            Pageable pageable) {
+            Pageable p) {
 
         searchAdmin();
-
-        // ✅ page=1부터 시작하도록 보정
-        int pageIndex = pageable.getPageNumber() <= 0 ? 0 : pageable.getPageNumber() - 1;
-        Pageable corrected = PageRequest.of(pageIndex, pageable.getPageSize(), pageable.getSort());
 
         RequestSearch sear = RequestSearch.builder()
                 .searchBy(searchBy)
@@ -56,7 +51,7 @@ public class SearchController {
                 .endDate(endDate)
                 .build();
 
-        return ss.requestSearch(sear, corrected);
+        return ss.requestSearch(sear, p);
     }
 
     private String blankToNull(String s) {

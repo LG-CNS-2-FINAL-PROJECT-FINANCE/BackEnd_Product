@@ -1,7 +1,9 @@
 package com.ddiring.BackEnd_Product.service;
 
+import com.ddiring.BackEnd_Product.dto.market.TradeHistoryDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
+import com.ddiring.BackEnd_Product.external.TradeClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -16,6 +18,7 @@ import java.util.List;
 public class MarketService {
 
     private final MongoTemplate mt;
+    private final TradeClient tc;
 
     public List<ProductListDto> getEndedProducts(Pageable pageable) {
         Criteria criteria = Criteria.where("status").is(ProductEntity.ProductStatus.END);
@@ -23,7 +26,21 @@ public class MarketService {
 
         List<ProductEntity> rows = mt.find(query, ProductEntity.class);
         return rows.stream()
-                .map(ProductListDto::from) // DTO 매퍼 가정
+                .map(e -> {
+                    ProductListDto dto = ProductListDto.from(e);
+
+                    // trade-service 호출해서 최근 거래 가져오기
+                    List<TradeHistoryDto> history = tc.getTradeHistory(e.getProjectId());
+
+                    if (history != null && !history.isEmpty()) {
+                        TradeHistoryDto latest = history.get(0); // 제일 최근 건만 사용
+                        dto.setTradePrice(latest.getTradePrice());
+                    } else {
+                        dto.setTradePrice(null);
+                    }
+
+                    return dto;
+                })
                 .toList();
     }
 }

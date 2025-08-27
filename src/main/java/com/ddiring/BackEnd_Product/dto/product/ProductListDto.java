@@ -27,6 +27,8 @@ public class ProductListDto {
     private int viewCount;
     private ProductEntity.ProductStatus state;
 
+    private Integer tradePrice;
+
     public static ProductListDto from(ProductEntity e) {
         return ProductListDto.builder()
                 .projectId(e.getProjectId())
@@ -42,4 +44,9 @@ public class ProductListDto {
                 .state(e.getStatus())
                 .build();
     }
+
+    public ProductListDto withLatestTrade(Integer tradePrice) {
+        this.tradePrice = tradePrice;
+        return this;
+        }
 }

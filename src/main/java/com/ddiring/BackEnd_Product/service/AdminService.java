@@ -3,6 +3,7 @@ package com.ddiring.BackEnd_Product.service;
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
+import com.ddiring.BackEnd_Product.dto.asset.AssetRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
@@ -67,11 +68,15 @@ public class AdminService {
         pre.setAdminId(userSeq);
         prr.save(pre);
 
-//        ps.sendAsset(
-//                AssetRequestDto.builder()
-//                        .projectId(pre.getPayload().getProjectId())
-//                        .build()
-//        );
+        ProductEntity pe = pr.findById(pre.getPayload().getProjectId())
+                .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
+
+        ps.sendAsset(
+                AssetRequestDto.builder()
+                        .projectId(pre.getPayload().getProjectId())
+                        .account(pe.getAccount())
+                        .build()
+        );
     }
 
     /* ---------- 거절 ---------- */

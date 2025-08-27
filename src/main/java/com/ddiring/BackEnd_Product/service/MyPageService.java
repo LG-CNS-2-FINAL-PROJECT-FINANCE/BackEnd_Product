@@ -1,7 +1,6 @@
 package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
-import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
