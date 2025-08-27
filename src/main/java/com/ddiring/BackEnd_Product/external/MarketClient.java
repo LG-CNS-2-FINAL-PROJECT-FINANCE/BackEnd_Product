@@ -11,7 +11,7 @@ import java.util.List;
         name = "market",
         url = "${market.base-url}"
 )
-public interface TradeClient {
+public interface MarketClient {
 
     @GetMapping("/market/trade/{projectId}/history")
     List<TradeHistoryDto> getTradeHistory(@PathVariable("projectId") String projectId);

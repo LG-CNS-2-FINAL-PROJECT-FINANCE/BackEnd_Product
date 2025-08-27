@@ -3,7 +3,7 @@ package com.ddiring.BackEnd_Product.service;
 import com.ddiring.BackEnd_Product.dto.market.TradeHistoryDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
-import com.ddiring.BackEnd_Product.external.TradeClient;
+import com.ddiring.BackEnd_Product.external.MarketClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,7 +18,7 @@ import java.util.List;
 public class MarketService {
 
     private final MongoTemplate mt;
-    private final TradeClient tc;
+    private final MarketClient tc;
 
     public List<ProductListDto> getEndedProducts(Pageable pageable) {
         Criteria criteria = Criteria.where("status").is(ProductEntity.ProductStatus.END);
