@@ -9,10 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminHoldDto {
-
-    @NotBlank
-    private String projectId;
-
     private String adminId;
 
     @NotBlank

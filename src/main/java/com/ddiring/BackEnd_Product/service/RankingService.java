@@ -25,5 +25,4 @@ public class RankingService {
     public List<ProductEntity> getTopByAmount() {
         return pr.findTop10ByOrderByAmountDesc();
     }
-
 }
