@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +26,7 @@ public class ProductListDto {
     private BigDecimal percent;
     private List<String> image;
     private int viewCount;
+    private Set<String> favorites;
     private ProductEntity.ProductStatus state;
 
     private Integer tradePrice;
@@ -41,6 +43,7 @@ public class ProductListDto {
                 .percent(e.getPercent())
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
+                .favorites(e.getFavorites())
                 .state(e.getStatus())
                 .build();
     }
