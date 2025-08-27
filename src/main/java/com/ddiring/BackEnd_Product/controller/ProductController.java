@@ -28,12 +28,7 @@ public class ProductController {
 
     @GetMapping("/{projectId}")
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String projectId) {
-        String userSeq = null;
-        try {
-            userSeq = GatewayRequestHeaderUtils.getUserSeq();
-        } catch (CustomException ex) {
-            // 헤더 없으면 그냥 null로 둠 (비로그인 사용자)
-        }
+        String userSeq = GatewayRequestHeaderUtils.getUserSeqSafe();
         ProductDetailDto pdd = ps.getProductByProjectId(projectId, userSeq);
         return ResponseEntity.ok(pdd);
     }

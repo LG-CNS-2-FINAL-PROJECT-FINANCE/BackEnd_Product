@@ -27,4 +27,13 @@ public class GatewayRequestHeaderUtils {
         }
         return role;
     }
+
+    public static String getUserSeqSafe() {
+        try {
+            return getUserSeq();
+        } catch (CustomException e) {
+            return null; // 헤더 없으면 null 리턴
+        }
+    }
+
 }
