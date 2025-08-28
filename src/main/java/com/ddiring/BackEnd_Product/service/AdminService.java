@@ -196,13 +196,6 @@ public class AdminService {
         AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
         pe.setAccount(escrowResponse.getAccount());
 
-//        //SmartContract 주소
-//        SmartContractRequestDto smartContractRequest = SmartContractRequestDto.builder()
-//                .projectId(pe.getProjectId())
-//                .build();
-//        SmartContractResponseDto smartContractResponse = scc.createSmartContract(smartContractRequest);
-//        pe.setSmartContract(smartContractResponse.getSmartContract());
-
         pr.save(pe); // 다시 저장해서 계좌 반영
     }
     

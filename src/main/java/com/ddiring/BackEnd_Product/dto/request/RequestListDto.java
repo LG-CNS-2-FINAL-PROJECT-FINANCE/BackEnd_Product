@@ -16,11 +16,11 @@ public class RequestListDto {
     private String requestId;
     private String userSeq;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
-
     private String projectId;  // UPDATE/STOP 대상
     private String title;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private ProductRequestEntity.RequestType type;
     private ProductRequestEntity.RequestStatus status;

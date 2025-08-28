@@ -55,8 +55,6 @@ public class ProductEntity {
     @Builder.Default
     private List<String> image = new ArrayList<>();
 
-//    private String smartContract;
-
     private int viewCount;
 
     @Builder.Default
