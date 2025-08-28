@@ -13,5 +13,5 @@ public class AdminApproveDto {
     @NotBlank
     private String requestId;
 
-    private String adminId;
+    private String adminSeq;
 }

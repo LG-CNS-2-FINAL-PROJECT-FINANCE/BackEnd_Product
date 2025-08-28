@@ -24,7 +24,7 @@ public class RequestListDto {
 
     private ProductRequestEntity.RequestType type;
     private ProductRequestEntity.RequestStatus status;
-    private String adminId;
+    private String adminSeq;
 
     public static RequestListDto from(ProductRequestEntity e) {
         return RequestListDto.builder()
@@ -36,7 +36,7 @@ public class RequestListDto {
                 .title(e.getPayload().getTitle())
                 .type(e.getType())
                 .status(e.getStatus())
-                .adminId(e.getAdminId())
+                .adminSeq(e.getAdminSeq())
                 .build();
     }
 }

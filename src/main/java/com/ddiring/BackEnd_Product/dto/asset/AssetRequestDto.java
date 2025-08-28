@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AssetRequestDto {
     private String projectId;
+    private String title;
     private String account;
 }

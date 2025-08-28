@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminHoldDto {
-    private String adminId;
+    private String adminSeq;
 
     @NotBlank
     private String holdReason;

@@ -1,5 +1,6 @@
 package com.ddiring.BackEnd_Product.service;
 
+import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import com.ddiring.BackEnd_Product.dto.asset.AssetRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
@@ -26,12 +27,14 @@ public class ProductService {
     private final MongoTemplate mt;
     private final AssetClient ac;
 
+    // 모든 상품 조회
     public List<ProductListDto> getAllProject() {
         return pr.findAll().stream()
                 .map(ProductListDto::from)
                 .collect(Collectors.toList());
     }
 
+    // 상품 상세 조회
     public ProductDetailDto getProductByProjectId(String projectId, String userSeq) {
         viewCount(projectId);
         ProductEntity product = pr.findById(projectId)
@@ -47,6 +50,7 @@ public class ProductService {
                 );
     }
 
+    // 모근액 저장 및 달성률 계산
     public void receiveAmount(AmountDto dto) {
         ProductEntity pe = pr.findById(dto.getProjectId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
@@ -79,6 +83,7 @@ public class ProductService {
         }
     }
 
+    // Asset에 정보 전송
     @Transactional
     public ProductEntity sendAsset(AssetRequestDto dto) {
         if (dto == null || dto.getProjectId() == null) {
@@ -92,5 +97,20 @@ public class ProductService {
         // (예: dto.setTitle(pe.getTitle());)
         ac.asset(dto); // 동기 호출
         return pe;
+    }
+
+    @Transactional
+    public ProductEntity closedProduct (String projectId, String adminSeq) {
+        ProductEntity product = pr.findById(projectId)
+                .orElseThrow(() -> new NotFound("상품을 찾을 수 없습니다: " + projectId));
+
+        if (product.getStatus() == ProductEntity.ProductStatus.CLOSED) {
+            throw new IllegalStateException("이미 CLOSED 상태입니다.");
+        }
+        if (product.getStatus() != ProductEntity.ProductStatus.END) {
+            throw new IllegalStateException("END 상태가 아닌 상품은 CLOSED로 전환할 수 없습니다. 현재 상태=" + product.getStatus());
+        }
+        product.setStatus(ProductEntity.ProductStatus.CLOSED);
+        return pr.save(product);
     }
 }

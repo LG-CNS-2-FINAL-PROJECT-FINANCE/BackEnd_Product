@@ -9,8 +9,8 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/product/files")
-public class FileController {
+@RequestMapping("/api/product/file")
+public class S3Controller {
 
     private final S3Service s3;
 

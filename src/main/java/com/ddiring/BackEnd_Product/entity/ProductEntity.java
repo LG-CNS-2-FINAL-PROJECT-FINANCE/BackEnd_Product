@@ -55,7 +55,7 @@ public class ProductEntity {
     @Builder.Default
     private List<String> image = new ArrayList<>();
 
-    private String smartContract;
+//    private String smartContract;
 
     private int viewCount;
 
@@ -76,7 +76,7 @@ public class ProductEntity {
 //    @LastModifiedDate
 //    private LocalDateTime updatedAt;
 
-    public enum ProductStatus {OPEN, HOLD, END}
+    public enum ProductStatus {OPEN, HOLD, END, CLOSED}
 
     public int dDay() {
         return (int) ChronoUnit.DAYS.between(LocalDate.now(), endDate);

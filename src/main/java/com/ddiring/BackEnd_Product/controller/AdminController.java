@@ -7,6 +7,7 @@ import com.ddiring.BackEnd_Product.dto.admin.AdminHoldDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.service.AdminService;
+import com.ddiring.BackEnd_Product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class AdminController {
 
     private final AdminService as;
+    private final ProductService ps;
 
     @PostMapping("/approve")
     public ResponseEntity<Void> approve(@RequestBody @Valid AdminApproveDto dto) {
@@ -65,6 +67,25 @@ public class AdminController {
                 "product", projectId,
                 "status", newStatus.name(),
                 "hold", nowHold
+        ));
+    }
+
+    @PostMapping("/closed/{projectId}")
+    public ResponseEntity<Map<String, Object>> closeProduct(@PathVariable("projectId") String projectId) {
+
+        String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
+        String role = GatewayRequestHeaderUtils.getRole();
+
+        if (!"ADMIN".equalsIgnoreCase(role)) {
+            throw new ForbiddenException("권한 없음 (required=ADMIN)");
+        }
+
+        ProductEntity updated = ps.closedProduct(projectId, adminSeq);
+
+        return ResponseEntity.ok(Map.of(
+                "projectId", updated.getProjectId(),
+                "status", updated.getStatus().name(),
+                "reason", updated.getReason()
         ));
     }
 }

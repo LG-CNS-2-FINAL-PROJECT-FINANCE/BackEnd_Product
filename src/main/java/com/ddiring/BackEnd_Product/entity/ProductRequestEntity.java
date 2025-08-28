@@ -25,7 +25,7 @@ public class ProductRequestEntity {
     private RequestStatus status;    // PENDING, APPROVED, REJECTED
     private ProductPayload payload;
 
-    private String adminId;
+    private String adminSeq;
     private String rejectReason;
 
 //    @CreatedBy

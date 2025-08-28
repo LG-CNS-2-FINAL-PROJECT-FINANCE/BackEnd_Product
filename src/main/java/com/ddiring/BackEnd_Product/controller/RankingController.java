@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/product/ranking")
+@RequiredArgsConstructor
 public class RankingController {
 
     private final RankingService rs;

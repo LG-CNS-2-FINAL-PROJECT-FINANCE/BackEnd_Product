@@ -10,7 +10,6 @@ import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.external.EscrowClient;
-import com.ddiring.BackEnd_Product.external.SmartContractClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import com.ddiring.BackEnd_Product.s3.S3Service;
@@ -29,7 +28,6 @@ public class AdminService {
     private final ProductRequestRepository prr;
     private final ProductRepository pr;
     private final EscrowClient ec;
-    private final SmartContractClient scc;
     private final ProductService ps;
     private final S3Service s3;
 
@@ -70,17 +68,29 @@ public class AdminService {
 
                 ps.sendAsset(
                         AssetRequestDto.builder()
-                                .projectId(pre.getProjectId())
+                                .projectId(pe.getProjectId())
+                                .title(pe.getTitle())
                                 .account(pe.getAccount())
                                 .build()
                 );
             }
-            case UPDATE ->  handleUpdate(pre);
+            case UPDATE -> {
+                handleUpdate(pre);
+                ProductEntity pe = pr.findById(pre.getProjectId())
+                        .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
+
+                ps.sendAsset(
+                        AssetRequestDto.builder()
+                                .projectId(pe.getProjectId())
+                                .title(pe.getTitle())
+                                .build()
+                );
+            }
             case STOP -> handleStop(pre);
         }
 
         pre.setStatus(ProductRequestEntity.RequestStatus.APPROVED);
-        pre.setAdminId(userSeq);
+        pre.setAdminSeq(userSeq);
         prr.save(pre);
 
 //        ProductEntity pe = pr.findById(pre.getProjectId())
@@ -125,7 +135,7 @@ public class AdminService {
                 .forEach(s3::deleteFile);
 
         pre.setStatus(ProductRequestEntity.RequestStatus.REJECTED);
-        pre.setAdminId(userSeq);
+        pre.setAdminSeq(userSeq);
         pre.setRejectReason(dto.getRejectReason());
         prr.save(pre);
     }

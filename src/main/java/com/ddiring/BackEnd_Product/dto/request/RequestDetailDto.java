@@ -32,7 +32,7 @@ public class RequestDetailDto {
 
     private ProductRequestEntity.RequestType type;
     private ProductRequestEntity.RequestStatus status;
-    private String adminId;
+    private String adminSeq;
     private String rejectReason;
 
     public static RequestDetailDto from(ProductRequestEntity e) {
@@ -52,7 +52,7 @@ public class RequestDetailDto {
                 .reason(e.getPayload().getReason())
                 .type(e.getType())
                 .status(e.getStatus())
-                .adminId(e.getAdminId())
+                .adminSeq(e.getAdminSeq())
                 .rejectReason(e.getRejectReason())
                 .build();
     }
