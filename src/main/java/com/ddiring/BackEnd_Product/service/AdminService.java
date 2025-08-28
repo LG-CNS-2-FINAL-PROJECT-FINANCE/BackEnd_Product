@@ -83,6 +83,7 @@ public class AdminService {
                         AssetRequestDto.builder()
                                 .projectId(pe.getProjectId())
                                 .title(pe.getTitle())
+                                .account(pe.getAccount())
                                 .build()
                 );
             }
