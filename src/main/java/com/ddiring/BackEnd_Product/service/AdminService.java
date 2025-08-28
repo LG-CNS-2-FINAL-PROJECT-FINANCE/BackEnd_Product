@@ -93,16 +93,6 @@ public class AdminService {
         pre.setStatus(ProductRequestEntity.RequestStatus.APPROVED);
         pre.setAdminSeq(userSeq);
         prr.save(pre);
-
-//        ProductEntity pe = pr.findById(pre.getProjectId())
-//                .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
-//
-//        ps.sendAsset(
-//                AssetRequestDto.builder()
-//                        .projectId(pre.getProjectId())
-//                        .account(pe.getAccount())
-//                        .build()
-//        );
     }
 
     /* ---------- 거절 ---------- */

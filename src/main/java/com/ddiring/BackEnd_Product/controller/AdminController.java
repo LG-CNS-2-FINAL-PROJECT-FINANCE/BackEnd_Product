@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/product/request")
+@RequestMapping("/api/product")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService as;
     private final ProductService ps;
 
-    @PostMapping("/approve")
+    @PostMapping("/request/approve")
     public ResponseEntity<Void> approve(@RequestBody @Valid AdminApproveDto dto) {
         String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
         String role = GatewayRequestHeaderUtils.getRole();
@@ -36,7 +36,7 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/reject")
+    @PostMapping("/request/reject")
     public ResponseEntity<Void> reject(@RequestBody @Valid AdminRejectDto dto) {
         String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
         String role = GatewayRequestHeaderUtils.getRole();

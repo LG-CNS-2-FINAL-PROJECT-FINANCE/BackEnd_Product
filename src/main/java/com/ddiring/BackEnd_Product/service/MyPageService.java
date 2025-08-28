@@ -1,6 +1,8 @@
 package com.ddiring.BackEnd_Product.service;
 
+import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
+import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ public class MyPageService {
 
     private final MongoTemplate mt;
 
+    // 개인 요청 조회
     public Page<RequestListDto> getMyRequest(String userSeq, Pageable p) {
         // 조건: userSeq = 현재 로그인한 사용자
         Criteria criteria = Criteria.where("userSeq").is(userSeq);
@@ -38,6 +41,23 @@ public class MyPageService {
                 .toList();
 
         // Page 객체로 리턴 (프론트에서 content/totalPages/... 사용 가능)
+        return new PageImpl<>(content, p, total);
+    }
+
+    // 개인 상품 조회
+    public Page<ProductListDto> getMyProduct(String userSeq, Pageable p) {
+        Criteria criteria = Criteria.where("userSeq").is(userSeq);
+
+        Query query = new Query(criteria).with(p);
+
+        List<ProductEntity> rows = mt.find(query, ProductEntity.class);
+
+        long total = mt.count(Query.of(query).limit(-1).skip(-1), ProductEntity.class);
+
+        List<ProductListDto> content =rows.stream()
+                .map(ProductListDto::from)
+                .toList();
+
         return new PageImpl<>(content, p, total);
     }
 }
