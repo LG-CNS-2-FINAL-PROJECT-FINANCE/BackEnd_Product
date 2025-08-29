@@ -103,7 +103,7 @@ public class AdminService {
         pre.setRequestStatus(ProductRequestEntity.RequestStatus.APPROVED);
         pre.setAdminSeq(userSeq);
         prr.save(pre);
-    }
+    } 
 
     /* ---------- 거절 ---------- */
     @Transactional
