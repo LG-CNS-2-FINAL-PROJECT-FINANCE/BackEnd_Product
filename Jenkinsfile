@@ -2,6 +2,7 @@
 def APP_NAME
 def APP_VERSION
 def DOCKER_IMAGE_NAME
+def PROD_IMAGE_NAME
 
 pipeline {
     agent any
