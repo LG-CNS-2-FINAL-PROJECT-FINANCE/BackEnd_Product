@@ -21,8 +21,8 @@ public class MarketService {
     private final MongoTemplate mt;
     private final MarketClient tc;
 
-    public List<ProductListDto> getEndedProducts(Pageable pageable) {
-        Criteria criteria = Criteria.where("status").is(ProductEntity.ProductStatus.END);
+    public List<ProductListDto> getTradingProducts(Pageable pageable) {
+        Criteria criteria = Criteria.where("status").is(ProductEntity.ProjectStatus.TRADING);
         Query query = new Query(criteria).with(pageable);
 
         List<ProductEntity> rows = mt.find(query, ProductEntity.class);
@@ -45,11 +45,11 @@ public class MarketService {
                 .toList();
     }
 
-    public ProductDetailDto getEndedProductDetail(String projectId, String userSeq) {
+    public ProductDetailDto getTradingProductDetail(String projectId, String userSeq) {
         // 1) DB에서 상품 조회
         ProductEntity e = mt.findById(projectId, ProductEntity.class);
-        if (e == null || e.getStatus() != ProductEntity.ProductStatus.END) {
-            throw new IllegalArgumentException("존재하지 않거나 마감되지 않은 상품입니다: " + projectId);
+        if (e == null || e.getProjectStatus() != ProductEntity.ProjectStatus.TRADING) {
+            throw new IllegalArgumentException("존재하지 않거나 FUNDING 마감되지 않은 상품입니다: " + projectId);
         }
 
         // 2) 기본 변환 (favorite 포함)

@@ -30,8 +30,8 @@ public class RequestDetailDto {
     private List<String> image ;
     private String reason;
 
-    private ProductRequestEntity.RequestType type;
-    private ProductRequestEntity.RequestStatus status;
+    private ProductRequestEntity.RequestType requestType;
+    private ProductRequestEntity.RequestStatus requestStatus;
     private String adminSeq;
     private String rejectReason;
 
@@ -50,8 +50,8 @@ public class RequestDetailDto {
                 .document(e.getPayload().getDocument())
                 .image(e.getPayload().getImage())
                 .reason(e.getPayload().getReason())
-                .type(e.getType())
-                .status(e.getStatus())
+                .requestType(e.getRequestType())
+                .requestStatus(e.getRequestStatus())
                 .adminSeq(e.getAdminSeq())
                 .rejectReason(e.getRejectReason())
                 .build();

@@ -1,5 +1,6 @@
 package com.ddiring.BackEnd_Product.service;
 
+import com.ddiring.BackEnd_Product.dto.creator.CreatorDistributionDto;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorUpdateDto;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorCreateDto;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorStopDto;
@@ -8,6 +9,7 @@ import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
+import feign.Request;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.dao.DataAccessException;
@@ -23,6 +25,7 @@ public class CreatorService {
 
     private final ProductRequestRepository prr;
     private final ProductRepository pr;
+    private final RequestService rs;
 
     /* ---------- 등록요청 ---------- */
     public String create(CreatorCreateDto dto, String userSeq) {
@@ -36,8 +39,8 @@ public class CreatorService {
 
         try {
             ProductRequestEntity pre = ProductRequestEntity.builder()
-                    .type(ProductRequestEntity.RequestType.CREATE)
-                    .status(ProductRequestEntity.RequestStatus.PENDING)
+                    .requestType(ProductRequestEntity.RequestType.CREATE)
+                    .requestStatus(ProductRequestEntity.RequestStatus.PENDING)
                     .payload(dto.toPayload())
                     .userSeq(userSeq)
                     .build();
@@ -51,7 +54,7 @@ public class CreatorService {
     public String update(CreatorUpdateDto dto, String userSeq) {
 
         // ① 동시에 진행 중인 요청 확인
-        if (prr.existsByProjectIdAndStatus(dto.getProjectId(),
+        if (prr.existsByProjectIdAndRequestStatus(dto.getProjectId(),
                 ProductRequestEntity.RequestStatus.PENDING))
             throw new IllegalStateException("이미 대기 중인 요청이 있습니다");
 
@@ -65,8 +68,8 @@ public class CreatorService {
         // ④ 요청 엔티티 저장 (승인 대기)
         ProductRequestEntity pre = ProductRequestEntity.builder()
                 .projectId(dto.getProjectId())
-                .type(ProductRequestEntity.RequestType.UPDATE)
-                .status(ProductRequestEntity.RequestStatus.PENDING)
+                .requestType(ProductRequestEntity.RequestType.UPDATE)
+                .requestStatus(ProductRequestEntity.RequestStatus.PENDING)
                 .payload(payload)
                 .userSeq(userSeq)
                 .build();
@@ -76,22 +79,64 @@ public class CreatorService {
 
     /* ---------- 정지 ---------- */
     public String stop(CreatorStopDto dto, String userSeq) {
-        if (prr.existsByProjectIdAndStatus(dto.getProjectId(),
+
+        // ① 동시에 진행 중인 요청 확인
+        if (prr.existsByProjectIdAndRequestStatus(dto.getProjectId(),
                 ProductRequestEntity.RequestStatus.PENDING))
             throw new IllegalStateException("이미 대기 중인 요청이 있습니다");
 
+        // ② 원본 상품 스냅샷
         ProductEntity product = pr.findById(dto.getProjectId())
                 .orElseThrow(() -> new RuntimeException("상품이 없습니다"));
-        ProductPayload payload = ProductPayload.from(product);
-        payload.stop(dto);
 
+        ProductPayload payload = ProductPayload.from(product);
+        payload.stop(dto);   // 텍스트 정보 덮어쓰기
+
+        // ④ 요청 엔티티 저장 (승인 대기)
         ProductRequestEntity pre = ProductRequestEntity.builder()
                 .projectId(dto.getProjectId())
-                .type(ProductRequestEntity.RequestType.STOP)
-                .status(ProductRequestEntity.RequestStatus.PENDING)
+                .requestType(ProductRequestEntity.RequestType.STOP)
+                .requestStatus(ProductRequestEntity.RequestStatus.PENDING)
                 .payload(payload)
                 .userSeq(userSeq)
                 .build();
+        return prr.save(pre).getRequestId();
+    }
+
+    /* ---------- 분배요청 ---------- */
+    public String distribution(CreatorDistributionDto dto, String userSeq) {
+        // ① 동시에 진행 중인 요청 확인
+        if (prr.existsByProjectIdAndRequestStatus(dto.getProjectId(),
+                ProductRequestEntity.RequestStatus.PENDING)) {
+            throw new IllegalStateException("이미 대기 중인 요청이 있습니다");
+        }
+
+        // ② 원본 상품 스냅샷
+        ProductEntity product = pr.findById(dto.getProjectId())
+                .orElseThrow(() -> new RuntimeException("상품이 없습니다"));
+
+        // ✅ 상태 체크: TRADING 에서만 요청 가능
+        if (product.getProjectStatus() != ProductEntity.ProjectStatus.TRADING) {
+            throw new IllegalStateException("분배 요청은 TRADING 상태에서만 가능합니다");
+        }
+
+        ProductPayload payload = ProductPayload.from(product);
+        payload.distribution(dto);   // 텍스트 정보 덮어쓰기
+
+        // ✅ 분배율 계산은 RequestService 메서드 사용
+        BigDecimal percent = rs.DistributionPercent(
+                payload.getDistributionAmount(), payload.getGoalAmount());
+        payload.setDistributionPercent(percent);
+
+        // ③ 요청 엔티티 저장 (승인 대기)
+        ProductRequestEntity pre = ProductRequestEntity.builder()
+                .projectId(dto.getProjectId())
+                .requestType(ProductRequestEntity.RequestType.DISTRIBUTION)
+                .requestStatus(ProductRequestEntity.RequestStatus.PENDING)
+                .payload(payload)
+                .userSeq(userSeq)
+                .build();
+
         return prr.save(pre).getRequestId();
     }
 }

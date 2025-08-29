@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface ProductRequestRepository
         extends MongoRepository<ProductRequestEntity, String> {
 
-    boolean existsByProjectIdAndStatus(String projectId, ProductRequestEntity.RequestStatus status);
+    boolean existsByProjectIdAndRequestStatus(String projectId, ProductRequestEntity.RequestStatus requestStatus);
+
 }

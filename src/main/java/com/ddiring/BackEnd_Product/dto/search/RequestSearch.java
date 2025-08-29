@@ -16,8 +16,8 @@ public class RequestSearch {
     public enum SearchBy { USER_SEQ, TITLE }
     private String keyword;
 
-    private ProductRequestEntity.RequestType type;
-    private ProductRequestEntity.RequestStatus status;
+    private ProductRequestEntity.RequestType requestType;
+    private ProductRequestEntity.RequestStatus requestStatus;
 
     private LocalDate startDate;
     private LocalDate endDate;

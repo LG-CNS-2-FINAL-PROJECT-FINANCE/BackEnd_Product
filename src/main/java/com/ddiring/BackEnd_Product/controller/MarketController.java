@@ -23,18 +23,18 @@ public class MarketController {
 
     private final MarketService ms;
 
-    @GetMapping("/end")
+    @GetMapping("/trading")
     public Page<ProductListDto> getEndedProducts (Pageable p) {
-        List<ProductListDto> content = ms.getEndedProducts(p);
+        List<ProductListDto> content = ms.getTradingProducts(p);
         long total = content.size(); // 필요 시 count 쿼리 별도 호출
 
         return new PageImpl<>(content, p, total);
     }
 
-    @GetMapping("/end/{projectId}")
+    @GetMapping("/trading/{projectId}")
     public ResponseEntity<ProductDetailDto> getEndedProduct(@PathVariable String projectId) {
         String userSeq = GatewayRequestHeaderUtils.getUserSeqSafe();
-        ProductDetailDto detail = ms.getEndedProductDetail(projectId, userSeq);
+        ProductDetailDto detail = ms.getTradingProductDetail(projectId, userSeq);
         return ResponseEntity.ok(detail);
     }
 }

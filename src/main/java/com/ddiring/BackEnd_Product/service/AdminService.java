@@ -3,7 +3,7 @@ package com.ddiring.BackEnd_Product.service;
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
-import com.ddiring.BackEnd_Product.dto.asset.AssetRequestDto;
+import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,61 +35,72 @@ public class AdminService {
     public void approve(AdminApproveDto dto, String userSeq) {
         ProductRequestEntity pre = prr.findById(dto.getRequestId())
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
-        if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
+        if (pre.getRequestStatus() != ProductRequestEntity.RequestStatus.PENDING)
             throw new IllegalStateException("이미 처리된 요청 입니다");
 
-        // DB에 기존 product 조회 (UPDATE, STOP일 때만 존재)
-        ProductEntity product = null;
-        if (pre.getType() != ProductRequestEntity.RequestType.CREATE &&
-                pre.getPayload().getProjectId() != null) {
-            product = pr.findById(pre.getPayload().getProjectId())
-                    .orElse(null);
-        }
+//        // DB에 기존 product 조회 (UPDATE, STOP일 때만 존재)
+//        ProductEntity product = null;
+//        if (pre.getRequestType() != ProductRequestEntity.RequestType.CREATE &&
+//                pre.getPayload().getProjectId() != null) {
+//            product = pr.findById(pre.getPayload().getProjectId())
+//                    .orElse(null);
+//        }
+//
+//        List<String> oldDocs = (product != null) ? product.getDocument() : new ArrayList<>();
+//        List<String> oldImages = (product != null) ? product.getImage() : new ArrayList<>();
+//
+//        List<String> newDocs = pre.getPayload().getDocument() != null ? pre.getPayload().getDocument() : new ArrayList<>();
+//        List<String> newImages = pre.getPayload().getImage() != null ? pre.getPayload().getImage() : new ArrayList<>();
+//
+//        // 차집합 -> S3 삭제
+//        oldDocs.stream().filter(old -> !newDocs.contains(old)).forEach(s3::deleteFile);
+//        oldImages.stream().filter(old -> !newImages.contains(old)).forEach(s3::deleteFile);
 
-        List<String> oldDocs = (product != null) ? product.getDocument() : new ArrayList<>();
-        List<String> oldImages = (product != null) ? product.getImage() : new ArrayList<>();
-
-        List<String> newDocs = pre.getPayload().getDocument() != null ? pre.getPayload().getDocument() : new ArrayList<>();
-        List<String> newImages = pre.getPayload().getImage() != null ? pre.getPayload().getImage() : new ArrayList<>();
-
-        // 차집합 -> S3 삭제
-        oldDocs.stream().filter(old -> !newDocs.contains(old)).forEach(s3::deleteFile);
-        oldImages.stream().filter(old -> !newImages.contains(old)).forEach(s3::deleteFile);
-
-        switch (pre.getType()) {
-//            case CREATE -> handleCreate(pre);
+        switch (pre.getRequestType()) {
             case CREATE -> {
                 handleCreate(pre);
 
-                // CREATE일 때만 Asset 서비스 호출
+                // CREATE Asset 서비스 호출
                 ProductEntity pe = pr.findById(pre.getProjectId())
                         .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
 
-                ps.sendAsset(
-                        AssetRequestDto.builder()
+                ps.sendAssetAccount(
+                        AssetAccountDto.builder()
                                 .projectId(pe.getProjectId())
                                 .title(pe.getTitle())
                                 .account(pe.getAccount())
                                 .build()
                 );
             }
+
             case UPDATE -> {
                 handleUpdate(pre);
+
+                // UPDATE Asset 서비스 호출 (제목만 업데이트)
                 ProductEntity pe = pr.findById(pre.getProjectId())
                         .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
 
-                ps.sendAsset(
-                        AssetRequestDto.builder()
+                ps.sendAssetAccount(
+                        AssetAccountDto.builder()
                                 .projectId(pe.getProjectId())
                                 .title(pe.getTitle())
                                 .account(pe.getAccount())
                                 .build()
                 );
             }
+
             case STOP -> handleStop(pre);
+
+            case DISTRIBUTION -> {
+                // 1. 분배 요청 상태 변경 (승인 처리)
+                handleDistribution(pre);
+
+                // 2. Asset 서비스로 전송 (requestId 기반)
+                ps.sendAssetDistribution(pre.getRequestId());
+            }
         }
 
-        pre.setStatus(ProductRequestEntity.RequestStatus.APPROVED);
+        pre.setRequestStatus(ProductRequestEntity.RequestStatus.APPROVED);
         pre.setAdminSeq(userSeq);
         prr.save(pre);
     }
@@ -100,32 +110,32 @@ public class AdminService {
     public void reject(AdminRejectDto dto, String userSeq) {
         ProductRequestEntity pre = prr.findById(dto.getRequestId())
                 .orElseThrow(() -> new RuntimeException("요청이 없습니다"));
-        if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING)
+        if (pre.getRequestStatus() != ProductRequestEntity.RequestStatus.PENDING)
             throw new IllegalStateException("이미 처리된 요청 입니다");
 
-        ProductEntity product = null;
-        if (pre.getPayload().getProjectId() != null) {
-            product = pr.findById(pre.getPayload().getProjectId())
-                    .orElse(null);
-        }
+//        ProductEntity product = null;
+//        if (pre.getPayload().getProjectId() != null) {
+//            product = pr.findById(pre.getPayload().getProjectId())
+//                    .orElse(null);
+//        }
+//
+//        List<String> oldDocs = (product != null) ? product.getDocument() : new ArrayList<>();
+//        List<String> oldImages = (product != null) ? product.getImage() : new ArrayList<>();
+//
+//        // 요청에서 넘어온 신규 파일들
+//        List<String> newDocs = pre.getPayload().getDocument() != null ? pre.getPayload().getDocument() : new ArrayList<>();
+//        List<String> newImages = pre.getPayload().getImage() != null ? pre.getPayload().getImage() : new ArrayList<>();
+//
+//        // DB에 없는 신규 업로드만 삭제
+//        newDocs.stream()
+//                .filter(url -> !oldDocs.contains(url))
+//                .forEach(s3::deleteFile);
+//
+//        newImages.stream()
+//                .filter(url -> !oldImages.contains(url))
+//                .forEach(s3::deleteFile);
 
-        List<String> oldDocs = (product != null) ? product.getDocument() : new ArrayList<>();
-        List<String> oldImages = (product != null) ? product.getImage() : new ArrayList<>();
-
-        // 요청에서 넘어온 신규 파일들
-        List<String> newDocs = pre.getPayload().getDocument() != null ? pre.getPayload().getDocument() : new ArrayList<>();
-        List<String> newImages = pre.getPayload().getImage() != null ? pre.getPayload().getImage() : new ArrayList<>();
-
-        // DB에 없는 신규 업로드만 삭제
-        newDocs.stream()
-                .filter(url -> !oldDocs.contains(url))
-                .forEach(s3::deleteFile);
-
-        newImages.stream()
-                .filter(url -> !oldImages.contains(url))
-                .forEach(s3::deleteFile);
-
-        pre.setStatus(ProductRequestEntity.RequestStatus.REJECTED);
+        pre.setRequestStatus(ProductRequestEntity.RequestStatus.REJECTED);
         pre.setAdminSeq(userSeq);
         pre.setRejectReason(dto.getRejectReason());
         prr.save(pre);
@@ -133,36 +143,30 @@ public class AdminService {
 
     /* ---------- 숨김 ---------- */
     @Transactional
-    public ProductEntity.ProductStatus toggleHold(String projectId, String reason, String adminSeq) {
+    public ProductEntity.ProjectVisibility toggleVisibility(String projectId, String reason, String adminSeq) {
         ProductEntity pe = pr.findById(projectId)
                 .orElseThrow(() -> new NotFound("상품이 없습니다: " + projectId));
 
-        if (pe.getStatus() == ProductEntity.ProductStatus.END) {
-            throw new IllegalStateException("이미 마감된 상품은 HOLD 토글할 수 없습니다");
+        // 종료된 상품은 숨김 토글 불가
+        if (pe.getProjectStatus() == ProductEntity.ProjectStatus.CLOSED) {
+            throw new IllegalStateException("이미 종료된 상품은 숨김 토글할 수 없습니다");
         }
 
-        boolean goingToHold = (pe.getStatus() != ProductEntity.ProductStatus.HOLD);
+        boolean goingToHold = (pe.getProjectVisibility() != ProductEntity.ProjectVisibility.HOLD);
 
-        if (goingToHold) { // OPEN/STOPPED 등 -> HOLD
+        if (goingToHold) { // PUBLIC → HOLD
             if (reason == null || reason.isBlank()) {
                 throw new IllegalArgumentException("HOLD 사유는 필수입니다");
             }
-            pe.setStatus(ProductEntity.ProductStatus.HOLD);
-            // 기존 reason 필드는 '현재 상태의 사유'로 사용
-            pe.setReason(reason.trim());
-        } else { // HOLD -> OPEN or END (UNHOLD)
-            LocalDate today = LocalDate.now();
-            if (pe.getEndDate() != null && pe.getEndDate().isBefore(today)) {
-                pe.setStatus(ProductEntity.ProductStatus.END);
-            } else {
-                pe.setStatus(ProductEntity.ProductStatus.OPEN);
-                pe.setDeadline(pe.dDay());
-            }
-            // 해제 사유도 남기고 싶다면 '현재 상태 사유'를 비우되, 메타에는 저장
-            pe.setReason(null);
+            pe.setProjectVisibility(ProductEntity.ProjectVisibility.HOLD);
+            pe.setHoldReason(reason.trim()); // 숨김 사유
+        } else { // HOLD → PUBLIC
+            pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
+            pe.setHoldReason(null); // 필요시 해제 사유를 별도 필드로 남겨도 됨
         }
+
         pr.save(pe);
-        return pe.getStatus();
+        return pe.getProjectVisibility();
     }
 
     /* ---------- 내부로직 ------- */
@@ -180,7 +184,8 @@ public class AdminService {
                 .minInvestment(pp.getMinInvestment())
                 .document(new ArrayList<>(pp.getDocument()))
                 .image(new ArrayList<>(pp.getImage()))
-                .status(ProductEntity.ProductStatus.OPEN)
+                .projectStatus(ProductEntity.ProjectStatus.OPEN)
+                .projectVisibility(ProductEntity.ProjectVisibility.PUBLIC)
                 .version(1L)
                 .build();
         pr.insert(pe);
@@ -215,7 +220,8 @@ public class AdminService {
             pe.setDocument(new ArrayList<>(pp.getDocument()));
             pe.setImage(new ArrayList<>(pp.getImage()));
             pe.setReason(pp.getReason());
-            pe.setStatus(ProductEntity.ProductStatus.OPEN);
+            pe.setProjectStatus(ProductEntity.ProjectStatus.OPEN);
+            pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
         pr.save(pe);
     }
 
@@ -223,10 +229,25 @@ public class AdminService {
         ProductPayload pp = pre.getPayload();
         ProductEntity pe = pr.findById(pp.getProjectId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+
         pe.setDocument(new ArrayList<>(pp.getDocument()));
         pe.setImage(new ArrayList<>(pp.getImage()));
         pe.setReason(pp.getReason());
-        pe.setStatus(ProductEntity.ProductStatus.HOLD);
+        pe.setProjectStatus(ProductEntity.ProjectStatus.TEMPORARY_STOP);
+        pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
+        pr.save(pe);
+    }
+
+    private void handleDistribution(ProductRequestEntity pre) {
+        ProductPayload pp = pre.getPayload();
+        ProductEntity pe = pr.findById(pp.getProjectId())
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+
+        pe.setDocument(new ArrayList<>(pp.getDocument()));
+        pe.setImage(new ArrayList<>(pp.getImage()));
+        pe.setDistributionSummary(pp.getDistributionSummary());
+        pe.setProjectStatus(ProductEntity.ProjectStatus.DISTRIBUTION_READY);
+        pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
         pr.save(pe);
     }
 }

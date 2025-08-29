@@ -28,9 +28,9 @@ public class DeadlineUpdateService {
             product.setDeadline(Math.max(dDay, 0));
 
             // 마감된 경우 상태 변경
-            if (dDay <= 0 && product.getStatus() != ProductEntity.ProductStatus.END) {
-                product.setStatus(ProductEntity.ProductStatus.END);
-                log.info("프로젝트 {} 마감됨 → 상태 END로 변경", product.getProjectId());
+            if (dDay <= 0 && product.getProjectStatus() != ProductEntity.ProjectStatus.TRADING) {
+                product.setProjectStatus(ProductEntity.ProjectStatus.TRADING);
+                log.info("프로젝트 {} 마감됨 → 상태 TRADING(2차거래)로 변경", product.getProjectId());
             }
         }
 

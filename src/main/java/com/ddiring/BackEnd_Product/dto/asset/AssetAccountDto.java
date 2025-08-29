@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AssetRequestDto {
+public class AssetAccountDto {
     private String projectId;
     private String title;
     private String account;

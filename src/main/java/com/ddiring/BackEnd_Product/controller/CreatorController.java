@@ -3,6 +3,7 @@ package com.ddiring.BackEnd_Product.controller;
 import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
 import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorCreateDto;
+import com.ddiring.BackEnd_Product.dto.creator.CreatorDistributionDto;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorStopDto;
 import com.ddiring.BackEnd_Product.dto.creator.CreatorUpdateDto;
 import com.ddiring.BackEnd_Product.service.CreatorService;
@@ -54,5 +55,17 @@ public class CreatorController {
         }
 
         return ResponseEntity.ok(Map.of("requestId", cs.stop(dto, userSeq)));
+    }
+
+    @PostMapping("/distribution")
+    public ResponseEntity<Map<String, String>> distribution (@RequestBody @Valid CreatorDistributionDto dto) {
+        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
+        String role = GatewayRequestHeaderUtils.getRole();
+
+        if (!"CREATOR".equalsIgnoreCase(role)) {
+            throw new ForbiddenException("권한 없음 (required=CREATOR)");
+        }
+
+        return ResponseEntity.ok(Map.of("requestId", cs.distribution(dto, userSeq)));
     }
 }

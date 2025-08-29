@@ -20,9 +20,9 @@ public class ProductRequestEntity {
     private String userSeq;
 
     @Indexed
-    private RequestType type;      // CREATE, UPDATE, STOP
+    private RequestType requestType;      // CREATE, UPDATE, STOP
     @Indexed
-    private RequestStatus status;    // PENDING, APPROVED, REJECTED
+    private RequestStatus requestStatus;    // PENDING, APPROVED, REJECTED
     private ProductPayload payload;
 
     private String adminSeq;
@@ -37,6 +37,6 @@ public class ProductRequestEntity {
 //    @LastModifiedDate
 //    private LocalDateTime updatedAt;
 
-    public enum RequestType {CREATE, UPDATE, STOP}
+    public enum RequestType {CREATE, UPDATE, STOP, DISTRIBUTION}
     public enum RequestStatus {PENDING, APPROVED, REJECTED}
 }

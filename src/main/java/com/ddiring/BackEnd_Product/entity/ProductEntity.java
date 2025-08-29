@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,6 +49,11 @@ public class ProductEntity {
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal percent;
 
+    @Field(targetType = FieldType.DECIMAL128)
+    private BigDecimal distributionAmount;
+    @Field(targetType = FieldType.DECIMAL128)
+    private BigDecimal distributionPercent;
+
     @Builder.Default
     private List<String> document = new ArrayList<>();
     @Builder.Default
@@ -60,10 +64,12 @@ public class ProductEntity {
     @Builder.Default
     private Set<String> favorites = new HashSet<>();
 
-    private ProductStatus status;
+    private ProjectStatus projectStatus;
+    private ProjectVisibility projectVisibility;
 
     private String reason;
     private String holdReason;
+    private String distributionSummary;
 
 //    @CreatedBy
 //    private int createdId;
@@ -74,7 +80,21 @@ public class ProductEntity {
 //    @LastModifiedDate
 //    private LocalDateTime updatedAt;
 
-    public enum ProductStatus {OPEN, HOLD, END, CLOSED}
+    public enum ProjectStatus {
+        OPEN,
+        FUNDING_OPEN,
+        FUNDING_LOCKED,
+        TRADING,
+        DISTRIBUTION_READY,
+        DISTRIBUTING,
+        CLOSED,
+        TEMPORARY_STOP
+    }
+
+    public enum ProjectVisibility {
+        PUBLIC,
+        HOLD
+    }
 
     public int dDay() {
         return (int) ChronoUnit.DAYS.between(LocalDate.now(), endDate);

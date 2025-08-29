@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,20 +24,23 @@ public class RequestListDto {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private ProductRequestEntity.RequestType type;
-    private ProductRequestEntity.RequestStatus status;
+    private List<String> image = new ArrayList<>();
+
+    private ProductRequestEntity.RequestType requestType;
+    private ProductRequestEntity.RequestStatus requestStatus;
     private String adminSeq;
 
     public static RequestListDto from(ProductRequestEntity e) {
         return RequestListDto.builder()
                 .requestId(e.getRequestId())
                 .userSeq(e.getUserSeq())
-                .startDate(e.getPayload().getStartDate())
-                .endDate(e.getPayload().getEndDate())
                 .projectId(e.getPayload().getProjectId())
                 .title(e.getPayload().getTitle())
-                .type(e.getType())
-                .status(e.getStatus())
+                .startDate(e.getPayload().getStartDate())
+                .endDate(e.getPayload().getEndDate())
+                .image(e.getPayload().getImage())
+                .requestType(e.getRequestType())
+                .requestStatus(e.getRequestStatus())
                 .adminSeq(e.getAdminSeq())
                 .build();
     }

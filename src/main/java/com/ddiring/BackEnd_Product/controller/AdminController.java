@@ -60,8 +60,8 @@ public class AdminController {
             throw new ForbiddenException("권한 없음 (required=ADMIN)");
         }
 
-        ProductEntity.ProductStatus newStatus = as.toggleHold(projectId, dto.getHoldReason(), adminSeq);
-        boolean nowHold = (newStatus == ProductEntity.ProductStatus.HOLD);
+        ProductEntity.ProjectVisibility newStatus = as.toggleVisibility(projectId, dto.getHoldReason(), adminSeq);
+        boolean nowHold = (newStatus == ProductEntity.ProjectVisibility.HOLD);
 
         return ResponseEntity.ok(Map.of(
                 "product", projectId,
@@ -84,7 +84,7 @@ public class AdminController {
 
         return ResponseEntity.ok(Map.of(
                 "projectId", updated.getProjectId(),
-                "status", updated.getStatus().name(),
+                "status", updated.getProjectStatus().name(),
                 "reason", updated.getReason()
         ));
     }

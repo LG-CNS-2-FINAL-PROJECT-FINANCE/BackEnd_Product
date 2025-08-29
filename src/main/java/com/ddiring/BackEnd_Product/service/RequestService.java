@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,11 +44,24 @@ public class RequestService {
         }
 
         // 이미 처리된 요청은 취소 불가
-        if (pre.getStatus() != ProductRequestEntity.RequestStatus.PENDING) {
+        if (pre.getRequestStatus() != ProductRequestEntity.RequestStatus.PENDING) {
             throw new IllegalStateException("이미 처리된 요청은 취소할 수 없습니다.");
         }
 
         // 그냥 DB에서 삭제
         prr.delete(pre);
+    }
+
+    public BigDecimal DistributionPercent(BigDecimal distributionAmount, BigDecimal goalAmount) {
+        if (distributionAmount == null || goalAmount == null || goalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal percent = distributionAmount
+                .divide(goalAmount, 4, RoundingMode.HALF_UP) // 소수점 넉넉히
+                .multiply(new BigDecimal("100"))             // %
+                .min(new BigDecimal("100"));                 // 100% 이상 방지
+
+        return percent.setScale(1, RoundingMode.HALF_UP);    // 소수점 1자리까지
     }
 }

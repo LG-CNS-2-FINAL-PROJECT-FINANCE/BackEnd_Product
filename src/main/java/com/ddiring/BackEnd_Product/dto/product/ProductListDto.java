@@ -26,7 +26,7 @@ public class ProductListDto {
     private BigDecimal percent;
     private List<String> image;
     private int viewCount;
-    private ProductEntity.ProductStatus status;
+    private ProductEntity.ProjectStatus projectStatus;
 
     private Integer tradePrice;
 
@@ -42,7 +42,7 @@ public class ProductListDto {
                 .percent(e.getPercent())
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
-                .status(e.getStatus())
+                .projectStatus(e.getProjectStatus())
                 .build();
     }
 }

@@ -20,4 +20,3 @@ public class S3Controller {
         return ResponseEntity.ok(url);
     }
 }
-

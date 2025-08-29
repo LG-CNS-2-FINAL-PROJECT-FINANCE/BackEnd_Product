@@ -34,8 +34,8 @@ public class SearchController {
     public Page<RequestListDto> search(
             @RequestParam(value = "searchBy", required = false) RequestSearch.SearchBy searchBy,
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "type", required = false) ProductRequestEntity.RequestType type,
-            @RequestParam(value = "status", required = false) ProductRequestEntity.RequestStatus status,
+            @RequestParam(value = "requestType", required = false) ProductRequestEntity.RequestType requestType,
+            @RequestParam(value = "requestStatus", required = false) ProductRequestEntity.RequestStatus requestStatus,
             @RequestParam(value = "startDate", required = false) LocalDate startDate,
             @RequestParam(value = "endDate", required = false) LocalDate endDate,
             Pageable p) {
@@ -45,8 +45,8 @@ public class SearchController {
         RequestSearch sear = RequestSearch.builder()
                 .searchBy(searchBy)
                 .keyword(blankToNull(keyword))
-                .type(type)
-                .status(status)
+                .requestType(requestType)
+                .requestStatus(requestStatus)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();

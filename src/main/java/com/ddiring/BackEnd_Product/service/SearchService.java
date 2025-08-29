@@ -37,8 +37,8 @@ public class SearchService {
             }
         }
         // 타입/상태
-        if (RS.getType() != null)   conditions.add(Criteria.where("type").is(RS.getType()));
-        if (RS.getStatus() != null) conditions.add(Criteria.where("status").is(RS.getStatus()));
+        if (RS.getRequestType() != null)   conditions.add(Criteria.where("type").is(RS.getRequestType()));
+        if (RS.getRequestStatus() != null) conditions.add(Criteria.where("status").is(RS.getRequestStatus()));
 
         // 기간 (start end 기준)
         LocalDate fromD  = RS.getStartDate();                         // null 허용

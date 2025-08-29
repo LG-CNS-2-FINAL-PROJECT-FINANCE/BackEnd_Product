@@ -33,7 +33,7 @@ public class ProductDetailDto {
     private List<String> image;
     private int viewCount;
     private boolean favorite;
-    private ProductEntity.ProductStatus status;
+    private ProductEntity.ProjectStatus projectStatus;
     private String holdReason;
 
     private Integer tradePrice;
@@ -57,7 +57,7 @@ public class ProductDetailDto {
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
                 .favorite(e.getFavorites().contains(userSeq))
-                .status(e.getStatus())
+                .projectStatus(e.getProjectStatus())
                 .holdReason(e.getHoldReason())
                 .build();
     }
