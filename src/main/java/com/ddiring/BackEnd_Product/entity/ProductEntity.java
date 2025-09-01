@@ -44,10 +44,12 @@ public class ProductEntity {
     private BigDecimal goalAmount;
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal minInvestment;
+    @Builder.Default
     @Field(targetType = FieldType.DECIMAL128)
-    private BigDecimal amount;
+    private BigDecimal amount = BigDecimal.ZERO;;
+    @Builder.Default
     @Field(targetType = FieldType.DECIMAL128)
-    private BigDecimal percent;
+    private BigDecimal percent = BigDecimal.ZERO;;
 
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal distributionAmount;

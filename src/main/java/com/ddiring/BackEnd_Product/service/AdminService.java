@@ -178,8 +178,6 @@ public class AdminService {
                 .endDate(pp.getEndDate())
                 .goalAmount(pp.getGoalAmount())
                 .minInvestment(pp.getMinInvestment())
-                .amount(BigDecimal.ZERO)
-                .percent(BigDecimal.ZERO)
                 .document(new ArrayList<>(pp.getDocument()))
                 .image(new ArrayList<>(pp.getImage()))
                 .projectStatus(ProductEntity.ProjectStatus.OPEN)
