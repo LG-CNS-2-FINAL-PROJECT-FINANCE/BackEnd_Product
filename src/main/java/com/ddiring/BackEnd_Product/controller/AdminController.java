@@ -65,11 +65,12 @@ public class AdminController {
 
         return ResponseEntity.ok(Map.of(
                 "product", projectId,
-                "status", newStatus.name(),
+                "ProjectVisibility", newStatus.name(),
                 "hold", nowHold
         ));
     }
 
+    /** 게시물 상태 CLOSED 변경 (ADMIN 권한 필요) */
     @PostMapping("/closed/{projectId}")
     public ResponseEntity<Map<String, Object>> closeProduct(@PathVariable("projectId") String projectId) {
 

@@ -20,7 +20,7 @@ public class ProductRequestEntity {
     private String userSeq;
 
     @Indexed
-    private RequestType requestType;      // CREATE, UPDATE, STOP
+    private RequestType requestType;      // CREATE, UPDATE, STOP, DISTRIBUTION
     @Indexed
     private RequestStatus requestStatus;    // PENDING, APPROVED, REJECTED
     private ProductPayload payload;

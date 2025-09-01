@@ -1,7 +1,8 @@
 package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
-import com.ddiring.BackEnd_Product.dto.asset.AssetDistributionDto;
+import com.ddiring.BackEnd_Product.common.response.dto.ApiResponseDto;
+import com.ddiring.BackEnd_Product.dto.escrow.EscrowDistributionDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
@@ -9,9 +10,11 @@ import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.external.AssetClient;
+import com.ddiring.BackEnd_Product.external.EscrowClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -24,11 +27,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final ProductRepository pr;
     private final MongoTemplate mt;
     private final AssetClient ac;
+    private final EscrowClient ec;
     private final ProductRequestRepository prr;
 
     // 모든 상품 조회
@@ -103,9 +108,9 @@ public class ProductService {
         return pe;
     }
 
-    // Asset에 분배 정보 전송
+    // Escrow에 분배 정보 전송
     @Transactional
-    public ProductEntity sendAssetDistribution(String requestId) {
+    public ProductEntity sendEscrowDistribution(String requestId) {
         ProductRequestEntity pre = prr.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 분배 요청입니다."));
 
@@ -117,12 +122,16 @@ public class ProductService {
             throw new IllegalStateException("분배 금액이 설정되지 않았습니다.");
         }
 
-        AssetDistributionDto finalDto = AssetDistributionDto.builder()
-                .requestId(pe.getProjectId())
-                .distributionAmount(distributionAmount)
+        EscrowDistributionDto finalDto = EscrowDistributionDto.builder()
+                .Amount(pe.getAmount())
+                .userSeq(pre.getUserSeq())              // 요청자/투자자 userSeq
+                .Amount(distributionAmount)
+                .transType(3)                           // 무조건 3
                 .build();
 
-        ac.assetDistribution(finalDto);
+        // API 호출 결과 확인
+        ApiResponseDto<String> response = ec.escrowDistribution(finalDto);
+        log.info("Escrow 분배 응답: {}", response);   // 로그 확인용
 
         return pe;
     }

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -95,15 +94,15 @@ public class AdminService {
                 // 1. 분배 요청 상태 변경 (승인 처리)
                 handleDistribution(pre);
 
-                // 2. Asset 서비스로 전송 (requestId 기반)
-                ps.sendAssetDistribution(pre.getRequestId());
+                // 2. Escrow 서비스로 전송 (requestId 기반)
+                ps.sendEscrowDistribution(pre.getRequestId());
             }
         }
 
         pre.setRequestStatus(ProductRequestEntity.RequestStatus.APPROVED);
         pre.setAdminSeq(userSeq);
         prr.save(pre);
-    } 
+    }
 
     /* ---------- 거절 ---------- */
     @Transactional

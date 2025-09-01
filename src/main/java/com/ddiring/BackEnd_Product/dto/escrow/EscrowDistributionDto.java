@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.dto.asset;
+package com.ddiring.BackEnd_Product.dto.escrow;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AssetDistributionDto {
-    private String requestId;
-    private BigDecimal distributionAmount;
+public class EscrowDistributionDto {
+    private String account;
+    private String userSeq;
+    private int transType;
+    private BigDecimal Amount;
 }

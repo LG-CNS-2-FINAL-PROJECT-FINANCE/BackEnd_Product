@@ -1,5 +1,7 @@
 package com.ddiring.BackEnd_Product.external;
 
+import com.ddiring.BackEnd_Product.common.response.dto.ApiResponseDto;
+import com.ddiring.BackEnd_Product.dto.escrow.EscrowDistributionDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,4 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface EscrowClient {
     @PostMapping("/api/escrow/create")
     AccountResponseDto createAccount(@RequestBody AccountRequestDto request);
+
+    @PostMapping("/api/escrow/distribution")
+    ApiResponseDto<String> escrowDistribution(@RequestBody EscrowDistributionDto distribution);
 }
