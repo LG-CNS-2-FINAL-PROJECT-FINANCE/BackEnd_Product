@@ -166,7 +166,7 @@ public class AdminService {
     private void handleCreate(ProductRequestEntity pre) {
         ProductPayload pp = pre.getPayload();
 
-        // 1. ProductEntity 생성 (아직 DB insert 안 함)
+        // 1. ProductEntity 생성
         ProductEntity pe = ProductEntity.builder()
                 .projectId(pre.getProjectId())  // 승인 시 사용될 ID 할당
                 .userSeq(pre.getUserSeq())
@@ -184,29 +184,36 @@ public class AdminService {
                 .version(1L)
                 .build();
 
-        // 2. insert → MongoDB에서 projectId 발급
+        // 2. 상품 DB insert (projectId 발급)
         pe = pr.insert(pe);
 
-        // 3. 요청 엔티티에도 projectId 연결
+        // 3. 요청 엔티티에 projectId 연결
         pre.setProjectId(pe.getProjectId());
 
-        // 4. 마감일 계산 (dDay는 endDate 기준으로 남은 일수 산출)
+        // 4. 마감일 계산
         pe.setDeadline(pe.dDay());
 
-        // 5. 에스크로 계좌 생성
-        AccountRequestDto escrowRequest = AccountRequestDto.builder()
-                .projectId(pe.getProjectId())
-                .build();
-        AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+        try {
+            // 5. 에스크로 계좌 생성
+            AccountRequestDto escrowRequest = AccountRequestDto.builder()
+                    .projectId(pe.getProjectId())
+                    .build();
 
-        if (escrowResponse == null || escrowResponse.getAccount() == null) {
-            throw new IllegalStateException("에스크로 계좌 생성 실패: 상품 등록 중단");
+            AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+
+            if (escrowResponse == null || escrowResponse.getAccount() == null) {
+                throw new IllegalStateException("에스크로 계좌 생성 실패: account=null");
+            }
+
+            // 6. 계좌 세팅 후 저장
+            pe.setAccount(escrowResponse.getAccount());
+            pr.save(pe);
+
+        } catch (Exception e) {
+            // 예외 발생 시 상품 삭제 후 다시 예외 던짐
+            pr.deleteById(pe.getProjectId());
+            throw new IllegalStateException("상품 생성 중 에스크로 계좌 생성 실패: " + e.getMessage(), e);
         }
-
-        pe.setAccount(escrowResponse.getAccount());
-
-        // 6. 최종 저장 (계좌, 마감일 반영)
-        pr.save(pe);
     }
     
     private void handleUpdate(ProductRequestEntity pre) {
