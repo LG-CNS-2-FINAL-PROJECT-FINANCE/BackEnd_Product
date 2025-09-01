@@ -24,7 +24,8 @@ public class MyPageService {
     // 개인 요청 조회
     public Page<RequestListDto> getMyRequest(String userSeq, Pageable p) {
         // 조건: userSeq = 현재 로그인한 사용자
-        Criteria criteria = Criteria.where("userSeq").is(userSeq);
+        Criteria criteria = Criteria.where("userSeq").is(userSeq)
+                .and("requestStatus").is(ProductRequestEntity.RequestStatus.PENDING);
 
         // 페이징/정렬 포함하여 쿼리 생성
         Query query = new Query(criteria).with(p);
