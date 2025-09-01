@@ -27,6 +27,7 @@ public class ProductListDto {
     private List<String> image;
     private int viewCount;
     private ProductEntity.ProjectStatus projectStatus;
+    private ProductEntity.ProjectVisibility projectVisibility;
 
     private Integer tradePrice;
 
@@ -43,6 +44,7 @@ public class ProductListDto {
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
                 .projectStatus(e.getProjectStatus())
+                .projectVisibility(e.getProjectVisibility())
                 .build();
     }
 }

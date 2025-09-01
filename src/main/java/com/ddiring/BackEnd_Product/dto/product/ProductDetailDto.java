@@ -34,6 +34,7 @@ public class ProductDetailDto {
     private int viewCount;
     private boolean favorite;
     private ProductEntity.ProjectStatus projectStatus;
+    private ProductEntity.ProjectVisibility projectVisibility;
     private String holdReason;
 
     private Integer tradePrice;
@@ -58,6 +59,7 @@ public class ProductDetailDto {
                 .viewCount(e.getViewCount())
                 .favorite(e.getFavorites().contains(userSeq))
                 .projectStatus(e.getProjectStatus())
+                .projectVisibility(e.getProjectVisibility())
                 .holdReason(e.getHoldReason())
                 .build();
     }
