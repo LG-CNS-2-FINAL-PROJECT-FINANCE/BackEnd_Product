@@ -184,24 +184,28 @@ public class AdminService {
                 .version(1L)
                 .build();
 
-        // 2. 마감기일 계산
+        // 2. insert → MongoDB에서 projectId 발급
+        pe = pr.insert(pe);
+
+        // 3. 요청 엔티티에도 projectId 연결
+        pre.setProjectId(pe.getProjectId());
+
+        // 4. 마감일 계산 (dDay는 endDate 기준으로 남은 일수 산출)
         pe.setDeadline(pe.dDay());
 
-        // 3. 에스크로 계좌 생성 (실패 시 예외 발생 → 상품 저장 X, 트랜잭션 롤백됨)
+        // 5. 에스크로 계좌 생성
         AccountRequestDto escrowRequest = AccountRequestDto.builder()
-                .projectId(pre.getProjectId())
+                .projectId(pe.getProjectId())
                 .build();
         AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+
         if (escrowResponse == null || escrowResponse.getAccount() == null) {
             throw new IllegalStateException("에스크로 계좌 생성 실패: 상품 등록 중단");
         }
+
         pe.setAccount(escrowResponse.getAccount());
 
-        // 4. 계좌까지 확보 후 상품 insert
-        pr.insert(pe);
-        pre.setProjectId(pe.getProjectId());
-
-        // 5. 저장
+        // 6. 최종 저장 (계좌, 마감일 반영)
         pr.save(pe);
     }
     
