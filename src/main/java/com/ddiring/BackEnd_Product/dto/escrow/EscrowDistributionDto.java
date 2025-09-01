@@ -14,6 +14,5 @@ import java.math.BigDecimal;
 public class EscrowDistributionDto {
     private String account;
     private String userSeq;
-    private int transType;
-    private BigDecimal Amount;
+    private BigDecimal distributionAmount;
 }

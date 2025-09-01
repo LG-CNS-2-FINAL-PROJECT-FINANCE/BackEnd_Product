@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository
@@ -27,4 +28,10 @@ public interface ProductRepository
     // 특정 상품을 유저가 즐겨찾기했는지 존재 여부
     @Query(value = "{ '_id': ?0, 'favorites': ?1 }", exists = true)
     boolean existsByIdAndFavoritedUser(String projectId, String userSeq);
+
+    // 계좌번호로 상품 조회
+    Optional<ProductEntity> findByAccount(String account);
+
+    // 필요하다면 상태까지 같이 조회
+    Optional<ProductEntity> findByAccountAndProjectStatus(String account, ProductEntity.ProjectStatus status);
 }

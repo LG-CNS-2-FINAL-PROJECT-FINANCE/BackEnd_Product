@@ -90,13 +90,7 @@ public class AdminService {
 
             case STOP -> handleStop(pre);
 
-            case DISTRIBUTION -> {
-                // 1. 분배 요청 상태 변경 (승인 처리)
-                handleDistribution(pre);
-
-                // 2. Escrow 서비스로 전송 (requestId 기반)
-                ps.sendEscrowDistribution(pre.getRequestId());
-            }
+            case DISTRIBUTION -> handleDistribution(pre);
         }
 
         pre.setRequestStatus(ProductRequestEntity.RequestStatus.APPROVED);
@@ -171,6 +165,8 @@ public class AdminService {
     /* ---------- 내부로직 ------- */
     private void handleCreate(ProductRequestEntity pre) {
         ProductPayload pp = pre.getPayload();
+
+        // 1. ProductEntity 생성 (아직 DB insert 안 함)
         ProductEntity pe = ProductEntity.builder()
                 .projectId(pre.getProjectId())  // 승인 시 사용될 ID 할당
                 .userSeq(pre.getUserSeq())
@@ -187,20 +183,26 @@ public class AdminService {
                 .projectVisibility(ProductEntity.ProjectVisibility.PUBLIC)
                 .version(1L)
                 .build();
-        pr.insert(pe);
-        pre.setProjectId(pe.getProjectId()); // 요청 entity에 projectId 연결
 
-        //마감기일
+        // 2. 마감기일 계산
         pe.setDeadline(pe.dDay());
 
-        //Escrow 계좌
+        // 3. 에스크로 계좌 생성 (실패 시 예외 발생 → 상품 저장 X, 트랜잭션 롤백됨)
         AccountRequestDto escrowRequest = AccountRequestDto.builder()
-                .projectId(pe.getProjectId())
+                .projectId(pre.getProjectId())
                 .build();
         AccountResponseDto escrowResponse = ec.createAccount(escrowRequest);
+        if (escrowResponse == null || escrowResponse.getAccount() == null) {
+            throw new IllegalStateException("에스크로 계좌 생성 실패: 상품 등록 중단");
+        }
         pe.setAccount(escrowResponse.getAccount());
 
-        pr.save(pe); // 다시 저장해서 계좌 반영
+        // 4. 계좌까지 확보 후 상품 insert
+        pr.insert(pe);
+        pre.setProjectId(pe.getProjectId());
+
+        // 5. 저장
+        pr.save(pe);
     }
     
     private void handleUpdate(ProductRequestEntity pre) {

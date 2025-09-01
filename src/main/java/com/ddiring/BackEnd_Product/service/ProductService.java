@@ -108,34 +108,6 @@ public class ProductService {
         return pe;
     }
 
-    // Escrow에 분배 정보 전송
-    @Transactional
-    public ProductEntity sendEscrowDistribution(String requestId) {
-        ProductRequestEntity pre = prr.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 분배 요청입니다."));
-
-        ProductEntity pe = pr.findById(pre.getProjectId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-
-        BigDecimal distributionAmount = pre.getPayload().getDistributionAmount();
-        if (distributionAmount == null) {
-            throw new IllegalStateException("분배 금액이 설정되지 않았습니다.");
-        }
-
-        EscrowDistributionDto finalDto = EscrowDistributionDto.builder()
-                .Amount(pe.getAmount())
-                .userSeq(pre.getUserSeq())              // 요청자/투자자 userSeq
-                .Amount(distributionAmount)
-                .transType(3)                           // 무조건 3
-                .build();
-
-        // API 호출 결과 확인
-        ApiResponseDto<String> response = ec.escrowDistribution(finalDto);
-        log.info("Escrow 분배 응답: {}", response);   // 로그 확인용
-
-        return pe;
-    }
-
     @Transactional
     public ProductEntity closedProduct (String projectId, String adminSeq) {
         ProductEntity product = pr.findById(projectId)

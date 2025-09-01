@@ -15,7 +15,4 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface EscrowClient {
     @PostMapping("/api/escrow/create")
     AccountResponseDto createAccount(@RequestBody AccountRequestDto request);
-
-    @PostMapping("/api/escrow/distribution")
-    ApiResponseDto<String> escrowDistribution(@RequestBody EscrowDistributionDto distribution);
 }
