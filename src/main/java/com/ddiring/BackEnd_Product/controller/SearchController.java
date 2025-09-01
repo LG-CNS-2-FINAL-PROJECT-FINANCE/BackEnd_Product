@@ -2,8 +2,11 @@ package com.ddiring.BackEnd_Product.controller;
 
 import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
 import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
+import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
+import com.ddiring.BackEnd_Product.dto.search.ProductSearch;
 import com.ddiring.BackEnd_Product.dto.search.RequestSearch;
+import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.service.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +33,8 @@ public class SearchController {
         }
     }
 
-    @GetMapping("/admin")
-    public Page<RequestListDto> search(
+    @GetMapping("/admin/request")
+    public Page<RequestListDto> requestSearch(
             @RequestParam(value = "searchBy", required = false) RequestSearch.SearchBy searchBy,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "requestType", required = false) ProductRequestEntity.RequestType requestType,
@@ -42,7 +45,7 @@ public class SearchController {
 
         searchAdmin();
 
-        RequestSearch sear = RequestSearch.builder()
+        RequestSearch request = RequestSearch.builder()
                 .searchBy(searchBy)
                 .keyword(blankToNull(keyword))
                 .requestType(requestType)
@@ -51,7 +54,31 @@ public class SearchController {
                 .endDate(endDate)
                 .build();
 
-        return ss.requestSearch(sear, p);
+        return ss.requestSearch(request, p);
+    }
+
+    @GetMapping("/admin/product")
+    public Page<ProductListDto> productSearch(
+            @RequestParam(value = "searchBy", required = false) ProductSearch.SearchBy searchBy,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "projectStatus", required = false) ProductEntity.ProjectStatus projectStatus,
+            @RequestParam(value = "projectVisibility", required = false) ProductEntity.ProjectVisibility projectVisibility,
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate,
+            Pageable p) {
+
+        searchAdmin();
+
+        ProductSearch product = ProductSearch.builder()
+                .searchBy(searchBy)
+                .keyword(blankToNull(keyword))
+                .projectStatus(projectStatus)
+                .projectVisibility(projectVisibility)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+
+        return ss.productSearch(product, p);
     }
 
     private String blankToNull(String s) {

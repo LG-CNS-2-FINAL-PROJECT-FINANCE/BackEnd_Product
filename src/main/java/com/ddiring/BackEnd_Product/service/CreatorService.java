@@ -9,7 +9,6 @@ import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
-import feign.Request;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.dao.DataAccessException;

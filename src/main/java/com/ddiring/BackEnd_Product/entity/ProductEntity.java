@@ -82,7 +82,7 @@ public class ProductEntity {
 
     public enum ProjectStatus {
         OPEN,
-        FUNDING_OPEN,  // 사용 안함(안할 수도 있음)
+        FUNDING_OPEN,  // 지금 사용 안함(안할 수도 있음)
         FUNDING_LOCKED,
         TRADING,
         DISTRIBUTION_READY,

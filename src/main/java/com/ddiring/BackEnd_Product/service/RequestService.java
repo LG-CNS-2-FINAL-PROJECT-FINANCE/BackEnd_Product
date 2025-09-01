@@ -52,6 +52,7 @@ public class RequestService {
         prr.delete(pre);
     }
 
+    @Transactional
     public BigDecimal DistributionPercent(BigDecimal distributionAmount, BigDecimal goalAmount) {
         if (distributionAmount == null || goalAmount == null || goalAmount.compareTo(BigDecimal.ZERO) <= 0) {
             return BigDecimal.ZERO;

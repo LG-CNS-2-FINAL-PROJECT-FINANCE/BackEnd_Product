@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 @Service
@@ -177,6 +178,8 @@ public class AdminService {
                 .endDate(pp.getEndDate())
                 .goalAmount(pp.getGoalAmount())
                 .minInvestment(pp.getMinInvestment())
+                .amount(BigDecimal.ZERO)
+                .percent(BigDecimal.ZERO)
                 .document(new ArrayList<>(pp.getDocument()))
                 .image(new ArrayList<>(pp.getImage()))
                 .projectStatus(ProductEntity.ProjectStatus.OPEN)

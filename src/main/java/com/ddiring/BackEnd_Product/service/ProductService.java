@@ -1,18 +1,13 @@
 package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
-import com.ddiring.BackEnd_Product.common.response.dto.ApiResponseDto;
-import com.ddiring.BackEnd_Product.dto.escrow.EscrowDistributionDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
-import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.external.AssetClient;
-import com.ddiring.BackEnd_Product.external.EscrowClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
-import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
@@ -33,8 +28,6 @@ public class ProductService {
     private final ProductRepository pr;
     private final MongoTemplate mt;
     private final AssetClient ac;
-    private final EscrowClient ec;
-    private final ProductRequestRepository prr;
 
     // 모든 상품 조회
     public List<ProductListDto> getAllProject() {
