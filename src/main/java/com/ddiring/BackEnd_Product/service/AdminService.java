@@ -231,8 +231,8 @@ public class AdminService {
             pe.setDeadline(Math.max(pe.dDay(), 0));
             pe.setGoalAmount(pp.getGoalAmount());
             pe.setMinInvestment(pp.getMinInvestment());
-            pe.setDocument(pe.getDocument());
-            pe.setImage(pe.getImage());
+            pe.setDocument(new ArrayList<>(pp.getDocument()));
+            pe.setImage(new ArrayList<>(pp.getImage()));
             pe.setReason(pp.getReason());
             pe.setProjectStatus(ProductEntity.ProjectStatus.OPEN);
             pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
@@ -245,8 +245,8 @@ public class AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
 
         pe.setDocument(pe.getDocument());
-        pe.setImage(pe.getImage());
-        pe.setReason(pp.getReason());
+        pe.setDocument(new ArrayList<>(pp.getDocument()));
+        pe.setImage(new ArrayList<>(pp.getImage()));
         pe.setProjectStatus(ProductEntity.ProjectStatus.TEMPORARY_STOP);
         pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
         pr.save(pe);
@@ -257,8 +257,8 @@ public class AdminService {
         ProductEntity pe = pr.findById(pp.getProjectId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
 
-        pe.setDocument(pe.getDocument());
-        pe.setImage(pe.getImage());
+        pe.setDocument(new ArrayList<>(pp.getDocument()));
+        pe.setImage(new ArrayList<>(pp.getImage()));
         pe.setDistributionSummary(pp.getDistributionSummary());
         pe.setProjectStatus(ProductEntity.ProjectStatus.DISTRIBUTION_READY);
         pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
