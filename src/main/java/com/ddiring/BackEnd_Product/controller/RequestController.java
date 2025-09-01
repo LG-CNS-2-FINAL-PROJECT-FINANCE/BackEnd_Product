@@ -20,8 +20,8 @@ public class RequestController {
 
     private final RequestService rs;
 
-    @GetMapping
-    public ResponseEntity<List<RequestListDto>> getAllRequest() {
+    @GetMapping("/admin")
+    public ResponseEntity<List<RequestListDto>> getAdminAllRequest() {
         String role = GatewayRequestHeaderUtils.getRole();
 
         if (!"ADMIN".equalsIgnoreCase(role)) {
@@ -32,8 +32,8 @@ public class RequestController {
         return ResponseEntity.ok(requestList);
     }
 
-    @GetMapping("/{requestId}")
-    public ResponseEntity<RequestDetailDto> getRequest(@PathVariable String requestId) {
+    @GetMapping("/admin/{requestId}")
+    public ResponseEntity<RequestDetailDto> getAdminRequest(@PathVariable String requestId) {
         String role = GatewayRequestHeaderUtils.getRole();
 
         if (!"ADMIN".equalsIgnoreCase(role)) {
