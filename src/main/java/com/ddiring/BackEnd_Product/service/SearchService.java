@@ -45,15 +45,26 @@ public class SearchService {
             }
         }
 
-        if (RS.getRequestType() != null)   conditions.add(Criteria.where("requestType").is(RS.getRequestType()));
-        if (RS.getRequestStatus() != null) conditions.add(Criteria.where("requestStatus").is(RS.getRequestStatus()));
+        if (RS.getRequestType() != null)
+            conditions.add(Criteria.where("requestType").is(RS.getRequestType()));
+        if (RS.getRequestStatus() != null)
+            conditions.add(Criteria.where("requestStatus").is(RS.getRequestStatus()));
 
-        LocalDate fromD  = RS.getStartDate();  // null 허용
-        LocalDate toDEx  = (RS.getEndDate() != null) ? RS.getEndDate().plusDays(1) : null;
+        LocalDate fromD  = RS.getStartDate();  // 검색 시작일
+        LocalDate toD    = RS.getEndDate();    // 검색 종료일
 
         List<Criteria> period = new ArrayList<>();
-        if (fromD != null) period.add(Criteria.where("payload.endDate").gte(fromD));
-        if (toDEx != null) period.add(Criteria.where("payload.startDate").lt(toDEx));
+
+        // from은 payload.startDate 기준
+        if (fromD != null) {
+            period.add(Criteria.where("payload.startDate").gte(fromD));
+        }
+
+        // to는 payload.endDate 기준
+        if (toD != null) {
+            // 종료일 포함 검색을 원하면 <=
+            period.add(Criteria.where("payload.endDate").lte(toD));
+        }
 
         if (!period.isEmpty()) {
             conditions.add(new Criteria().andOperator(period.toArray(new Criteria[0])));
@@ -94,19 +105,22 @@ public class SearchService {
             }
         }
 
-        if (PS.getProjectStatus() != null) {
+        if (PS.getProjectStatus() != null)
             conditions.add(Criteria.where("projectStatus").is(PS.getProjectStatus()));
-        }
-        if (PS.getProjectVisibility() != null) {
+        if (PS.getProjectVisibility() != null)
             conditions.add(Criteria.where("projectVisibility").is(PS.getProjectVisibility()));
-        }
 
+        // 기간 조건 수정 (requestSearch와 동일 패턴)
         LocalDate fromD = PS.getStartDate();
-        LocalDate toDEx = (PS.getEndDate() != null) ? PS.getEndDate().plusDays(1) : null;
+        LocalDate toD   = PS.getEndDate();
 
         List<Criteria> period = new ArrayList<>();
-        if (fromD != null) period.add(Criteria.where("endDate").gte(fromD));
-        if (toDEx != null) period.add(Criteria.where("startDate").lt(toDEx));
+        if (fromD != null) {
+            period.add(Criteria.where("startDate").gte(fromD)); // from → startDate
+        }
+        if (toD != null) {
+            period.add(Criteria.where("endDate").lte(toD));     // to → endDate
+        }
 
         if (!period.isEmpty()) {
             conditions.add(new Criteria().andOperator(period.toArray(new Criteria[0])));

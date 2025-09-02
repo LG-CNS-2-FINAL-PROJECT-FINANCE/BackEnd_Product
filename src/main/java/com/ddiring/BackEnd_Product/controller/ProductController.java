@@ -39,7 +39,7 @@ public class ProductController {
             throw new ForbiddenException("권한 없음 (required=ADMIN)");
         }
 
-        List<ProductListDto> productList = ps.getAllProject();
+        List<ProductListDto> productList = ps.getAllProjectAdmin();
         return ResponseEntity.ok(productList);
     }
 

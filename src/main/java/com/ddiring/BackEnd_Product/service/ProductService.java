@@ -32,6 +32,14 @@ public class ProductService {
                 .toList();
     }
 
+    /* ---------- 모든 상품 조회 (관리자) ---------- */
+    public List<ProductListDto> getAllProjectAdmin() {
+        return pr.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
+                .stream()
+                .map(ProductListDto::from)
+                .toList();
+    }
+
     /* ---------- 상품 상세 조회 ---------- */
     public ProductDetailDto getProductByProjectId(String projectId, String userSeq) {
         viewCount(projectId);
