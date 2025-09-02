@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -74,7 +75,9 @@ public class SearchService {
                 ? new Criteria()
                 : new Criteria().andOperator(conditions.toArray(new Criteria[0]));
 
-        Query query = new Query(finalCriteria).with(P);
+        Query query = new Query(finalCriteria)
+                .with(P)
+                .with(Sort.by(Sort.Direction.DESC, "createdAt"));
         List<ProductRequestEntity> rows = mt.find(query, ProductRequestEntity.class);
 
         long total = mt.count(Query.of(query).limit(-1).skip(-1), ProductRequestEntity.class);
@@ -130,7 +133,9 @@ public class SearchService {
                 ? new Criteria()
                 : new Criteria().andOperator(conditions.toArray(new Criteria[0]));
 
-        Query query = new Query(finalCriteria).with(P);
+        Query query = new Query(finalCriteria)
+                .with(P)
+                .with(Sort.by(Sort.Direction.DESC, "createdAt"));
         List<ProductEntity> rows = mt.find(query, ProductEntity.class);
         long total = mt.count(Query.of(query).limit(-1).skip(-1), ProductEntity.class);
 
