@@ -1,6 +1,8 @@
 package com.ddiring.BackEnd_Product.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -9,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,12 +78,12 @@ public class ProductEntity {
 
 //    @CreatedBy
 //    private int createdId;
-//    @CreatedDate
-//    private LocalDateTime createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 //    @LastModifiedBy
 //    private int updatedId;
-//    @LastModifiedDate
-//    private LocalDateTime updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public enum ProjectStatus {
         OPEN,
