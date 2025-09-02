@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminHoldDto {
+
     private String adminSeq;
 
     @NotBlank

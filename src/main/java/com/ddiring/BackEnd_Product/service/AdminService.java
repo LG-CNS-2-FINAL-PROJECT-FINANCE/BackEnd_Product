@@ -4,6 +4,7 @@ import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
+import com.ddiring.BackEnd_Product.dto.asset.AssetDistributionDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
@@ -17,9 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,7 @@ public class AdminService {
     private final ProductRepository pr;
     private final EscrowClient ec;
     private final ProductService ps;
+    private final AssetService as;
     private final S3Service s3;
 
     /* ---------- 승인 ---------- */
@@ -65,7 +65,7 @@ public class AdminService {
                 ProductEntity pe = pr.findById(pre.getProjectId())
                         .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
 
-                ps.sendAssetAccount(
+                as.sendAssetAccount(
                         AssetAccountDto.builder()
                                 .projectId(pe.getProjectId())
                                 .title(pe.getTitle())
@@ -81,7 +81,7 @@ public class AdminService {
                 ProductEntity pe = pr.findById(pre.getProjectId())
                         .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
 
-                ps.sendAssetAccount(
+                as.sendAssetAccount(
                         AssetAccountDto.builder()
                                 .projectId(pe.getProjectId())
                                 .title(pe.getTitle())
@@ -92,7 +92,21 @@ public class AdminService {
 
             case STOP -> handleStop(pre);
 
-            case DISTRIBUTION -> handleDistribution(pre);
+            case DISTRIBUTION -> {
+                handleDistribution(pre);
+
+                // DISTRIBUTION Asset 서비스 호출
+                ProductEntity pe = pr.findById(pre.getProjectId())
+                        .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
+
+                as.sendAssetDistribution(
+                        AssetDistributionDto.builder()
+                                .projectId(pe.getProjectId())
+                                .userSeq(pe.getUserSeq())
+                                .distributionAmount(pe.getDistributionAmount())
+                                .build()
+                );
+            }
         }
 
         pre.setRequestStatus(ProductRequestEntity.RequestStatus.APPROVED);

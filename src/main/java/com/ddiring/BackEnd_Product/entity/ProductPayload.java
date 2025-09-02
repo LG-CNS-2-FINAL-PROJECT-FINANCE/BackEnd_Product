@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductPayload {
     private String projectId;  // UPDATE/STOP/DISTRIBUTION 대상
+    private String nickname;
     private String title;
     private String summary;
     private String content;

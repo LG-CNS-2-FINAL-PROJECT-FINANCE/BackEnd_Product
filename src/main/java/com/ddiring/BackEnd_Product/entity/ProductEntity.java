@@ -33,6 +33,7 @@ public class ProductEntity {
 
     @Indexed
     private String userSeq;
+    private String nickname;
 
     private String title;
     private String summary;
@@ -76,18 +77,14 @@ public class ProductEntity {
     private String holdReason;
     private String distributionSummary;
 
-//    @CreatedBy
-//    private int createdId;
     @CreatedDate
     private LocalDateTime createdAt;
-//    @LastModifiedBy
-//    private int updatedId;
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
     public enum ProjectStatus {
         OPEN,
-        FUNDING_OPEN,  // 지금 사용 안함(안할 수도 있음)
+        FUNDING_OPEN,  // 지금 사용 안함(프론트에서 구분해둠)
         FUNDING_LOCKED,
         TRADING,
         DISTRIBUTION_READY,

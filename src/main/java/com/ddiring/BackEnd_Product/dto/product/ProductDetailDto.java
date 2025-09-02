@@ -1,15 +1,11 @@
 package com.ddiring.BackEnd_Product.dto.product;
 
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +14,7 @@ import java.util.Set;
 public class ProductDetailDto {
     private String projectId;
     private String userSeq;
+    private String nickname;
     private String title;
     private String summary;
     private String content;
@@ -43,6 +40,7 @@ public class ProductDetailDto {
         return ProductDetailDto.builder()
                 .projectId(e.getProjectId())
                 .userSeq(e.getUserSeq())
+                .nickname(e.getNickname())
                 .title(e.getTitle())
                 .summary(e.getSummary())
                 .content(e.getContent())

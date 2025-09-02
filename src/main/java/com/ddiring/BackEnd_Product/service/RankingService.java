@@ -14,14 +14,18 @@ public class RankingService {
 
     private final ProductRepository pr;
 
+    /* ---------- 전체 조회수 랭킹 ---------- */
     public List<ProductEntity> getTopByViewCount() {
+
         return pr.findTop10ByOrderByViewCountDesc();
     }
 
+    /* ---------- 투자 진행중 조회수 랭킹 ---------- */
     public List<ProductEntity> getTopByViewCountWithDeadline() {
         return pr.findTop10ByEndDateAfterOrderByViewCountDesc(LocalDateTime.now());
     }
 
+    /* ---------- 모금액 랭킹 ---------- */
     public List<ProductEntity> getTopByAmount() {
         return pr.findTop10ByOrderByAmountDesc();
     }

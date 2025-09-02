@@ -1,6 +1,7 @@
 package com.ddiring.BackEnd_Product.repository;
 
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,17 +15,14 @@ public interface ProductRepository
         extends MongoRepository<ProductEntity, String> {
     // 1. 전체 조회수 높은순
     List<ProductEntity> findTop10ByOrderByViewCountDesc();
-
     // 2. 마감기일이 남은것 중 조회수 높은순
     List<ProductEntity> findTop10ByEndDateAfterOrderByViewCountDesc(LocalDateTime now);
-
     // 3. 모금액 높은순
     List<ProductEntity> findTop10ByOrderByAmountDesc();
 
     // 유저가 즐겨찾기한 상품 목록
     @Query("{ 'favorites': ?0 }")
     List<ProductEntity> findByFavoritedUser(String userSeq);
-
     // 특정 상품을 유저가 즐겨찾기했는지 존재 여부
     @Query(value = "{ '_id': ?0, 'favorites': ?1 }", exists = true)
     boolean existsByIdAndFavoritedUser(String projectId, String userSeq);
@@ -32,6 +30,6 @@ public interface ProductRepository
     // 계좌번호로 상품 조회
     Optional<ProductEntity> findByAccount(String account);
 
-    // 필요하다면 상태까지 같이 조회
-    Optional<ProductEntity> findByAccountAndProjectStatus(String account, ProductEntity.ProjectStatus status);
+    // Public 조회
+    List<ProductEntity> findAllByProjectVisibility(ProductEntity.ProjectVisibility visibility, Sort sort);
 }

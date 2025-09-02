@@ -31,14 +31,8 @@ public class ProductRequestEntity {
     private String adminSeq;
     private String rejectReason;
 
-//    @CreatedBy
-//    private int createdId;
     @CreatedDate
-    private LocalDateTime createdAt;
-//    @LastModifiedBy
-//    private int updatedId;
-//    @LastModifiedDate
-//    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt; // 누가 했는지는 adminSeq
 
     public enum RequestType {CREATE, UPDATE, STOP, DISTRIBUTION}
     public enum RequestStatus {PENDING, APPROVED, REJECTED}

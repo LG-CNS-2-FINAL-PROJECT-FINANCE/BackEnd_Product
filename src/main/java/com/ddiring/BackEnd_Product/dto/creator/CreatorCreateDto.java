@@ -4,14 +4,10 @@ import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -20,6 +16,7 @@ import java.util.List;
 @Builder
 public class CreatorCreateDto {
 
+    private String nickname;
     @NotBlank(message = "제목을 입력하세요")
     private String title;
     @NotBlank(message = "내용을 입력하세요")
@@ -46,6 +43,7 @@ public class CreatorCreateDto {
 
     public ProductPayload toPayload() {
         return ProductPayload.builder()
+                .nickname(nickname)
                 .title(title)
                 .summary(summary)
                 .content(content)

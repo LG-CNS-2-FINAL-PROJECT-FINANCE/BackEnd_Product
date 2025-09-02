@@ -1,10 +1,7 @@
 package com.ddiring.BackEnd_Product.dto.request;
 
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,6 +14,7 @@ import java.util.List;
 public class RequestDetailDto {
     private String requestId;
     private String userSeq;
+    private String nickname;
 
     private String projectId;
     private String title;
@@ -39,6 +37,7 @@ public class RequestDetailDto {
         return RequestDetailDto.builder()
                 .requestId(e.getRequestId())
                 .userSeq(e.getUserSeq())
+                .nickname(e.getPayload().getNickname())
                 .projectId(e.getPayload().getProjectId())
                 .title(e.getPayload().getTitle())
                 .summary(e.getPayload().getSummary())

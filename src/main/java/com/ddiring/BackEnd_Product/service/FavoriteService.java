@@ -43,6 +43,7 @@ public class FavoriteService {
         return pr.findByFavoritedUser(userSeq);
     }
 
+    // 필요하면 사용
     /** 특정 상품에 대해 유저가 즐겨찾기 했는지 */
     public boolean isFavorited(String projectId, String userSeq) {
         return pr.existsByIdAndFavoritedUser(projectId, userSeq);

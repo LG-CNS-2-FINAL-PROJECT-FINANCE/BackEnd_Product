@@ -21,7 +21,7 @@ public class MyPageService {
 
     private final MongoTemplate mt;
 
-    // 개인 요청 조회
+    /* ---------- 개인 요청 조회 ---------- */
     public Page<RequestListDto> getMyRequest(String userSeq, Pageable p) {
         // 조건: userSeq = 현재 로그인한 사용자
         Criteria criteria = Criteria.where("userSeq").is(userSeq)
@@ -45,7 +45,7 @@ public class MyPageService {
         return new PageImpl<>(content, p, total);
     }
 
-    // 개인 상품 조회
+    /* ---------- 개인 상품 조회 ---------- */
     public Page<ProductListDto> getMyProduct(String userSeq, Pageable p) {
         Criteria criteria = Criteria.where("userSeq").is(userSeq);
 

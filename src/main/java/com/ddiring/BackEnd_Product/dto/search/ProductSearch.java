@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class ProductSearch {
 
     private SearchBy searchBy;
-    public enum SearchBy { PROJECT_ID, USER_SEQ, TITLE }
+    public enum SearchBy { PROJECT_ID, USER_SEQ, NICKNAME, TITLE }
     private String keyword;
 
     private ProductEntity.ProjectStatus projectStatus;

@@ -34,7 +34,7 @@ public class S3Service {
         return "https://" + bucket + ".s3.amazonaws.com/" + fileUrl;
     }
 
-    // 단일 파일 삭제 (승인/거절 단계에서 사용)
+    // 단일 파일 삭제 (승인/거절 단계에서 사용) >> 일단 보류
     public void deleteFile(String fileUrl) {
         String key = fileUrl.replace("https://" + bucket + ".s3.amazonaws.com/", "");
         DeleteObjectRequest dor = DeleteObjectRequest.builder()

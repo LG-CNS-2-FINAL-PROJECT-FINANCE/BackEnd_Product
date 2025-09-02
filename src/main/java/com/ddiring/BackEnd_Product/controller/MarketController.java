@@ -24,7 +24,7 @@ public class MarketController {
     private final MarketService ms;
 
     @GetMapping("/trading")
-    public Page<ProductListDto> getEndedProducts (Pageable p) {
+    public Page<ProductListDto> getTradingProducts (Pageable p) {
         List<ProductListDto> content = ms.getTradingProducts(p);
         long total = content.size(); // 필요 시 count 쿼리 별도 호출
 
@@ -32,7 +32,7 @@ public class MarketController {
     }
 
     @GetMapping("/trading/{projectId}")
-    public ResponseEntity<ProductDetailDto> getEndedProduct(@PathVariable String projectId) {
+    public ResponseEntity<ProductDetailDto> getTradingProductsDetail(@PathVariable String projectId) {
         String userSeq = GatewayRequestHeaderUtils.getUserSeqSafe();
         ProductDetailDto detail = ms.getTradingProductDetail(projectId, userSeq);
         return ResponseEntity.ok(detail);

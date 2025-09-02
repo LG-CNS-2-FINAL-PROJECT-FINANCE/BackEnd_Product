@@ -21,8 +21,9 @@ public class MarketService {
     private final MongoTemplate mt;
     private final MarketClient tc;
 
+    /* ---------- 2차거래 상품 조회 ---------- */
     public List<ProductListDto> getTradingProducts(Pageable pageable) {
-        Criteria criteria = Criteria.where("status").is(ProductEntity.ProjectStatus.TRADING);
+        Criteria criteria = Criteria.where("projectStatus").is(ProductEntity.ProjectStatus.TRADING);
         Query query = new Query(criteria).with(pageable);
 
         List<ProductEntity> rows = mt.find(query, ProductEntity.class);
@@ -45,6 +46,7 @@ public class MarketService {
                 .toList();
     }
 
+    /* ---------- 2차거래 상품 상세 조회 ---------- */
     public ProductDetailDto getTradingProductDetail(String projectId, String userSeq) {
         // 1) DB에서 상품 조회
         ProductEntity e = mt.findById(projectId, ProductEntity.class);

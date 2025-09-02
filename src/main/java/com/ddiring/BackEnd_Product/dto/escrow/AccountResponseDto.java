@@ -1,9 +1,6 @@
 package com.ddiring.BackEnd_Product.dto.escrow;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Getter
 @Setter

@@ -49,7 +49,7 @@ public class CreatorService {
         }
     }
 
-    /* ---------- 부분수정 ---------- */
+    /* ---------- 부분수정요청 ---------- */
     public String update(CreatorUpdateDto dto, String userSeq) {
 
         // ① 동시에 진행 중인 요청 확인
@@ -76,7 +76,7 @@ public class CreatorService {
         return prr.save(pre).getRequestId();
     }
 
-    /* ---------- 정지 ---------- */
+    /* ---------- 정지요청 ---------- */
     public String stop(CreatorStopDto dto, String userSeq) {
 
         // ① 동시에 진행 중인 요청 확인
@@ -114,7 +114,6 @@ public class CreatorService {
         ProductEntity product = pr.findById(dto.getProjectId())
                 .orElseThrow(() -> new RuntimeException("상품이 없습니다"));
 
-        // ✅ 상태 체크: TRADING 에서만 요청 가능
         if (product.getProjectStatus() != ProductEntity.ProjectStatus.TRADING) {
             throw new IllegalStateException("분배 요청은 TRADING 상태에서만 가능합니다");
         }
@@ -122,7 +121,6 @@ public class CreatorService {
         ProductPayload payload = ProductPayload.from(product);
         payload.distribution(dto);   // 텍스트 정보 덮어쓰기
 
-        // ✅ 분배율 계산은 RequestService 메서드 사용
         BigDecimal percent = rs.DistributionPercent(
                 payload.getDistributionAmount(), payload.getGoalAmount());
         payload.setDistributionPercent(percent);

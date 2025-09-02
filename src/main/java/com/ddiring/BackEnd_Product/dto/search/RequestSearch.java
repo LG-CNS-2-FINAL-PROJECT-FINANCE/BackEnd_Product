@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class RequestSearch {
 
     private SearchBy searchBy;
-    public enum SearchBy { USER_SEQ, TITLE }
+    public enum SearchBy { USER_SEQ, NICKNAME, TITLE }
     private String keyword;
 
     private ProductRequestEntity.RequestType requestType;

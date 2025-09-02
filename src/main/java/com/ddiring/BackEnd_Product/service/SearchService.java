@@ -27,24 +27,27 @@ public class SearchService {
 
     private final MongoTemplate mt;
 
+    /* ---------- 관리자 요청 검색 ---------- */
     public Page<RequestListDto> requestSearch(RequestSearch RS, Pageable P) {
         List<Criteria> conditions = new ArrayList<>();
 
         if(RS.getSearchBy() !=null && RS.getKeyword() != null) {
             switch (RS.getSearchBy()) {
+                case USER_SEQ -> conditions.add(Criteria.where("userSeq").is(RS.getKeyword()));
+                case NICKNAME -> {
+                    String keyword = Pattern.quote(RS.getKeyword());
+                    conditions.add(Criteria.where("nickname").regex(keyword, "i")); // 대소문자 무시, 부분 검색
+                }
                 case TITLE -> {
                     String keyword = Pattern.quote(RS.getKeyword());
                     conditions.add(Criteria.where("payload.title").regex(keyword, "i"));
                 }
-                case USER_SEQ -> conditions.add(Criteria.where("userSeq").is(RS.getKeyword()));
             }
         }
 
-        // 타입/상태
         if (RS.getRequestType() != null)   conditions.add(Criteria.where("requestType").is(RS.getRequestType()));
         if (RS.getRequestStatus() != null) conditions.add(Criteria.where("requestStatus").is(RS.getRequestStatus()));
 
-        // 기간 (start end 기준)
         LocalDate fromD  = RS.getStartDate();  // null 허용
         LocalDate toDEx  = (RS.getEndDate() != null) ? RS.getEndDate().plusDays(1) : null;
 
@@ -57,7 +60,7 @@ public class SearchService {
         }
 
         Criteria finalCriteria = conditions.isEmpty()
-                ? new Criteria() // 전체
+                ? new Criteria()
                 : new Criteria().andOperator(conditions.toArray(new Criteria[0]));
 
         Query query = new Query(finalCriteria).with(P);
@@ -65,7 +68,6 @@ public class SearchService {
 
         long total = mt.count(Query.of(query).limit(-1).skip(-1), ProductRequestEntity.class);
 
-        // 매핑 (기존 Mapper/생성자 사용)
         List<RequestListDto> content = rows.stream()
                 .map(RequestListDto::from) // 이미 있는 정적 팩토리/매퍼로 가정
                 .toList();
@@ -73,14 +75,18 @@ public class SearchService {
         return new PageImpl<>(content, P, total);
     }
 
+    /* ---------- 관리자 상품 검색 ---------- */
     public PageImpl<ProductListDto> productSearch(ProductSearch PS, Pageable P) {
         List<Criteria> conditions = new ArrayList<>();
 
-        // 🔎 키워드 검색
         if (PS.getSearchBy() != null && PS.getKeyword() != null) {
             switch (PS.getSearchBy()) {
                 case PROJECT_ID -> conditions.add(Criteria.where("projectId").is(PS.getKeyword()));
                 case USER_SEQ -> conditions.add(Criteria.where("userSeq").is(PS.getKeyword()));
+                case NICKNAME -> {
+                    String keyword = Pattern.quote(PS.getKeyword());
+                    conditions.add(Criteria.where("nickname").regex(keyword, "i")); // 대소문자 무시, 부분 검색
+                }
                 case TITLE -> {
                     String keyword = Pattern.quote(PS.getKeyword());
                     conditions.add(Criteria.where("title").regex(keyword, "i")); // 대소문자 무시
@@ -88,7 +94,6 @@ public class SearchService {
             }
         }
 
-        // 🔎 상태 / 공개 여부
         if (PS.getProjectStatus() != null) {
             conditions.add(Criteria.where("projectStatus").is(PS.getProjectStatus()));
         }
@@ -96,7 +101,6 @@ public class SearchService {
             conditions.add(Criteria.where("projectVisibility").is(PS.getProjectVisibility()));
         }
 
-        // 🔎 기간 (startDate ~ endDate)
         LocalDate fromD = PS.getStartDate();
         LocalDate toDEx = (PS.getEndDate() != null) ? PS.getEndDate().plusDays(1) : null;
 
@@ -108,7 +112,6 @@ public class SearchService {
             conditions.add(new Criteria().andOperator(period.toArray(new Criteria[0])));
         }
 
-        // 최종 Criteria
         Criteria finalCriteria = conditions.isEmpty()
                 ? new Criteria()
                 : new Criteria().andOperator(conditions.toArray(new Criteria[0]));
@@ -117,12 +120,10 @@ public class SearchService {
         List<ProductEntity> rows = mt.find(query, ProductEntity.class);
         long total = mt.count(Query.of(query).limit(-1).skip(-1), ProductEntity.class);
 
-        // ✅ 엔티티 → DTO 변환
         List<ProductListDto> content = rows.stream()
                 .map(ProductListDto::from)
                 .toList();
 
-        // ✅ DTO 리스트 반환
         return new PageImpl<>(content, P, total);
     }
 

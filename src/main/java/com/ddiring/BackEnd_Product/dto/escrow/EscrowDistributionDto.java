@@ -1,9 +1,6 @@
 package com.ddiring.BackEnd_Product.dto.escrow;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
