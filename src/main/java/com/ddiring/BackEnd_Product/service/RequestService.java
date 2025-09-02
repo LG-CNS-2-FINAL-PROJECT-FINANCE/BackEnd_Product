@@ -7,13 +7,13 @@ import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,9 +22,10 @@ public class RequestService {
     private final ProductRequestRepository prr;
 
     public List<RequestListDto> getAllRequest() {
-        return prr.findAll().stream()
+        return prr.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
+                .stream()
                 .map(RequestListDto::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public RequestDetailDto getRequestByRequestId(String requestId) {

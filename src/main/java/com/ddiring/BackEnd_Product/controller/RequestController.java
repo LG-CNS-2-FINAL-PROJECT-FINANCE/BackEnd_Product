@@ -1,12 +1,10 @@
 package com.ddiring.BackEnd_Product.controller;
 
 import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
-import com.ddiring.BackEnd_Product.common.security.JwtAuthGuard;
 import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
 import com.ddiring.BackEnd_Product.dto.request.RequestDetailDto;
 import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.service.RequestService;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

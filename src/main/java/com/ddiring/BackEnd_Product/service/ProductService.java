@@ -5,12 +5,14 @@ import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
+import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.external.AssetClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +33,10 @@ public class ProductService {
 
     // 모든 상품 조회
     public List<ProductListDto> getAllProject() {
-        return pr.findAll().stream()
+        return pr.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
+                .stream()
                 .map(ProductListDto::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // 상품 상세 조회
