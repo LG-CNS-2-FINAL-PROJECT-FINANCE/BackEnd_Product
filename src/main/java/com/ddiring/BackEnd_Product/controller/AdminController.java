@@ -1,8 +1,8 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
-import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
+import com.ddiring.BackEnd_Product.common.security.AuthUtils;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
+import com.ddiring.BackEnd_Product.dto.admin.AdminClosedDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminHoldDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
@@ -12,8 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")
@@ -25,68 +23,49 @@ public class AdminController {
 
     @PostMapping("/request/approve")
     public ResponseEntity<Void> approve(@RequestBody @Valid AdminApproveDto dto) {
-        String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
-
+        String adminSeq = AuthUtils.requireAdmin();
         as.approve(dto, adminSeq);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/request/reject")
     public ResponseEntity<Void> reject(@RequestBody @Valid AdminRejectDto dto) {
-        String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
-
+        String adminSeq = AuthUtils.requireAdmin();
         as.reject(dto, adminSeq);
         return ResponseEntity.ok().build();
     }
 
     /** 게시물 HOLD 토글 (ADMIN 권한 필요) */
     @PostMapping("/hold/toggle/{projectId}")
-    public ResponseEntity<Map<String, Object>> toggleHold(@PathVariable("projectId") String projectId,
-                                                          @RequestBody @Valid AdminHoldDto dto) {
-        String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
+    public ResponseEntity<AdminHoldDto> toggleHold(
+            @PathVariable("projectId") String projectId,
+            @RequestBody @Valid AdminHoldDto dto) {
+        String adminSeq = AuthUtils.requireAdmin();
 
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
+        ProductEntity.ProjectVisibility newStatus =
+                as.toggleVisibility(projectId, dto.getHoldReason(), adminSeq);
 
-        ProductEntity.ProjectVisibility newStatus = as.toggleVisibility(projectId, dto.getHoldReason(), adminSeq);
-        boolean nowHold = (newStatus == ProductEntity.ProjectVisibility.HOLD);
+        AdminHoldDto response = new AdminHoldDto(
+                projectId,
+                newStatus.name()
+        );
 
-        return ResponseEntity.ok(Map.of(
-                "product", projectId,
-                "ProjectVisibility", newStatus.name(),
-                "hold", nowHold
-        ));
+        return ResponseEntity.ok(response);
     }
 
     /** 게시물 상태 CLOSED 변경 (ADMIN 권한 필요) */
     @PostMapping("/closed/{projectId}")
-    public ResponseEntity<Map<String, Object>> closeProduct(@PathVariable("projectId") String projectId) {
-
-        String adminSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
+    public ResponseEntity<AdminClosedDto> closeProduct(@PathVariable("projectId") String projectId) {
+        String adminSeq = AuthUtils.requireAdmin();
 
         ProductEntity updated = ps.closedProduct(projectId, adminSeq);
 
-        return ResponseEntity.ok(Map.of(
-                "projectId", updated.getProjectId(),
-                "status", updated.getProjectStatus().name(),
-                "reason", updated.getReason()
-        ));
+        AdminClosedDto response = new AdminClosedDto(
+                updated.getProjectId(),
+                updated.getProjectStatus().name(),
+                updated.getReason()
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

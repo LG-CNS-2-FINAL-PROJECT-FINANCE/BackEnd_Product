@@ -1,7 +1,6 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
-import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
+import com.ddiring.BackEnd_Product.common.security.AuthUtils;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.dto.search.ProductSearch;
@@ -26,13 +25,6 @@ public class SearchController {
 
     private final SearchService ss;
 
-    private void  searchAdmin() {
-        String role = GatewayRequestHeaderUtils.getRole();
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
-    }
-
     @GetMapping("/admin/request")
     public Page<RequestListDto> requestSearch(
             @RequestParam(value = "searchBy", required = false) RequestSearch.SearchBy searchBy,
@@ -43,7 +35,7 @@ public class SearchController {
             @RequestParam(value = "endDate", required = false) LocalDate endDate,
             Pageable p) {
 
-        searchAdmin();
+        AuthUtils.requireAdmin();
 
         RequestSearch request = RequestSearch.builder()
                 .searchBy(searchBy)
@@ -67,7 +59,7 @@ public class SearchController {
             @RequestParam(value = "endDate", required = false) LocalDate endDate,
             Pageable p) {
 
-        searchAdmin();
+        AuthUtils.requireAdmin();
 
         ProductSearch product = ProductSearch.builder()
                 .searchBy(searchBy)

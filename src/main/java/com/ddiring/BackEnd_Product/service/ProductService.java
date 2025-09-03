@@ -32,6 +32,14 @@ public class ProductService {
                 .toList();
     }
 
+    /* ---------- 상품 상세 조회 ---------- */
+    public ProductDetailDto getProductByProjectId(String projectId, String userSeq) {
+        viewCount(projectId); // 조회수 증가
+        ProductEntity product = pr.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
+        return ProductDetailDto.from(product, userSeq);
+    }
+
     /* ---------- 모든 상품 조회 (관리자) ---------- */
     public List<ProductListDto> getAllProjectAdmin() {
         return pr.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
@@ -40,12 +48,11 @@ public class ProductService {
                 .toList();
     }
 
-    /* ---------- 상품 상세 조회 ---------- */
-    public ProductDetailDto getProductByProjectId(String projectId, String userSeq) {
-        viewCount(projectId);
+    /* ---------- 상품 상세 조회 (관리자) ---------- */
+    public ProductDetailDto getProductByProjectIdAdmin(String projectId, String adminSeq) {
         ProductEntity product = pr.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
-        return ProductDetailDto.from(product, userSeq);
+        return ProductDetailDto.from(product, adminSeq);
     }
 
     public void viewCount(String projectId) {

@@ -1,18 +1,14 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
-import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
-import com.ddiring.BackEnd_Product.dto.creator.CreatorCreateDto;
-import com.ddiring.BackEnd_Product.dto.creator.CreatorDistributionDto;
-import com.ddiring.BackEnd_Product.dto.creator.CreatorStopDto;
-import com.ddiring.BackEnd_Product.dto.creator.CreatorUpdateDto;
+import com.ddiring.BackEnd_Product.common.security.AuthUtils;
+import com.ddiring.BackEnd_Product.dto.common.CreatorRequestResponse;
+import com.ddiring.BackEnd_Product.dto.creator.*;
 import com.ddiring.BackEnd_Product.service.CreatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.util.*;
 
 @RestController
 @RequestMapping("/api/product/request")
@@ -22,50 +18,26 @@ public class CreatorController {
     private final CreatorService cs;
 
     @PostMapping("/create")
-    public ResponseEntity<Map<String,String>> create(@RequestBody @Valid CreatorCreateDto dto) {
-        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"CREATOR".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=CREATOR)");
-        }
-
-        return ResponseEntity.ok(Map.of("requestId", cs.create(dto, userSeq)));
+    public ResponseEntity<CreatorRequestResponse> create(@RequestBody @Valid CreatorCreateDto dto) {
+        String creatorSeq = AuthUtils.requireCreator();
+        return ResponseEntity.ok(new CreatorRequestResponse(cs.create(dto, creatorSeq)));
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Map<String,String>> update(@RequestBody @Valid CreatorUpdateDto dto) {
-        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"CREATOR".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=CREATOR)");
-        }
-
-        return ResponseEntity.ok(Map.of("requestId", cs.update(dto, userSeq)));
+    public ResponseEntity<CreatorRequestResponse> update(@RequestBody @Valid CreatorUpdateDto dto) {
+        String creatorSeq = AuthUtils.requireCreator();
+        return ResponseEntity.ok(new CreatorRequestResponse(cs.update(dto, creatorSeq)));
     }
 
     @PostMapping("/stop")
-    public ResponseEntity<Map<String,String>> stop(@RequestBody @Valid CreatorStopDto dto) {
-        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"CREATOR".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=CREATOR)");
-        }
-
-        return ResponseEntity.ok(Map.of("requestId", cs.stop(dto, userSeq)));
+    public ResponseEntity<CreatorRequestResponse> stop(@RequestBody @Valid CreatorStopDto dto) {
+        String creatorSeq = AuthUtils.requireCreator();
+        return ResponseEntity.ok(new CreatorRequestResponse(cs.stop(dto, creatorSeq)));
     }
 
     @PostMapping("/distribution")
-    public ResponseEntity<Map<String, String>> distribution (@RequestBody @Valid CreatorDistributionDto dto) {
-        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"CREATOR".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=CREATOR)");
-        }
-
-        return ResponseEntity.ok(Map.of("requestId", cs.distribution(dto, userSeq)));
+    public ResponseEntity<CreatorRequestResponse> distribution (@RequestBody @Valid CreatorDistributionDto dto) {
+        String creatorSeq = AuthUtils.requireCreator();
+        return ResponseEntity.ok(new CreatorRequestResponse(cs.distribution(dto, creatorSeq)));
     }
 }

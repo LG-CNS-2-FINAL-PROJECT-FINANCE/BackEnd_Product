@@ -1,6 +1,6 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
+import com.ddiring.BackEnd_Product.common.security.AuthUtils;
 import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
 import com.ddiring.BackEnd_Product.dto.product.ProductDetailDto;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
@@ -26,33 +26,22 @@ public class ProductController {
 
     @GetMapping("/{projectId}")
     public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String projectId) {
-        String userSeq = GatewayRequestHeaderUtils.getUserSeqSafe();
+        String userSeq = GatewayRequestHeaderUtils.getUserSeqSafe(); // 로그인 안 하면 null
         ProductDetailDto pdd = ps.getProductByProjectId(projectId, userSeq);
         return ResponseEntity.ok(pdd);
     }
 
     @GetMapping("/admin")
     public ResponseEntity<List<ProductListDto>> getAdminAllProducts() {
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
-
+        AuthUtils.requireAdmin();
         List<ProductListDto> productList = ps.getAllProjectAdmin();
         return ResponseEntity.ok(productList);
     }
 
     @GetMapping("/admin/{projectId}")
     public ResponseEntity<ProductDetailDto> getAdminProduct(@PathVariable String projectId) {
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
-
-        String userSeq = GatewayRequestHeaderUtils.getUserSeqSafe();
-        ProductDetailDto pdd = ps.getProductByProjectId(projectId, userSeq);
+        String adminSeq = AuthUtils.requireAdmin();
+        ProductDetailDto pdd = ps.getProductByProjectIdAdmin(projectId, adminSeq);
         return ResponseEntity.ok(pdd);
     }
 }

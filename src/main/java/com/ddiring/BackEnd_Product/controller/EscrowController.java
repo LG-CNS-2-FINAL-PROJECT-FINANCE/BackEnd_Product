@@ -1,5 +1,6 @@
 package com.ddiring.BackEnd_Product.controller;
 
+import com.ddiring.BackEnd_Product.dto.common.SimpleResponse;
 import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.escrow.EscrowDistributionDto;
 import com.ddiring.BackEnd_Product.service.EscrowService;
@@ -24,8 +25,8 @@ public class EscrowController {
     }
 
     @PostMapping("/distribution")
-    public ResponseEntity<String> onDistribution(@RequestBody EscrowDistributionDto dto) {
+    public ResponseEntity<SimpleResponse> onDistribution(@RequestBody EscrowDistributionDto dto) {
         es.sendDistribution(dto);
-        return ResponseEntity.ok("distribution");
+        return ResponseEntity.ok(new SimpleResponse("distribution"));
     }
 }

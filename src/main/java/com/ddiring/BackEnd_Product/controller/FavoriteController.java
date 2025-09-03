@@ -1,7 +1,7 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
-import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
+import com.ddiring.BackEnd_Product.common.security.AuthUtils;
+import com.ddiring.BackEnd_Product.dto.common.FavoriteToggleResponse;
 import com.ddiring.BackEnd_Product.dto.product.ProductListDto;
 import com.ddiring.BackEnd_Product.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product/favorite")
@@ -20,31 +19,17 @@ public class FavoriteController {
 
     /** 즐겨찾기 토글 (USER 권한 필요) */
     @PostMapping("/toggle/{projectId}")
-    public ResponseEntity<Map<String, Object>> toggle(@PathVariable("projectId") String projectId) {
-        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"USER".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=USER)");
-        }
-
+    public ResponseEntity<FavoriteToggleResponse> toggle(@PathVariable("projectId") String projectId) {
+        String userSeq = AuthUtils.requireUser();
         boolean nowFavorited = fs.toggle(projectId, userSeq);
-        return ResponseEntity.ok(Map.of(
-                "projectId", projectId,
-                "favorited", nowFavorited
-        ));
+        FavoriteToggleResponse response = new FavoriteToggleResponse(projectId, nowFavorited);
+        return ResponseEntity.ok(response);
     }
 
     /** 내 즐겨찾기 목록 조회 (USER 권한 필요) */
     @GetMapping("/me")
     public ResponseEntity<List<ProductListDto>> myFavorites() {
-        String userSeq = GatewayRequestHeaderUtils.getUserSeq();
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"USER".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=USER)");
-        }
-
+        String userSeq = AuthUtils.requireUser();
         List<ProductListDto> list = fs.listByUser(userSeq)
                 .stream()
                 .map(ProductListDto::from)

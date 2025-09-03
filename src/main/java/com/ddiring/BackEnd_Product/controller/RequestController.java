@@ -1,7 +1,6 @@
 package com.ddiring.BackEnd_Product.controller;
 
-import com.ddiring.BackEnd_Product.common.exception.ForbiddenException;
-import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
+import com.ddiring.BackEnd_Product.common.security.AuthUtils;
 import com.ddiring.BackEnd_Product.dto.request.RequestDetailDto;
 import com.ddiring.BackEnd_Product.dto.request.RequestListDto;
 import com.ddiring.BackEnd_Product.service.RequestService;
@@ -20,24 +19,14 @@ public class RequestController {
 
     @GetMapping("/admin")
     public ResponseEntity<List<RequestListDto>> getAdminAllRequest() {
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
-
+        AuthUtils.requireAdmin();
         List<RequestListDto> requestList = rs.getAllRequest();
         return ResponseEntity.ok(requestList);
     }
 
     @GetMapping("/admin/{requestId}")
     public ResponseEntity<RequestDetailDto> getAdminRequest(@PathVariable String requestId) {
-        String role = GatewayRequestHeaderUtils.getRole();
-
-        if (!"ADMIN".equalsIgnoreCase(role)) {
-            throw new ForbiddenException("권한 없음 (required=ADMIN)");
-        }
-
+        AuthUtils.requireAdmin();
         RequestDetailDto rdd = rs.getRequestByRequestId(requestId);
         return ResponseEntity.ok(rdd);
     }

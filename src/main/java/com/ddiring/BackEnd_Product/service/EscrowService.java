@@ -70,7 +70,6 @@ public class EscrowService {
 
         // 상태 전환
         pe.setProjectStatus(ProductEntity.ProjectStatus.DISTRIBUTING);
-        pe.setDistributionSummary("창작자 분배금 입금 완료: " + dto.getDistributionAmount());
         pr.save(pe);
     }
 }
