@@ -186,6 +186,7 @@ public class AdminService {
         ProductEntity pe = ProductEntity.builder()
                 .projectId(pre.getProjectId())  // 승인 시 사용될 ID 할당
                 .userSeq(pre.getUserSeq())
+                .nickname(pp.getNickname())
                 .title(pp.getTitle())
                 .summary(pp.getSummary())
                 .content(pp.getContent())
