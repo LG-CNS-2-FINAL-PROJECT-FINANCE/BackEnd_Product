@@ -8,6 +8,14 @@ spring:
       port: 27017
       database: product-db
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
   servlet:
     multipart:
       max-file-size: 500MB
