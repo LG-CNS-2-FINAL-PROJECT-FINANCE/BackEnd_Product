@@ -1,8 +1,7 @@
 package com.ddiring.BackEnd_Product.common.exception;
 
 import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

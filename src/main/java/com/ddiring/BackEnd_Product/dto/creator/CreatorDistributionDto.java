@@ -18,13 +18,13 @@ public class CreatorDistributionDto {
     @NotBlank(message="대상 프로젝트 ID 필요")
     private String projectId;
 
-    @Positive
-    @NotNull(message = "분배금을 설정하세요")
-    private BigDecimal distributionAmount;
 
     @NotNull(message = "파일을 등록하세요")
     private List<String> document;
     private List<String> image;
 
+    @Positive
+    @NotNull(message = "분배금을 설정하세요")
+    private BigDecimal distributionAmount;
     private String distributionSummary;
 }

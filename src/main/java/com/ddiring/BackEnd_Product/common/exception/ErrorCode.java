@@ -1,7 +1,6 @@
 package com.ddiring.BackEnd_Product.common.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.*;
