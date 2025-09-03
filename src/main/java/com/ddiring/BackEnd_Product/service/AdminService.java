@@ -1,6 +1,7 @@
 package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
+import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
@@ -10,7 +11,9 @@ import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
+import com.ddiring.BackEnd_Product.enums.NotificationType;
 import com.ddiring.BackEnd_Product.external.EscrowClient;
+import com.ddiring.BackEnd_Product.kafka.NotificationProducer;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import com.ddiring.BackEnd_Product.s3.S3Service;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class AdminService {
     private final ProductService ps;
     private final AssetService as;
     private final S3Service s3;
+    private final NotificationProducer notificationProducer;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -112,6 +117,15 @@ public class AdminService {
         pre.setRequestStatus(ProductRequestEntity.RequestStatus.APPROVED);
         pre.setAdminSeq(userSeq);
         prr.save(pre);
+
+        //test
+        notificationProducer.sendNotification(
+                //List.of("1", "2", "3", "4", "5"),
+                List.of(GatewayRequestHeaderUtils.getUserSeq()),
+                NotificationType.INFORMATION.name(),
+                "상품 등록",
+                "상품 등록이 승인되었습니다.: " + pre.getProjectId()
+        );
     }
 
     /* ---------- 거절 ---------- */

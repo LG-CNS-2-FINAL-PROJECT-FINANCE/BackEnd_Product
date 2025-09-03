@@ -35,5 +35,4 @@ public class GatewayRequestHeaderUtils {
             return null; // 헤더 없으면 null 리턴
         }
     }
-
 }
