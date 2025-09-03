@@ -1,6 +1,5 @@
 package com.ddiring.BackEnd_Product.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -13,14 +12,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NotificationProducer {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    private final ObjectMapper objectMapper;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private static final String TOPIC = "notification";
-
-    //단일 사용자 알림 전송 (단일도 List.of 처리)
-    public void sendNotification(String userSeq, String notificationType, String title, String message) {
-        sendNotification(List.of(userSeq), notificationType, title, message);
-    }
 
     //다중 사용자 알림 전송
     public void sendNotification(List<String> userSeq, String notificationType, String title, String message) {
@@ -38,10 +31,9 @@ public class NotificationProducer {
                     .payload(payload)
                     .build();
 
-            String json = objectMapper.writeValueAsString(envelope);
-            kafkaTemplate.send(TOPIC, json);
+            kafkaTemplate.send(TOPIC, envelope);
 
-            System.out.println("Kafka 메시지 전송 완료: " + json);
+            System.out.println("Kafka 메시지 전송 완료: " + envelope);
         } catch (Exception e) {
             throw new RuntimeException("Kafka 메시지 전송 실패", e);
         }
