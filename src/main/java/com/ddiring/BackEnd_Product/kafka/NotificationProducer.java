@@ -24,7 +24,7 @@ public class NotificationProducer {
     public void sendNotification(List<String> userSeq, String notificationType, String title, String message) {
         NotificationEvent event = NotificationEvent.builder()
                 .eventId(UUID.randomUUID().toString())
-                .timestamp(Instant.now())
+//                .timestamp(Instant.now())
                 .userSeq(userSeq)
                 .notificationType(notificationType)
                 .title(title)
