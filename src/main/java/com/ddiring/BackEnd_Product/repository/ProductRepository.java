@@ -20,16 +20,19 @@ public interface ProductRepository
     // 3. 모금액 높은순
     List<ProductEntity> findTop10ByOrderByAmountDesc();
 
-    // 유저가 즐겨찾기한 상품 목록
+    // 4. 유저가 즐겨찾기한 상품 목록
     @Query("{ 'favorites': ?0 }")
     List<ProductEntity> findByFavoritedUser(String userSeq);
-    // 특정 상품을 유저가 즐겨찾기했는지 존재 여부
+    // 5. 특정 상품을 유저가 즐겨찾기했는지 존재 여부
     @Query(value = "{ '_id': ?0, 'favorites': ?1 }", exists = true)
     boolean existsByIdAndFavoritedUser(String projectId, String userSeq);
 
-    // 계좌번호로 상품 조회
+    // 6. 계좌번호로 상품 조회
     Optional<ProductEntity> findByAccount(String account);
 
-    // Public 조회
+    // 7. Public 조회
     List<ProductEntity> findAllByProjectVisibility(ProductEntity.ProjectVisibility visibility, Sort sort);
+
+    // 8. 창작자조회
+    Optional<ProductEntity> findByUserSeq(String userSeq);
 }

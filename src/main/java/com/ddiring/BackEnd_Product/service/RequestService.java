@@ -53,7 +53,7 @@ public class RequestService {
         prr.delete(pre); // DB 삭제
     }
 
-    /* ---------- 모금액 퍼센트 계산 ---------- */
+    /* ---------- 분배금 퍼센트 계산 ---------- */
     @Transactional
     public BigDecimal DistributionPercent(BigDecimal distributionAmount, BigDecimal goalAmount) {
         if (distributionAmount == null || goalAmount == null || goalAmount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -62,9 +62,8 @@ public class RequestService {
 
         BigDecimal percent = distributionAmount
                 .divide(goalAmount, 4, RoundingMode.HALF_UP) // 소수점 넉넉히
-                .multiply(new BigDecimal("100"))             // %
-                .min(new BigDecimal("100"));                 // 100% 이상 방지
+                .multiply(new BigDecimal("100"));             // %
 
-        return percent.setScale(1, RoundingMode.HALF_UP);    // 소수점 1자리까지
+        return percent.setScale(1, RoundingMode.HALF_UP); // 소수점 1자리까지
     }
 }

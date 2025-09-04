@@ -3,6 +3,8 @@ package com.ddiring.BackEnd_Product.service;
 import com.ddiring.BackEnd_Product.dto.escrow.AmountDto;
 import com.ddiring.BackEnd_Product.dto.escrow.EscrowDistributionDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
+import com.ddiring.BackEnd_Product.kafka.NotificationProducer;
+import com.ddiring.BackEnd_Product.kafka.enums.NotificationType;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,12 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class EscrowService {
 
     private final ProductRepository pr;
+    private final NotificationProducer notificationProducer;
 
     /* ---------- 모금액 저장 및 달성률 계산 ---------- */
     @Transactional
@@ -41,17 +47,33 @@ public class EscrowService {
             }
             pe.setPercent(percent.setScale(1, RoundingMode.HALF_UP));
 
-            // 상태 변경: 100% 달성 시 END
+            // 🔔 상태 변경: 100% 달성 시 FUNDING_LOCKED
             if (percent.compareTo(new BigDecimal("100")) >= 0
                     && pe.getProjectStatus() == ProductEntity.ProjectStatus.OPEN) {
                 pe.setProjectStatus(ProductEntity.ProjectStatus.FUNDING_LOCKED);
+
+                // 모금액 달성으로 인한 조기마감 알림(창작자)
+                notificationProducer.sendNotification(
+                        List.of(pe.getUserSeq()),
+                        NotificationType.INFORMATION.name(),
+                        "목표금액 달성",
+                        "상품(" + pe.getTitle() + ")의 목표금액이 달성되어 조기 마감되었습니다."
+                );
+
+                // 모금액 달성으로 인한 조기마감 알림(즐겨찾기)
+                notificationProducer.sendNotification(
+                        new ArrayList<>(pe.getFavorites()),
+                        NotificationType.INFORMATION.name(),
+                        "목표금액 달성",
+                        "상품(" + pe.getTitle() + ")의 목표금액이 달성되어 조기 마감되었습니다."
+                );
             }
 
             pr.save(pe);
         }
     }
 
-    /* ---------- escrow 모금액 입금 확인 ---------- */
+    /* ---------- escrow 분배금 입금 확인 ---------- */
     @Transactional
     public void sendDistribution(EscrowDistributionDto dto) {
         ProductEntity pe = pr.findByAccount(dto.getAccount())
@@ -71,5 +93,13 @@ public class EscrowService {
         // 상태 전환
         pe.setProjectStatus(ProductEntity.ProjectStatus.DISTRIBUTING);
         pr.save(pe);
+
+        // 🔔 분배금 입금 확인(창작자)
+        notificationProducer.sendNotification(
+                List.of(pe.getUserSeq()),
+                NotificationType.INFORMATION.name(),
+                "분배금 입금 확인",
+                "상품(" + pe.getTitle() + ")의 분배금 입금이 확인되었습니다."
+        );
     }
 }

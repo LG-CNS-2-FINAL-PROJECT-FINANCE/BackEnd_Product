@@ -83,12 +83,11 @@ public class AdminService {
                                 .build()
                 );
 
-                // ✅ 알림 메시지 준비만 함
                 notificationPayload = new NotificationPayload(
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 등록 승인",
-                        "상품 등록이 승인되었습니다: " + pre.getProjectId()
+                        "상품("+pre.getPayload().getTitle()+") 등록이 승인되었습니다"
                 );
             }
 
@@ -107,24 +106,22 @@ public class AdminService {
                                 .build()
                 );
 
-                // ✅ 알림 메시지 준비만 함
                 notificationPayload = new NotificationPayload(
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 수정 승인",
-                        "상품 수정이 승인되었습니다: " + pre.getProjectId()
+                        "상품("+pre.getPayload().getTitle()+") 수정이 승인되었습니다"
                 );
             }
 
             case STOP -> {
                 handleStop(pre);
 
-                // ✅ 알림 메시지 준비만 함
                 notificationPayload = new NotificationPayload(
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 정지 승인",
-                        "상품 정지 승인되었습니다: " + pre.getProjectId()
+                        "상품("+pre.getPayload().getTitle()+") 정지가 승인되었습니다"
                 );
             }
 
@@ -143,12 +140,11 @@ public class AdminService {
                                 .build()
                 );
 
-                // ✅ 알림 메시지 준비만 함
                 notificationPayload = new NotificationPayload(
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
-                        "상품 수정 승인",
-                        "상품 수정이 승인되었습니다: " + pre.getProjectId()
+                        "상품 분배 승인",
+                        "상품("+ pre.getPayload().getTitle()+") 분배가 승인되었습니다."
                 );
             }
         }
@@ -157,7 +153,7 @@ public class AdminService {
         pre.setAdminSeq(userSeq);
         prr.save(pre);
 
-        // ✅ DB 저장 끝난 후 → 알림 발행
+        // 🔔 DB 저장 끝난 후 → 알림 발행
         if (notificationPayload != null) {
             notificationProducer.sendNotification(
                     notificationPayload.getUserSeq(),
@@ -203,11 +199,12 @@ public class AdminService {
         pre.setRejectReason(dto.getRejectReason());
         prr.save(pre);
 
+        // 🔔 거절 알림 발행
         notificationProducer.sendNotification(
                 List.of(pre.getUserSeq()),
                 NotificationType.INFORMATION.name(),
                 "상품 거절",
-                "상품 등록이 거절되었습니다. 사유: " + dto.getRejectReason()
+                "상품("+pre.getPayload().getTitle()+")에 대한 요청이 거절되었습니다. 사유: " + dto.getRejectReason()
         );
     }
 
@@ -235,22 +232,23 @@ public class AdminService {
             pe.setHoldReason(null); // 필요시 해제 사유를 별도 필드로 남겨도 됨
         }
 
+        pe.setHoldAdminSeq(adminSeq);
         pr.save(pe);
 
-        // ✅ 여기서 숨김/공개 알림 발행
+        // 🔔 숨김/공개 알림 발행
         if (goingToHold) {
             notificationProducer.sendNotification(
                     List.of(pe.getUserSeq()),
                     NotificationType.INFORMATION.name(),
                     "상품 숨김",
-                    "관리자에 의해 상품이 숨김 처리되었습니다. 사유: " + reason
+                    "관리자에 의해 상품("+pe.getTitle()+")이 숨김 처리되었습니다. 사유: " + reason
             );
         } else {
             notificationProducer.sendNotification(
                     List.of(pe.getUserSeq()),
                     NotificationType.INFORMATION.name(),
                     "상품 공개",
-                    "관리자에 의해 상품이 다시 공개되었습니다."
+                    "관리자에 의해 상품("+pe.getTitle()+")이 다시 공개되었습니다."
             );
         }
 
@@ -341,6 +339,7 @@ public class AdminService {
         pe.setDocument(pe.getDocument());
         pe.setDocument(new ArrayList<>(pp.getDocument()));
         pe.setImage(new ArrayList<>(pp.getImage()));
+        pe.setReason(pp.getReason());
         pe.setProjectStatus(ProductEntity.ProjectStatus.TEMPORARY_STOP);
         pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
         pr.save(pe);

@@ -1,11 +1,13 @@
 package com.ddiring.BackEnd_Product.controller;
 
+import com.ddiring.BackEnd_Product.common.exception.NotFound;
 import com.ddiring.BackEnd_Product.common.security.AuthUtils;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminClosedDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminHoldDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
+import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.service.AdminService;
 import com.ddiring.BackEnd_Product.service.ProductService;
 import jakarta.validation.Valid;
@@ -20,6 +22,7 @@ public class AdminController {
 
     private final AdminService as;
     private final ProductService ps;
+    private final ProductRepository pr;
 
     @PostMapping("/request/approve")
     public ResponseEntity<Void> approve(@RequestBody @Valid AdminApproveDto dto) {
@@ -58,12 +61,14 @@ public class AdminController {
     public ResponseEntity<AdminClosedDto> closeProduct(@PathVariable("projectId") String projectId) {
         String adminSeq = AuthUtils.requireAdmin();
 
-        ProductEntity updated = ps.closedProduct(projectId, adminSeq);
+        ps.closedProduct(projectId, adminSeq);
+
+        ProductEntity updated = pr.findById(projectId)
+                .orElseThrow(() -> new NotFound("상품을 찾을 수 없습니다: " + projectId));
 
         AdminClosedDto response = new AdminClosedDto(
                 updated.getProjectId(),
-                updated.getProjectStatus().name(),
-                updated.getReason()
+                updated.getProjectStatus().name()
         );
 
         return ResponseEntity.ok(response);

@@ -74,8 +74,13 @@ public class ProductEntity {
     private ProjectVisibility projectVisibility;
 
     private String reason;
+
+    private String holdAdminSeq;
     private String holdReason;
+
     private String distributionSummary;
+
+    private String closedAdminSeq;
 
     @CreatedDate
     private LocalDateTime createdAt;

@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 public class AdminClosedDto {
     private String projectId;
-    private String status;
-    private String reason;
+    private String projectStatus;
 }
 
