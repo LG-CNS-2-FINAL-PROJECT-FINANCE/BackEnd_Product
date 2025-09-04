@@ -1,4 +1,4 @@
-package com.ddiring.BackEnd_Product.enums;
+package com.ddiring.BackEnd_Product.kafka.enums;
 
 public enum NotificationType {
     INFORMATION(1),     //정보

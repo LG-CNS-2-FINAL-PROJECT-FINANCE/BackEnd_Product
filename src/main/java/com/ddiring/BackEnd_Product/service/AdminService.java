@@ -1,7 +1,6 @@
 package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
-import com.ddiring.BackEnd_Product.common.util.GatewayRequestHeaderUtils;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
@@ -11,13 +10,15 @@ import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
-import com.ddiring.BackEnd_Product.enums.NotificationType;
-import com.ddiring.BackEnd_Product.external.EscrowClient;
+import com.ddiring.BackEnd_Product.kafka.NotificationPayload;
 import com.ddiring.BackEnd_Product.kafka.NotificationProducer;
+import com.ddiring.BackEnd_Product.kafka.enums.NotificationType;
+import com.ddiring.BackEnd_Product.external.EscrowClient;
 import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import com.ddiring.BackEnd_Product.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,7 @@ public class AdminService {
     private final AssetService as;
     private final S3Service s3;
     private final NotificationProducer notificationProducer;
+    private final ApplicationEventPublisher eventPublisher;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -62,6 +64,9 @@ public class AdminService {
 //        oldDocs.stream().filter(old -> !newDocs.contains(old)).forEach(s3::deleteFile);
 //        oldImages.stream().filter(old -> !newImages.contains(old)).forEach(s3::deleteFile);
 
+        // 알림 DTO 담아둘 변수
+        NotificationPayload notificationPayload = null;
+
         switch (pre.getRequestType()) {
             case CREATE -> {
                 handleCreate(pre);
@@ -76,6 +81,14 @@ public class AdminService {
                                 .title(pe.getTitle())
                                 .account(pe.getAccount())
                                 .build()
+                );
+
+                // ✅ 알림 메시지 준비만 함
+                notificationPayload = new NotificationPayload(
+                        List.of(pre.getUserSeq()),
+                        NotificationType.INFORMATION.name(),
+                        "상품 등록 승인",
+                        "상품 등록이 승인되었습니다: " + pre.getProjectId()
                 );
             }
 
@@ -93,9 +106,27 @@ public class AdminService {
                                 .account(pe.getAccount())
                                 .build()
                 );
+
+                // ✅ 알림 메시지 준비만 함
+                notificationPayload = new NotificationPayload(
+                        List.of(pre.getUserSeq()),
+                        NotificationType.INFORMATION.name(),
+                        "상품 수정 승인",
+                        "상품 수정이 승인되었습니다: " + pre.getProjectId()
+                );
             }
 
-            case STOP -> handleStop(pre);
+            case STOP -> {
+                handleStop(pre);
+
+                // ✅ 알림 메시지 준비만 함
+                notificationPayload = new NotificationPayload(
+                        List.of(pre.getUserSeq()),
+                        NotificationType.INFORMATION.name(),
+                        "상품 정지 승인",
+                        "상품 정지 승인되었습니다: " + pre.getProjectId()
+                );
+            }
 
             case DISTRIBUTION -> {
                 handleDistribution(pre);
@@ -111,6 +142,14 @@ public class AdminService {
                                 .distributionAmount(pe.getDistributionAmount())
                                 .build()
                 );
+
+                // ✅ 알림 메시지 준비만 함
+                notificationPayload = new NotificationPayload(
+                        List.of(pre.getUserSeq()),
+                        NotificationType.INFORMATION.name(),
+                        "상품 수정 승인",
+                        "상품 수정이 승인되었습니다: " + pre.getProjectId()
+                );
             }
         }
 
@@ -118,14 +157,15 @@ public class AdminService {
         pre.setAdminSeq(userSeq);
         prr.save(pre);
 
-        //test
-        notificationProducer.sendNotification(
-                //List.of("1", "2", "3", "4", "5"),
-                List.of(GatewayRequestHeaderUtils.getUserSeq()),
-                NotificationType.INFORMATION.name(),
-                "상품 등록",
-                "상품 등록이 승인되었습니다.: " + pre.getProjectId()
-        );
+        // ✅ DB 저장 끝난 후 → 알림 발행
+        if (notificationPayload != null) {
+            notificationProducer.sendNotification(
+                    notificationPayload.getUserSeq(),
+                    notificationPayload.getNotificationType(),
+                    notificationPayload.getTitle(),
+                    notificationPayload.getMessage()
+            );
+        }
     }
 
     /* ---------- 거절 ---------- */
@@ -162,6 +202,13 @@ public class AdminService {
         pre.setAdminSeq(userSeq);
         pre.setRejectReason(dto.getRejectReason());
         prr.save(pre);
+
+        notificationProducer.sendNotification(
+                List.of(pre.getUserSeq()),
+                NotificationType.INFORMATION.name(),
+                "상품 거절",
+                "상품 등록이 거절되었습니다. 사유: " + dto.getRejectReason()
+        );
     }
 
     /* ---------- 숨김 ---------- */
@@ -189,6 +236,24 @@ public class AdminService {
         }
 
         pr.save(pe);
+
+        // ✅ 여기서 숨김/공개 알림 발행
+        if (goingToHold) {
+            notificationProducer.sendNotification(
+                    List.of(pe.getUserSeq()),
+                    NotificationType.INFORMATION.name(),
+                    "상품 숨김",
+                    "관리자에 의해 상품이 숨김 처리되었습니다. 사유: " + reason
+            );
+        } else {
+            notificationProducer.sendNotification(
+                    List.of(pe.getUserSeq()),
+                    NotificationType.INFORMATION.name(),
+                    "상품 공개",
+                    "관리자에 의해 상품이 다시 공개되었습니다."
+            );
+        }
+
         return pe.getProjectVisibility();
     }
 
@@ -246,7 +311,7 @@ public class AdminService {
             throw new IllegalStateException("상품 생성 중 에스크로 계좌 생성 실패: " + e.getMessage(), e);
         }
     }
-    
+
     private void handleUpdate(ProductRequestEntity pre) {
             ProductPayload pp = pre.getPayload();
             ProductEntity pe = pr.findById(pp.getProjectId())
