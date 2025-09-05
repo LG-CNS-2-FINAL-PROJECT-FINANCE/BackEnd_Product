@@ -1,15 +1,18 @@
 package com.ddiring.BackEnd_Product.service;
 
 import com.ddiring.BackEnd_Product.common.exception.NotFound;
+import com.ddiring.BackEnd_Product.common.response.dto.ApiResponseDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminApproveDto;
 import com.ddiring.BackEnd_Product.dto.admin.AdminRejectDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetAccountDto;
 import com.ddiring.BackEnd_Product.dto.asset.AssetDistributionDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountRequestDto;
 import com.ddiring.BackEnd_Product.dto.escrow.AccountResponseDto;
+import com.ddiring.BackEnd_Product.dto.smartcontract.SmartContractDto;
 import com.ddiring.BackEnd_Product.entity.ProductEntity;
 import com.ddiring.BackEnd_Product.entity.ProductPayload;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
+import com.ddiring.BackEnd_Product.external.SmartContractClient;
 import com.ddiring.BackEnd_Product.kafka.NotificationPayload;
 import com.ddiring.BackEnd_Product.kafka.NotificationProducer;
 import com.ddiring.BackEnd_Product.kafka.enums.NotificationType;
@@ -18,7 +21,6 @@ import com.ddiring.BackEnd_Product.repository.ProductRepository;
 import com.ddiring.BackEnd_Product.repository.ProductRequestRepository;
 import com.ddiring.BackEnd_Product.s3.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +38,7 @@ public class AdminService {
     private final AssetService as;
     private final S3Service s3;
     private final NotificationProducer notificationProducer;
-    private final ApplicationEventPublisher eventPublisher;
+    private final SmartContractClient bc;
 
     /* ---------- 승인 ---------- */
     @Transactional
@@ -74,6 +76,21 @@ public class AdminService {
                 // CREATE Asset 서비스 호출
                 ProductEntity pe = pr.findById(pre.getProjectId())
                         .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
+
+                // ✅ 스마트컨트랙트 배포 요청
+                SmartContractDto scDto = SmartContractDto.builder()
+                        .projectId(pe.getProjectId())
+                        .tokenName("JJoGae")
+                        .tokenSymbol("jjo")
+                        .totalGoalAmount(pe.getGoalAmount().longValue())
+                        .minAmount(pe.getMinInvestment().longValue())
+                        .build();
+
+                ApiResponseDto<?> scResponse = bc.requestDeploy(scDto);
+
+                if (!"SUCCESS".equals(scResponse.getCode())) {
+                    throw new IllegalStateException("스마트컨트랙트 배포 실패: " + scResponse.getMessage());
+                }
 
                 as.sendAssetAccount(
                         AssetAccountDto.builder()
