@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 )
 public interface SmartContractClient {
     @PostMapping("/api/contract/deploy")
-    ApiResponseDto<?> requestDeploy(@RequestBody SmartContractDto dto);
+    ApiResponseDto<String> requestDeploy(@RequestBody SmartContractDto dto);
 }

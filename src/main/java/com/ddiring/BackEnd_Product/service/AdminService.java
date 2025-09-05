@@ -86,7 +86,7 @@ public class AdminService {
                         .minAmount(pe.getMinInvestment().longValue())
                         .build();
 
-                ApiResponseDto<?> scResponse = bc.requestDeploy(scDto);
+                ApiResponseDto<String> scResponse = bc.requestDeploy(scDto);
 
                 if (!"SUCCESS".equals(scResponse.getCode())) {
                     throw new IllegalStateException("스마트컨트랙트 배포 실패: " + scResponse.getMessage());
