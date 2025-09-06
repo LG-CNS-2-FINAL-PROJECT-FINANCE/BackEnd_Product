@@ -26,9 +26,28 @@ public class ProductService {
     private final MongoTemplate mt;
     private final NotificationProducer notificationProducer;
 
-    /* ---------- 모든 상품 조회 ---------- */
-    public List<ProductListDto> getAllProject() {
-        return pr.findAllByProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC,
+    /* ---------- 투자 가능한 모든 상품 조회 ---------- */
+    public List<ProductListDto> getAllOpenProject() {
+        return pr.findAllByProjectStatusAndProjectVisibility(
+                ProductEntity.ProjectStatus.OPEN,
+                ProductEntity.ProjectVisibility.PUBLIC,
+                        Sort.by(Sort.Direction.DESC, "createdAt"))
+                .stream()
+                .map(ProductListDto::from)
+                .toList();
+    }
+
+    /* ---------- 투자 불가능한 모든 상품 조회 ---------- */
+    public List<ProductListDto> getAllUnOpenProject() {
+        return pr.findAllByProjectStatusInAndProjectVisibility(
+                List.of(
+                        ProductEntity.ProjectStatus.FUNDING_LOCKED,
+                        ProductEntity.ProjectStatus.TRADING,
+                        ProductEntity.ProjectStatus.DISTRIBUTION_READY,
+                        ProductEntity.ProjectStatus.DISTRIBUTING,
+                        ProductEntity.ProjectStatus.CLOSED
+                ),
+                        ProductEntity.ProjectVisibility.PUBLIC,
                         Sort.by(Sort.Direction.DESC, "createdAt"))
                 .stream()
                 .map(ProductListDto::from)
@@ -36,7 +55,7 @@ public class ProductService {
     }
 
     /* ---------- 상품 상세 조회 ---------- */
-    public ProductDetailDto getProductByProjectId(String projectId, String userSeq) {
+    public ProductDetailDto getProjectId(String projectId, String userSeq) {
         viewCount(projectId); // 조회수 증가
         ProductEntity product = pr.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
@@ -52,7 +71,7 @@ public class ProductService {
     }
 
     /* ---------- 상품 상세 조회 (관리자) ---------- */
-    public ProductDetailDto getProductByProjectIdAdmin(String projectId, String adminSeq) {
+    public ProductDetailDto getProjectIdAdmin(String projectId, String adminSeq) {
         ProductEntity pe = pr.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상품입니다."));
         return ProductDetailDto.from(pe, adminSeq);

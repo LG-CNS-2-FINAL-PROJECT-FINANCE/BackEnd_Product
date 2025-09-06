@@ -18,30 +18,36 @@ public class ProductController {
 
     private final ProductService ps;
 
-    @GetMapping
-    public ResponseEntity<List<ProductListDto>> getAllProducts() {
-        List<ProductListDto> productList = ps.getAllProject();
+    @GetMapping("/open")
+    public ResponseEntity<List<ProductListDto>> getAllOpenProject() {
+        List<ProductListDto> productList = ps.getAllOpenProject();
+        return ResponseEntity.ok(productList);
+    }
+
+    @GetMapping("/unOpen")
+    public ResponseEntity<List<ProductListDto>> getAllUnOpenProject() {
+        List<ProductListDto> productList = ps.getAllUnOpenProject();
         return ResponseEntity.ok(productList);
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<ProductDetailDto> getProduct(@PathVariable String projectId) {
+    public ResponseEntity<ProductDetailDto> getProject(@PathVariable String projectId) {
         String userSeq = GatewayRequestHeaderUtils.getUserSeqSafe(); // 로그인 안 하면 null
-        ProductDetailDto pdd = ps.getProductByProjectId(projectId, userSeq);
+        ProductDetailDto pdd = ps.getProjectId(projectId, userSeq);
         return ResponseEntity.ok(pdd);
     }
 
     @GetMapping("/admin")
-    public ResponseEntity<List<ProductListDto>> getAdminAllProducts() {
+    public ResponseEntity<List<ProductListDto>> getAllProjectAdmin() {
         AuthUtils.requireAdmin();
         List<ProductListDto> productList = ps.getAllProjectAdmin();
         return ResponseEntity.ok(productList);
     }
 
     @GetMapping("/admin/{projectId}")
-    public ResponseEntity<ProductDetailDto> getAdminProduct(@PathVariable String projectId) {
+    public ResponseEntity<ProductDetailDto> getProjectIdAdmin(@PathVariable String projectId) {
         String adminSeq = AuthUtils.requireAdmin();
-        ProductDetailDto pdd = ps.getProductByProjectIdAdmin(projectId, adminSeq);
+        ProductDetailDto pdd = ps.getProjectIdAdmin(projectId, adminSeq);
         return ResponseEntity.ok(pdd);
     }
 }

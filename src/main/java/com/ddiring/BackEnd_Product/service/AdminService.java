@@ -77,6 +77,14 @@ public class AdminService {
                 ProductEntity pe = pr.findById(pre.getProjectId())
                         .orElseThrow(() -> new IllegalStateException("승인 처리 후 상품 정보를 찾을 수 없습니다"));
 
+                as.sendAssetAccount(
+                        AssetAccountDto.builder()
+                                .projectId(pe.getProjectId())
+                                .title(pe.getTitle())
+                                .account(pe.getAccount())
+                                .build()
+                );
+
                 // ✅ 스마트컨트랙트 배포 요청
                 SmartContractDto scDto = SmartContractDto.builder()
                         .projectId(pe.getProjectId())
@@ -92,14 +100,6 @@ public class AdminService {
                 if (!"SUCCESS".equalsIgnoreCase(code) && !"200".equals(code)) {
                     throw new IllegalStateException("스마트컨트랙트 배포 실패: " + scResponse.getMessage());
                 }
-
-                as.sendAssetAccount(
-                        AssetAccountDto.builder()
-                                .projectId(pe.getProjectId())
-                                .title(pe.getTitle())
-                                .account(pe.getAccount())
-                                .build()
-                );
 
                 notificationPayload = new NotificationPayload(
                         List.of(pre.getUserSeq()),

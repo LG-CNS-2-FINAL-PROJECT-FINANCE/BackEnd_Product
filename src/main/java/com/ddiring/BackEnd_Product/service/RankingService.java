@@ -16,7 +16,6 @@ public class RankingService {
 
     /* ---------- 전체 조회수 랭킹 ---------- */
     public List<ProductEntity> getTopByViewCount() {
-
         return pr.findTop10ByOrderByViewCountDesc();
     }
 

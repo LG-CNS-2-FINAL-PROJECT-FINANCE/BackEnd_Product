@@ -31,8 +31,21 @@ public interface ProductRepository
     Optional<ProductEntity> findByAccount(String account);
 
     // 7. Public 조회
-    List<ProductEntity> findAllByProjectVisibility(ProductEntity.ProjectVisibility visibility, Sort sort);
+    List<ProductEntity> findAllByProjectVisibility(
+            ProductEntity.ProjectVisibility visibility, Sort sort);
 
-    // 8. 창작자조회
+    // 8. OPEN, Public 조회
+    List<ProductEntity> findAllByProjectStatusAndProjectVisibility(
+            ProductEntity.ProjectStatus status,
+            ProductEntity.ProjectVisibility visibility,
+            Sort sort);
+
+    // 9. OPEN, Public 조회
+    List<ProductEntity> findAllByProjectStatusInAndProjectVisibility(
+            List<ProductEntity.ProjectStatus> status,
+            ProductEntity.ProjectVisibility visibility,
+            Sort sort);
+
+    // 10. 창작자조회
     Optional<ProductEntity> findByUserSeq(String userSeq);
 }
