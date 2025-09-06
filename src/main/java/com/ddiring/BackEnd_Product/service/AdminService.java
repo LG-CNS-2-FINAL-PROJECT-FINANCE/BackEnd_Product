@@ -97,7 +97,7 @@ public class AdminService {
                 ApiResponseDto<String> scResponse = bc.requestDeploy(scDto);
 
                 String code = String.valueOf(scResponse.getCode()); // code가 숫자일 수도 있으니까 문자열로
-                if (!"SUCCESS".equalsIgnoreCase(code) && !"200".equals(code)) {
+                if (!"OK".equalsIgnoreCase(code) && !"200".equals(code)) {
                     throw new IllegalStateException("스마트컨트랙트 배포 실패: " + scResponse.getMessage());
                 }
 
