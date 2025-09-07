@@ -67,6 +67,28 @@ public class EscrowService {
                         "목표금액 달성",
                         "상품(" + pe.getTitle() + ")의 목표금액이 달성되어 조기 마감되었습니다."
                 );
+
+            } else if (percent.compareTo(new BigDecimal("100")) < 0
+                    && pe.getProjectStatus() == ProductEntity.ProjectStatus.FUNDING_LOCKED) {
+
+                // 환불 등으로 목표치 미만이 되면 다시 OPEN
+                pe.setProjectStatus(ProductEntity.ProjectStatus.OPEN);
+
+                // 모금액 감소 알림(창작자)
+                notificationProducer.sendNotification(
+                        List.of(pe.getUserSeq()),
+                        NotificationType.INFORMATION.name(),
+                        "목표금액 달성 해제",
+                        "상품(" + pe.getTitle() + ")의 목표금액 달성이 해제되어 다시 모집 중 상태로 변경되었습니다."
+                );
+
+                // 모금액 감소 알림(즐겨찾기)
+                notificationProducer.sendNotification(
+                        new ArrayList<>(pe.getFavorites()),
+                        NotificationType.INFORMATION.name(),
+                        "목표금액 달성 해제",
+                        "상품(" + pe.getTitle() + ")의 목표금액 달성이 해제되어 다시 모집 중 상태로 변경되었습니다."
+                );
             }
 
             pr.save(pe);
