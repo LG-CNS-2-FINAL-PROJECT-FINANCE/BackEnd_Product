@@ -10,6 +10,5 @@ import java.math.BigDecimal;
 @Builder
 public class AssetDistributionDto {
     private String projectId;
-    private String userSeq;
     private BigDecimal distributionAmount;
 }
