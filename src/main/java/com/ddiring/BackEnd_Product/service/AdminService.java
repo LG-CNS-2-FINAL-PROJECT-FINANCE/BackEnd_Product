@@ -153,6 +153,7 @@ public class AdminService {
                 as.sendAssetDistribution(
                         AssetDistributionDto.builder()
                                 .projectId(pe.getProjectId())
+                                .userSeq(pe.getUserSeq())
                                 .distributionAmount(pe.getDistributionAmount())
                                 .build()
                 );

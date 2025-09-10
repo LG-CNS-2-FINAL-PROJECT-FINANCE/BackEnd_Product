@@ -16,5 +16,5 @@ public interface AssetClient {
     ApiResponseDto<String> assetAccount(@RequestBody AssetAccountDto account);
 
     @PostMapping("/api/asset/distribution")
-    ApiResponseDto<String> assetDistribution(@RequestBody AssetDistributionDto dto);
+    void  assetDistribution(@RequestBody AssetDistributionDto dto);
 }
