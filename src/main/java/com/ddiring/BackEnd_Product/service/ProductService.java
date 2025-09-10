@@ -32,7 +32,7 @@ public class ProductService {
                 List.of(
                         ProductEntity.ProjectStatus.OPEN,
                         ProductEntity.ProjectStatus.FUNDING_LOCKED
-                        ),
+                ),
                         ProductEntity.ProjectVisibility.PUBLIC,
                         Sort.by(Sort.Direction.DESC, "createdAt"))
                 .stream()
