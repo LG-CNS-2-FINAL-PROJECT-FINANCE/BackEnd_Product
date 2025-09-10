@@ -29,8 +29,11 @@ public class ProductService {
     /* ---------- 투자 가능한 모든 상품 조회 ---------- */
     public List<ProductListDto> getAllOpenProject() {
         return pr.findAllByProjectStatusAndProjectVisibility(
-                ProductEntity.ProjectStatus.OPEN,
-                ProductEntity.ProjectVisibility.PUBLIC,
+                List.of(
+                        ProductEntity.ProjectStatus.OPEN,
+                        ProductEntity.ProjectStatus.FUNDING_LOCKED
+                        ),
+                        ProductEntity.ProjectVisibility.PUBLIC,
                         Sort.by(Sort.Direction.DESC, "createdAt"))
                 .stream()
                 .map(ProductListDto::from)
@@ -41,7 +44,6 @@ public class ProductService {
     public List<ProductListDto> getAllUnOpenProject() {
         return pr.findAllByProjectStatusInAndProjectVisibility(
                 List.of(
-                        ProductEntity.ProjectStatus.FUNDING_LOCKED,
                         ProductEntity.ProjectStatus.TRADING,
                         ProductEntity.ProjectStatus.DISTRIBUTION_READY,
                         ProductEntity.ProjectStatus.DISTRIBUTING,

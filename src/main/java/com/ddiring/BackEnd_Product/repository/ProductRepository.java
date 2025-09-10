@@ -36,7 +36,7 @@ public interface ProductRepository
 
     // 8. OPEN, Public 조회
     List<ProductEntity> findAllByProjectStatusAndProjectVisibility(
-            ProductEntity.ProjectStatus status,
+            List<ProductEntity.ProjectStatus> status,
             ProductEntity.ProjectVisibility visibility,
             Sort sort);
 
