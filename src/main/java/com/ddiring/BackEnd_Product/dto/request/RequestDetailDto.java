@@ -26,11 +26,13 @@ public class RequestDetailDto {
     private BigDecimal minInvestment;
     private List<String> document;
     private List<String> image ;
-    private String reason;
 
     private ProductRequestEntity.RequestType requestType;
     private ProductRequestEntity.RequestStatus requestStatus;
     private String adminSeq;
+
+    private String reason;
+    private String distributionSummary;
     private String rejectReason;
 
     public static RequestDetailDto from(ProductRequestEntity e) {
@@ -48,10 +50,11 @@ public class RequestDetailDto {
                 .minInvestment(e.getPayload().getMinInvestment())
                 .document(e.getPayload().getDocument())
                 .image(e.getPayload().getImage())
-                .reason(e.getPayload().getReason())
                 .requestType(e.getRequestType())
                 .requestStatus(e.getRequestStatus())
                 .adminSeq(e.getAdminSeq())
+                .reason(e.getPayload().getReason())
+                .distributionSummary(e.getPayload().getDistributionSummary())
                 .rejectReason(e.getRejectReason())
                 .build();
     }
