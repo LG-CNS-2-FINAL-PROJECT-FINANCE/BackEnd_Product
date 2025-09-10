@@ -28,7 +28,7 @@ public class ProductService {
 
     /* ---------- 투자 가능한 모든 상품 조회 ---------- */
     public List<ProductListDto> getAllOpenProject() {
-        return pr.findAllByProjectStatusAndProjectVisibility(
+        return pr.findAllByProjectStatusInAndProjectVisibility(
                 List.of(
                         ProductEntity.ProjectStatus.OPEN,
                         ProductEntity.ProjectStatus.FUNDING_LOCKED
