@@ -34,13 +34,13 @@ public interface ProductRepository
     List<ProductEntity> findAllByProjectVisibility(
             ProductEntity.ProjectVisibility visibility, Sort sort);
 
-    // 8. OPEN, Public 조회
+    // 8. 단일 조회 조회
     List<ProductEntity> findAllByProjectStatusAndProjectVisibility(
             List<ProductEntity.ProjectStatus> status,
             ProductEntity.ProjectVisibility visibility,
             Sort sort);
 
-    // 9. UNOPEN, Public 조회
+    // 9. List 조회 조회
     List<ProductEntity> findAllByProjectStatusInAndProjectVisibility(
             List<ProductEntity.ProjectStatus> status,
             ProductEntity.ProjectVisibility visibility,
