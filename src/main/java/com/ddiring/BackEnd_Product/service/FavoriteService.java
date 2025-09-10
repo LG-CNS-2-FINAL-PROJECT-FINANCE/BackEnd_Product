@@ -28,19 +28,24 @@ public class FavoriteService {
         Query q = Query.query(Criteria.where("_id").is(projectId));
         Update add = new Update().addToSet("favorites", userSeq);
         UpdateResult added = mt.updateFirst(q, add, ProductEntity.class);
-        ProductEntity pe = new ProductEntity();
 
         if (added.getMatchedCount() == 0) {
             throw new IllegalArgumentException("상품이 없습니다: " + projectId);
         }
         // 🔔 modifiedCount==1 이면 방금 추가됨 → true
         if (added.getModifiedCount() == 1) {
+            // 상품 정보 조회
+            ProductEntity pe = mt.findById(projectId, ProductEntity.class);
+            if (pe == null) {
+                throw new IllegalArgumentException("상품이 없습니다: " + projectId);
+            }
+
             // 투자자 알림 발행
             notificationProducer.sendNotification(
                     List.of(userSeq),
                     NotificationType.INFORMATION.name(),
                     "즐겨찾기 추가",
-                    "상품 ("+pe.getTitle()+") 이 즐겨찾기에 추가되었습니다."
+                    "상품 ("+pe.getTitle()+") 이 즐겨찾기를 추가되었습니다."
             );
 
             // 장착자 알림 발행
@@ -48,7 +53,7 @@ public class FavoriteService {
                     List.of(pe.getUserSeq()),
                     NotificationType.INFORMATION.name(),
                     "즐겨찾기 누름",
-                    "상품 ("+pe.getTitle()+") 에 "+userSeq+" 즐겨찾기에 눌렀습니다."
+                    "상품 ("+pe.getTitle()+") 에 "+userSeq+" 즐겨찾기를 눌렀습니다."
             );
             return true;
         }
