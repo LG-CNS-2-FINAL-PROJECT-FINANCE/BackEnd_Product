@@ -370,6 +370,8 @@ public class AdminService {
 
         pe.setDocument(new ArrayList<>(pp.getDocument()));
         pe.setImage(new ArrayList<>(pp.getImage()));
+        pe.setDistributionAmount(pp.getDistributionAmount());
+        pe.setDistributionPercent(pp.getDistributionPercent());
         pe.setDistributionSummary(pp.getDistributionSummary());
         pe.setProjectStatus(ProductEntity.ProjectStatus.DISTRIBUTION_READY);
         pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);

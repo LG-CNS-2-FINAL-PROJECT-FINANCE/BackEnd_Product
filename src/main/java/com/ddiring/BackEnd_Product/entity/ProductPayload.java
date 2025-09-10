@@ -55,13 +55,9 @@ public class ProductPayload {
                 .deadline(e.getDeadline())
                 .goalAmount(e.getGoalAmount())
                 .minInvestment(e.getMinInvestment())
-                .distributionAmount(e.getDistributionAmount())
-                .distributionPercent(e.getDistributionPercent())
                 .document(e.getDocument())
                 .image(e.getImage())
                 .reason(e.getReason())
-                .distributionSummary(e.getDistributionSummary())
-                .distributionPercent(e.getDistributionPercent())
                 .build();
     }
 
@@ -88,9 +84,9 @@ public class ProductPayload {
 
     /* ---------- 분배요청 ---------- */
     public void distribution(CreatorDistributionDto dto) {
-        if (dto.getDistributionAmount() != null) this.distributionAmount  = dto.getDistributionAmount();
         if (dto.getDocument()           != null) this.document            = dto.getDocument();
         if (dto.getImage()              != null) this.image               = dto.getImage();
+        if (dto.getDistributionAmount() != null) this.distributionAmount  = dto.getDistributionAmount();
         if (dto.getDistributionSummary()!= null) this.distributionSummary = dto.getDistributionSummary();
     }
 }
