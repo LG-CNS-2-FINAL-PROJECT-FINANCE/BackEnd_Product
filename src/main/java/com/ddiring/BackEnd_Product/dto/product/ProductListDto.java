@@ -21,6 +21,8 @@ public class ProductListDto {
     private int deadline;
     private BigDecimal amount;
     private BigDecimal percent;
+    private BigDecimal distributionAmount;
+    private BigDecimal distributionPercent;
     private List<String> image;
     private int viewCount;
     private ProductEntity.ProjectStatus projectStatus;
@@ -39,6 +41,8 @@ public class ProductListDto {
                 .deadline(e.getDeadline())
                 .amount(e.getAmount())
                 .percent(e.getPercent())
+                .distributionAmount(e.getDistributionAmount())
+                .distributionPercent(e.getDistributionPercent())
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
                 .projectStatus(e.getProjectStatus())

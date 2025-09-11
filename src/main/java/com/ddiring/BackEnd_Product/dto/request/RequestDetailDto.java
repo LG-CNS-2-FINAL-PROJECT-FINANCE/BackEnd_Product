@@ -32,6 +32,8 @@ public class RequestDetailDto {
     private String adminSeq;
 
     private String reason;
+    private BigDecimal distributionAmount;
+    private BigDecimal distributionPercent;
     private String distributionSummary;
     private String rejectReason;
 

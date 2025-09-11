@@ -26,6 +26,9 @@ public class ProductDetailDto {
     private BigDecimal minInvestment;
     private BigDecimal amount;
     private BigDecimal percent;
+    private BigDecimal distributionAmount;
+    private BigDecimal distributionPercent;
+    private String distributionSummary;
     private List<String> document;
     private List<String> image;
     private int viewCount;
@@ -52,6 +55,9 @@ public class ProductDetailDto {
                 .minInvestment(e.getMinInvestment())
                 .amount(e.getAmount())
                 .percent(e.getPercent())
+                .distributionAmount(e.getDistributionAmount())
+                .distributionPercent(e.getDistributionPercent())
+                .distributionSummary(e.getDistributionSummary())
                 .document(e.getDocument())
                 .image(e.getImage())
                 .viewCount(e.getViewCount())
