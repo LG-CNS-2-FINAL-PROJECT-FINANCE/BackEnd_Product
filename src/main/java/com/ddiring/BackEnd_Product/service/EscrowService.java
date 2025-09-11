@@ -32,6 +32,11 @@ public class EscrowService {
         BigDecimal newAmount = dto.getBalance();
         if (newAmount == null) return;
 
+        // 🔒 목표 금액 초과 방지
+        if (pe.getGoalAmount() != null && newAmount.compareTo(pe.getGoalAmount()) > 0) {
+            throw new IllegalStateException("투자 금액이 목표 모집금액을 초과할 수 없습니다.");
+        }
+
         // 금액 변경 시에만 반영
         if (pe.getAmount() == null || pe.getAmount().compareTo(newAmount) != 0) {
             pe.setAmount(newAmount);
