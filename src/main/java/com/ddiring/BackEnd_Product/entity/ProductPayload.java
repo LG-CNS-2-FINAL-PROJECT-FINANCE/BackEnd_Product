@@ -102,5 +102,4 @@ public class ProductPayload {
         if (dto.getDistributionAmount()  != null) {this.distributionAmount  = dto.getDistributionAmount();}
         if (dto.getDistributionSummary() != null) {this.distributionSummary = dto.getDistributionSummary();}
     }
-
 }
