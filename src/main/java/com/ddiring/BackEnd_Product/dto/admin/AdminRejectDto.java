@@ -15,6 +15,6 @@ public class AdminRejectDto {
 
     private String adminSeq;
 
-    @NotBlank
+//    @NotBlank
     private String rejectReason;
 }
