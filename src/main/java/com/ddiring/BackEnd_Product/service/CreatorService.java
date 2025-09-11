@@ -165,6 +165,8 @@ public class CreatorService {
             payload.setImage(mergedImages.stream().distinct().toList());
         }
 
+        payload.distribution(dto);
+
         BigDecimal percent = rs.DistributionPercent(
                 payload.getDistributionAmount(), payload.getGoalAmount());
         payload.setDistributionPercent(percent);
