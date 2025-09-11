@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -105,7 +107,7 @@ public class AdminService {
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 등록 승인",
-                        "상품("+pre.getPayload().getTitle()+") 등록이 승인되었습니다"
+                        "\"" + pre.getPayload().getTitle()+"\" 상품 등록이 승인되었습니다"
                 );
             }
 
@@ -128,7 +130,7 @@ public class AdminService {
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 수정 승인",
-                        "상품("+pre.getPayload().getTitle()+") 수정이 승인되었습니다"
+                        "\"" + pre.getPayload().getTitle() + "\" 상품 수정이 승인되었습니다"
                 );
             }
 
@@ -139,7 +141,7 @@ public class AdminService {
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 정지 승인",
-                        "상품("+pre.getPayload().getTitle()+") 정지가 승인되었습니다"
+                        "\"" + pre.getPayload().getTitle() + "\" 상품 정지가 승인되었습니다"
                 );
             }
 
@@ -162,7 +164,7 @@ public class AdminService {
                         List.of(pre.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 분배 승인",
-                        "상품("+ pre.getPayload().getTitle()+") 분배가 승인되었습니다."
+                        "\"" + pre.getPayload().getTitle() + "\" 상품 분배가 승인되었습니다."
                 );
             }
         }
@@ -222,7 +224,7 @@ public class AdminService {
                 List.of(pre.getUserSeq()),
                 NotificationType.INFORMATION.name(),
                 "상품 거절",
-                "상품("+pre.getPayload().getTitle()+")에 대한 요청이 거절되었습니다. 사유: " + dto.getRejectReason()
+                "\"" + pre.getPayload().getTitle() + "\"에 대한 요청이 거절되었습니다. 사유: " + dto.getRejectReason()
         );
     }
 
@@ -259,14 +261,14 @@ public class AdminService {
                     List.of(pe.getUserSeq()),
                     NotificationType.INFORMATION.name(),
                     "상품 숨김",
-                    "관리자에 의해 상품("+pe.getTitle()+")이 숨김 처리되었습니다. 사유: " + reason
+                    "관리자에 의해 \"" + pe.getTitle() + "\" 상품이 숨김 처리되었습니다. 사유: " + reason
             );
         } else {
             notificationProducer.sendNotification(
                     List.of(pe.getUserSeq()),
                     NotificationType.INFORMATION.name(),
                     "상품 공개",
-                    "관리자에 의해 상품("+pe.getTitle()+")이 다시 공개되었습니다."
+                    "관리자에 의해 \"" + pe.getTitle()+"\" 상품이 다시 공개되었습니다."
             );
         }
 
@@ -329,23 +331,24 @@ public class AdminService {
     }
 
     private void handleUpdate(ProductRequestEntity pre) {
-            ProductPayload pp = pre.getPayload();
-            ProductEntity pe = pr.findById(pp.getProjectId())
-                    .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
+        ProductPayload pp = pre.getPayload();
+        ProductEntity pe = pr.findById(pp.getProjectId())
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
 
-            pe.setTitle(pp.getTitle());
-            pe.setSummary(pp.getSummary());
-            pe.setContent(pp.getContent());
-            pe.setStartDate(pp.getStartDate());
-            pe.setEndDate(pp.getEndDate());
-            pe.setDeadline(Math.max(pe.dDay(), 0));
-            pe.setGoalAmount(pp.getGoalAmount());
-            pe.setMinInvestment(pp.getMinInvestment());
-            pe.setDocument(new ArrayList<>(pp.getDocument()));
-            pe.setImage(new ArrayList<>(pp.getImage()));
-            pe.setReason(pp.getReason());
-            pe.setProjectStatus(ProductEntity.ProjectStatus.OPEN);
-            pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
+        pe.setTitle(pp.getTitle());
+        pe.setSummary(pp.getSummary());
+        pe.setContent(pp.getContent());
+        pe.setStartDate(pp.getStartDate());
+        pe.setEndDate(pp.getEndDate());
+        pe.setDeadline(Math.max(pe.dDay(), 0));
+        pe.setGoalAmount(pp.getGoalAmount());
+        pe.setMinInvestment(pp.getMinInvestment());
+        // ✅ 기존 + 신규 (중복 제거)
+        pe.setDocument(mergeList(pe.getDocument(), pp.getDocument()));
+        pe.setImage(mergeList(pe.getImage(), pp.getImage()));
+        pe.setReason(pp.getReason());
+        pe.setProjectStatus(ProductEntity.ProjectStatus.OPEN);
+        pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
         pr.save(pe);
     }
 
@@ -354,9 +357,9 @@ public class AdminService {
         ProductEntity pe = pr.findById(pp.getProjectId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
 
-        pe.setDocument(pe.getDocument());
-        pe.setDocument(new ArrayList<>(pp.getDocument()));
-        pe.setImage(new ArrayList<>(pp.getImage()));
+        // ✅ 기존 + 신규 (중복 제거)
+        pe.setDocument(mergeList(pe.getDocument(), pp.getDocument()));
+        pe.setImage(mergeList(pe.getImage(), pp.getImage()));
         pe.setReason(pp.getReason());
         pe.setProjectStatus(ProductEntity.ProjectStatus.TEMPORARY_STOP);
         pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
@@ -368,13 +371,22 @@ public class AdminService {
         ProductEntity pe = pr.findById(pp.getProjectId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다"));
 
-        pe.setDocument(new ArrayList<>(pp.getDocument()));
-        pe.setImage(new ArrayList<>(pp.getImage()));
+        // ✅ 기존 + 신규 (중복 제거)
+        pe.setDocument(mergeList(pe.getDocument(), pp.getDocument()));
+        pe.setImage(mergeList(pe.getImage(), pp.getImage()));
         pe.setDistributionAmount(pp.getDistributionAmount());
         pe.setDistributionPercent(pp.getDistributionPercent());
         pe.setDistributionSummary(pp.getDistributionSummary());
         pe.setProjectStatus(ProductEntity.ProjectStatus.DISTRIBUTION_READY);
         pe.setProjectVisibility(ProductEntity.ProjectVisibility.PUBLIC);
         pr.save(pe);
+    }
+
+    /* ---------- 유틸 ---------- */
+    private List<String> mergeList(List<String> oldList, List<String> newList) {
+        Set<String> merged = new LinkedHashSet<>();
+        if (oldList != null) merged.addAll(oldList);
+        if (newList != null) merged.addAll(newList);
+        return new ArrayList<>(merged);
     }
 }

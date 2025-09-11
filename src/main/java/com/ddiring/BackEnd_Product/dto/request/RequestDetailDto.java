@@ -32,6 +32,8 @@ public class RequestDetailDto {
     private String adminSeq;
 
     private String reason;
+    private BigDecimal distributionAmount;
+    private BigDecimal distributionPercent;
     private String distributionSummary;
     private String rejectReason;
 
@@ -54,6 +56,8 @@ public class RequestDetailDto {
                 .requestStatus(e.getRequestStatus())
                 .adminSeq(e.getAdminSeq())
                 .reason(e.getPayload().getReason())
+                .distributionAmount(e.getPayload().getDistributionAmount())
+                .distributionPercent(e.getPayload().getDistributionPercent())
                 .distributionSummary(e.getPayload().getDistributionSummary())
                 .rejectReason(e.getRejectReason())
                 .build();

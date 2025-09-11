@@ -3,6 +3,7 @@ package com.ddiring.BackEnd_Product.dto.request;
 import com.ddiring.BackEnd_Product.entity.ProductRequestEntity;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,9 @@ public class RequestListDto {
 
     private List<String> image = new ArrayList<>();
 
+    private BigDecimal distributionAmount;
+    private BigDecimal distributionPercent;
+
     private ProductRequestEntity.RequestType requestType;
     private ProductRequestEntity.RequestStatus requestStatus;
     private String adminSeq;
@@ -38,6 +42,8 @@ public class RequestListDto {
                 .startDate(e.getPayload().getStartDate())
                 .endDate(e.getPayload().getEndDate())
                 .image(e.getPayload().getImage())
+                .distributionAmount(e.getPayload().getDistributionAmount())
+                .distributionPercent(e.getPayload().getDistributionPercent())
                 .requestType(e.getRequestType())
                 .requestStatus(e.getRequestStatus())
                 .adminSeq(e.getAdminSeq())

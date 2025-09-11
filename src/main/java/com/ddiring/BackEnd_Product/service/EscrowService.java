@@ -62,7 +62,7 @@ public class EscrowService {
                         List.of(pe.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "목표금액 달성",
-                        "상품(" + pe.getTitle() + ")의 목표금액이 달성되어 조기 마감되었습니다."
+                        "\"" + pe.getTitle() + "\" 상품의 목표금액이 달성되어 조기 마감되었습니다."
                 );
 
                 // 모금액 달성으로 인한 조기마감 알림(즐겨찾기)
@@ -70,7 +70,7 @@ public class EscrowService {
                         new ArrayList<>(pe.getFavorites()),
                         NotificationType.INFORMATION.name(),
                         "목표금액 달성",
-                        "상품(" + pe.getTitle() + ")의 목표금액이 달성되어 조기 마감되었습니다."
+                        "\"" + pe.getTitle() + "\" 상품의 목표금액이 달성되어 조기 마감되었습니다."
                 );
 
             } else if (percent.compareTo(new BigDecimal("100")) < 0
@@ -84,7 +84,7 @@ public class EscrowService {
                         List.of(pe.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "목표금액 달성 해제",
-                        "상품(" + pe.getTitle() + ")의 목표금액 달성이 해제되어 다시 모집 중 상태로 변경되었습니다."
+                        "\"" + pe.getTitle() + "\" 상품의 목표금액 달성이 해제되어 다시 모집 중 상태로 변경되었습니다."
                 );
 
                 // 모금액 감소 알림(즐겨찾기)
@@ -92,7 +92,7 @@ public class EscrowService {
                         new ArrayList<>(pe.getFavorites()),
                         NotificationType.INFORMATION.name(),
                         "목표금액 달성 해제",
-                        "상품(" + pe.getTitle() + ")의 목표금액 달성이 해제되어 다시 모집 중 상태로 변경되었습니다."
+                        "\"" + pe.getTitle() + "\" 상품의 목표금액 달성이 해제되어 다시 모집 중 상태로 변경되었습니다."
                 );
             }
 
@@ -126,7 +126,7 @@ public class EscrowService {
                 List.of(pe.getUserSeq()),
                 NotificationType.INFORMATION.name(),
                 "분배금 입금 확인",
-                "상품(" + pe.getTitle() + ")의 분배금 입금이 확인되었습니다."
+                "\"" + pe.getTitle() + "\" 의 분배금 입금이 확인되었습니다."
         );
     }
 }

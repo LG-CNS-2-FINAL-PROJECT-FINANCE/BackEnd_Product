@@ -47,6 +47,7 @@ public class ProductPayload {
     public static ProductPayload from(ProductEntity e) {
         return ProductPayload.builder()
                 .projectId(e.getProjectId())
+                .nickname(e.getNickname())
                 .title(e.getTitle())
                 .summary(e.getSummary())
                 .content(e.getContent())
@@ -70,23 +71,36 @@ public class ProductPayload {
         if (dto.getEndDate()      != null) this.endDate       = dto.getEndDate();
         if (dto.getGoalAmount()   != null) this.goalAmount    = dto.getGoalAmount();
         if (dto.getMinInvestment()!= null) this.minInvestment = dto.getMinInvestment();
-        if (dto.getDocument()     != null) this.document      = dto.getDocument();
-        if (dto.getImage()        != null) this.image         = dto.getImage();
+        if (dto.getDocument() != null) {
+            this.document.addAll(dto.getDocument()); // 새 문서 추가
+            this.document = this.document.stream().distinct().toList();} // 중복 제거
+        if (dto.getImage() != null) {
+            this.image.addAll(dto.getImage()); // 새 이미지 추가
+            this.image = this.image.stream().distinct().toList();} // 중복 제거
         if (dto.getReason()       != null) this.reason        = dto.getReason();
     }
 
     /* ---------- 정지 ---------- */
     public void stop(CreatorStopDto dto) {
         if (dto.getReason()       != null) this.reason   = dto.getReason();
-        if (dto.getDocument()     != null) this.document = dto.getDocument();
-        if (dto.getImage()        != null) this.image    = dto.getImage();
+        if (dto.getDocument() != null) {
+            this.document.addAll(dto.getDocument()); // 새 문서 추가
+            this.document = this.document.stream().distinct().toList();} // 중복 제거
+        if (dto.getImage() != null) {
+            this.image.addAll(dto.getImage()); // 새 이미지 추가
+            this.image = this.image.stream().distinct().toList();} // 중복 제거
     }
 
     /* ---------- 분배요청 ---------- */
     public void distribution(CreatorDistributionDto dto) {
-        if (dto.getDocument()           != null) this.document            = dto.getDocument();
-        if (dto.getImage()              != null) this.image               = dto.getImage();
-        if (dto.getDistributionAmount() != null) this.distributionAmount  = dto.getDistributionAmount();
-        if (dto.getDistributionSummary()!= null) this.distributionSummary = dto.getDistributionSummary();
+        if (dto.getDocument() != null) {
+            this.document.addAll(dto.getDocument()); // 새 문서 추가
+            this.document = this.document.stream().distinct().toList();} // 중복 제거
+        if (dto.getImage() != null) {
+            this.image.addAll(dto.getImage()); // 새 이미지 추가
+            this.image = this.image.stream().distinct().toList();} // 중복 제거
+        if (dto.getDistributionAmount()  != null) {this.distributionAmount  = dto.getDistributionAmount();}
+        if (dto.getDistributionSummary() != null) {this.distributionSummary = dto.getDistributionSummary();}
     }
+
 }

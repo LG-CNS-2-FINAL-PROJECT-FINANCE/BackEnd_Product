@@ -38,7 +38,7 @@ public class DeadlineUpdateService {
                         List.of(product.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "마감 임박",
-                        "상품(" + product.getTitle() + ")의 마감일이 " + dDay + "일 남았습니다."
+                        "\"" + product.getTitle() + "\"의 마감일이 " + dDay + "일 남았습니다."
                 );
 
                 // 즐겨찾기 알림
@@ -46,7 +46,7 @@ public class DeadlineUpdateService {
                         new ArrayList<>(product.getFavorites()),
                         NotificationType.INFORMATION.name(),
                         "마감 임박",
-                        "상품(" + product.getTitle() + ")의 마감일이 " + dDay + "일 남았습니다."
+                        "\"" + product.getTitle() + "\"의 마감일이 " + dDay + "일 남았습니다."
                 );
 
                 log.info("프로젝트 {} 마감 {}일 전 알림 발송 완료", product.getProjectId(), dDay);
@@ -61,7 +61,7 @@ public class DeadlineUpdateService {
                         List.of(product.getUserSeq()),
                         NotificationType.INFORMATION.name(),
                         "상품 투자 종료",
-                        "상품(" + product.getTitle() + ")의 투자 기간이 종료되어 2차 거래를 시작합니다."
+                        "\"" + product.getTitle() + "\"의 투자 기간이 종료되어 2차 거래를 시작합니다."
                 );
 
                 // 마감일 도래로 인한 투자활성화 알림(즐겨찾기)
@@ -69,7 +69,7 @@ public class DeadlineUpdateService {
                         new ArrayList<>(product.getFavorites()),
                         NotificationType.INFORMATION.name(),
                         "상품 투자 종료",
-                        "상품(" + product.getTitle() + ")의 투자 기간이 종료되어 2차 거래를 시작합니다."
+                        "\"" + product.getTitle() + "\"의 투자 기간이 종료되어 2차 거래를 시작합니다."
                 );
 
                 log.info("프로젝트 {} 마감됨 → 상태 TRADING(2차거래)로 변경", product.getProjectId());

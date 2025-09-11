@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +37,13 @@ public class CreatorService {
             throw new IllegalArgumentException("시작일이 종료일보다 늦을 수 없습니다.");
         if (dto.getGoalAmount().compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException("목표 금액은 0보다 커야 합니다.");
+        if (dto.getMinInvestment().compareTo(BigDecimal.ZERO) <= 0)
+            throw new IllegalArgumentException("최소 투자 금액은 0보다 커야 합니다.");
+        // 🔒 목표 금액이 최소 투자 금액으로 나눠 떨어지는지 체크
+        BigDecimal[] division = dto.getGoalAmount().divideAndRemainder(dto.getMinInvestment());
+        if (division[1].compareTo(BigDecimal.ZERO) != 0) {
+            throw new IllegalArgumentException("목표 금액은 최소 투자 금액으로 나누어 떨어져야 합니다.");
+        }
 
         try {
             ProductRequestEntity pre = ProductRequestEntity.builder()
@@ -60,6 +69,31 @@ public class CreatorService {
         // ② 원본 상품 스냅샷
         ProductEntity product = pr.findById(dto.getProjectId())
                 .orElseThrow(() -> new RuntimeException("상품이 없습니다"));
+
+        // 목표 금액 변경 요청이 있을 경우
+        if (dto.getGoalAmount() != null) {
+            if (dto.getGoalAmount().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("목표 금액은 0보다 커야 합니다.");
+            }
+            // 최소 투자 금액도 같이 존재해야 배수 검증 가능
+            BigDecimal min = dto.getMinInvestment() != null ? dto.getMinInvestment() : product.getMinInvestment();
+            BigDecimal[] division = dto.getGoalAmount().divideAndRemainder(min);
+            if (division[1].compareTo(BigDecimal.ZERO) != 0) {
+                throw new IllegalArgumentException("목표 금액은 최소 투자 금액으로 나누어 떨어져야 합니다.");
+            }
+        }
+        // 최소 투자 금액 변경 요청이 있을 경우
+        if (dto.getMinInvestment() != null) {
+            if (dto.getMinInvestment().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("최소 투자 금액은 0보다 커야 합니다.");
+            }
+            // 목표 금액도 같이 체크
+            BigDecimal goal = dto.getGoalAmount() != null ? dto.getGoalAmount() : product.getGoalAmount();
+            BigDecimal[] division = goal.divideAndRemainder(dto.getMinInvestment());
+            if (division[1].compareTo(BigDecimal.ZERO) != 0) {
+                throw new IllegalArgumentException("목표 금액은 최소 투자 금액으로 나누어 떨어져야 합니다.");
+            }
+        }
 
         ProductPayload payload = ProductPayload.from(product);
         payload.update(dto);   // 텍스트 정보 덮어쓰기
@@ -119,7 +153,17 @@ public class CreatorService {
         }
 
         ProductPayload payload = ProductPayload.from(product);
-        payload.distribution(dto);   // 텍스트 정보 덮어쓰기
+        // ✅ 기존 문서 + 새 문서 merge
+        List<String> mergedDocs = new ArrayList<>(payload.getDocument());
+        mergedDocs.addAll(dto.getDocument());
+        payload.setDocument(mergedDocs.stream().distinct().toList());
+
+        // ✅ 기존 이미지 + 새 이미지 merge (선택)
+        if (dto.getImage() != null) {
+            List<String> mergedImages = new ArrayList<>(payload.getImage());
+            mergedImages.addAll(dto.getImage());
+            payload.setImage(mergedImages.stream().distinct().toList());
+        }
 
         BigDecimal percent = rs.DistributionPercent(
                 payload.getDistributionAmount(), payload.getGoalAmount());

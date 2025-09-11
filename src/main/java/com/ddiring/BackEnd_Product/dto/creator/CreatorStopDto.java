@@ -15,6 +15,7 @@ public class CreatorStopDto {
 
     @NotBlank(message="대상 프로젝트 ID 필요")
     private String projectId;
+    private String nickname;
 
     @NotNull(message = "파일을 등록하세요")
     private List<String> document;

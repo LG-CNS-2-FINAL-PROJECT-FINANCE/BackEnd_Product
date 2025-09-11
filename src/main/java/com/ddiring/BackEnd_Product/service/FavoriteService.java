@@ -45,15 +45,15 @@ public class FavoriteService {
                     List.of(userSeq),
                     NotificationType.INFORMATION.name(),
                     "즐겨찾기 추가",
-                    "상품 ("+pe.getTitle()+") 이 즐겨찾기를 추가되었습니다."
+                    "\"" + pe.getTitle()+ "\" 상품이 즐겨찾기를 추가되었습니다."
             );
 
             // 장착자 알림 발행
             notificationProducer.sendNotification(
-                    List.of(pe.getUserSeq()),
+                    List.of(pe.getNickname()),
                     NotificationType.INFORMATION.name(),
                     "즐겨찾기 누름",
-                    "상품 ("+pe.getTitle()+") 에 "+userSeq+" 즐겨찾기를 눌렀습니다."
+                    "\"" + pe.getTitle()+"\"에 "+pe.getNickname()+"님이 즐겨찾기를 눌렀습니다."
             );
             return true;
         }

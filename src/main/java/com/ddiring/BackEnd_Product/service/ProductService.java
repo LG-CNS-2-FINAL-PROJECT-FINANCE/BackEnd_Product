@@ -110,7 +110,7 @@ public class ProductService {
                 List.of(pe.getUserSeq()),
                 NotificationType.INFORMATION.name(),
                 "상품 종료",
-                "상품(" + pe.getTitle() + ")의 모든 절차가 마무리되어 종료되었습니다."
+                "\"" + pe.getTitle() + "\"의 모든 절차가 마무리되어 종료되었습니다."
         );
     }
 }
