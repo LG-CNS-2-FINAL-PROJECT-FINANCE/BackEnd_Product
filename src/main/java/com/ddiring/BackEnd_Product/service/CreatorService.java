@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -151,7 +153,17 @@ public class CreatorService {
         }
 
         ProductPayload payload = ProductPayload.from(product);
-        payload.distribution(dto);   // 텍스트 정보 덮어쓰기
+        // ✅ 기존 문서 + 새 문서 merge
+        List<String> mergedDocs = new ArrayList<>(payload.getDocument());
+        mergedDocs.addAll(dto.getDocument());
+        payload.setDocument(mergedDocs.stream().distinct().toList());
+
+        // ✅ 기존 이미지 + 새 이미지 merge (선택)
+        if (dto.getImage() != null) {
+            List<String> mergedImages = new ArrayList<>(payload.getImage());
+            mergedImages.addAll(dto.getImage());
+            payload.setImage(mergedImages.stream().distinct().toList());
+        }
 
         BigDecimal percent = rs.DistributionPercent(
                 payload.getDistributionAmount(), payload.getGoalAmount());
